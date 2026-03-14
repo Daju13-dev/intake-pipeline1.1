@@ -4,6 +4,7 @@
     { "src": "api/face_check.py", "use": "@vercel/python" }
   ],
   "routes": [
-    { "src": "/api/face-check", "dest": "/api/face_check.py" }
+    { "src": "/api/face-check", "dest": "/api/face_check.py" },
+    { "handle": "filesystem" }
   ]
 }
