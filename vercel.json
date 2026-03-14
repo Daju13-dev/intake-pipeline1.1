@@ -1,7 +1,12 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/face_check.py", "use": "@vercel/python" }
+    { "src": "api/face_check.py", "use": "@vercel/python" },
+    { "src": "*.html", "use": "@vercel/static" },
+    { "src": "face-check/**", "use": "@vercel/static" },
+    { "src": "*.png", "use": "@vercel/static" },
+    { "src": "*.MOV", "use": "@vercel/static" },
+    { "src": "*.mp4", "use": "@vercel/static" }
   ],
   "routes": [
     { "src": "/api/face-check", "dest": "/api/face_check.py" },
