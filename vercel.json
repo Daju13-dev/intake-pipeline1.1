@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "api/face_check.py", "use": "@vercel/python" }
+  ],
+  "routes": [
+    { "src": "/api/face-check", "dest": "/api/face_check.py" }
+  ]
+}

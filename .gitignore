@@ -1,0 +1,19 @@
+# Secrets
+.env
+.env.*
+service-account.json
+*.pem
+*.key
+
+# Firebase / Vercel local
+.firebase/
+.vercel/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Node/Python caches
+node_modules/
+__pycache__/
+*.pyc

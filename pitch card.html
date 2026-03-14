@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Digital Stewards | Pitch Card</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fff7ed', 100: '#ffedd5', 400: '#fb923c',
+                            500: '#f97316', 600: '#ea580c', 900: '#7c2d12',
+                        }
+                    },
+                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'wiggle': 'wiggle 1s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-6px)' },
+                        },
+                        wiggle: {
+                            '0%, 100%': { transform: 'rotate(-10deg)' },
+                            '50%': { transform: 'rotate(10deg)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen bg-slate-900 flex items-center justify-center p-3 sm:p-6 md:p-8 font-sans selection:bg-brand-500 selection:text-white relative overflow-hidden">
+
+    <!-- Abstract Background Elements -->
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        <div class="absolute -top-[20%] -right-[10%] w-[70vw] h-[70vw] rounded-full bg-brand-600/20 blur-[100px]"></div>
+        <div class="absolute -bottom-[20%] -left-[10%] w-[60vw] h-[60vw] rounded-full bg-blue-600/10 blur-[100px]"></div>
+    </div>
+
+    <!-- The Pitch Card -->
+    <div class="max-w-md w-full bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-slate-200 relative z-10 transform transition-transform hover:-translate-y-1 duration-500">
+        
+        <!-- Header / Banner -->
+        <div class="bg-gradient-to-br from-slate-900 to-slate-800 p-6 md:p-8 text-center relative overflow-hidden">
+            <!-- Decorative overlay -->
+            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')]"></div>
+            
+            <!-- Clickable AdwumaTech Logo in Banner -->
+            <a href="https://www.adwumatech.ai" target="_blank" rel="noopener noreferrer" class="absolute top-4 left-4 z-20 flex items-center gap-1.5 opacity-70 hover:opacity-100 transition-opacity text-white hover:scale-105 transform origin-left">
+                <svg class="w-3.5 h-3.5 text-[#eab308]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <circle cx="12" cy="12" r="4"></circle>
+                </svg>
+                <span class="text-[9px] font-bold uppercase tracking-widest hidden sm:inline-block">AdwumaTech AI</span>
+            </a>
+
+            <div class="relative z-10 mt-6 sm:mt-4">
+                
+                <!-- Mascot Avatar with Shield Badge -->
+                <div class="relative w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 group cursor-default">
+                    <div class="absolute inset-0 bg-brand-500 rounded-full blur-md opacity-50 group-hover:opacity-80 transition-opacity duration-500"></div>
+                    <img src="3d_mascot.png" alt="Digital Steward Mascot" class="relative w-full h-full object-cover rounded-full border-[3px] border-slate-800 shadow-xl transform transition-transform duration-500 group-hover:scale-105">
+                    <div class="absolute -bottom-1 -right-1 bg-green-500 text-white w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shadow-lg border-2 border-slate-800 animate-bounce" style="animation-duration: 3s;">
+                        <i class="ph-fill ph-shield-check text-xs sm:text-sm"></i>
+                    </div>
+                </div>
+
+                <h1 class="text-xl sm:text-2xl font-bold text-white tracking-tight leading-tight mb-1">Digital Safety Initiative</h1>
+                <p class="text-brand-400 text-[10px] sm:text-xs font-bold uppercase tracking-widest">Digital Stewards</p>
+            </div>
+        </div>
+
+        <!-- Body Content -->
+        <div class="p-5 sm:p-6 md:p-8 bg-white text-center">
+            
+            <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 mb-3 leading-tight">
+                Building a Safer <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-brand-700">Digital Community</span>
+            </h2>
+            
+            <p class="text-xs sm:text-sm text-slate-600 mb-6 sm:mb-8 leading-relaxed px-1">
+                Help us build a stronger, safer digital space. By securely sharing examples of deceptive messages you encounter, you protect others and receive a token of appreciation for your time.
+            </p>
+
+            <!-- How it works (Animated & Colorful layout) -->
+            <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 sm:p-5 mb-6 sm:mb-8 relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-brand-500/5 to-transparent animate-[slide_3s_ease-in-out_infinite]"></div>
+                <div class="flex items-center justify-between gap-1 sm:gap-2 relative z-10">
+                    
+                    <div class="flex flex-col items-center flex-1 group cursor-default">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-orange-100 text-brand-600 shadow-sm flex items-center justify-center mb-2 border border-orange-200 relative">
+                            <div class="absolute inset-0 bg-orange-400 rounded-full animate-ping opacity-20"></div>
+                            <i class="ph-fill ph-check-square-offset text-xl sm:text-2xl transform transition-transform group-hover:scale-110"></i>
+                        </div>
+                        <span class="text-[9px] sm:text-[10px] font-bold text-slate-700 uppercase tracking-wide">1. Choose</span>
+                    </div>
+                    
+                    <i class="ph-bold ph-caret-right text-slate-300 text-lg"></i>
+                    
+                    <div class="flex flex-col items-center flex-1 group cursor-default">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-100 text-blue-600 shadow-sm flex items-center justify-center mb-2 border border-blue-200">
+                            <i class="ph-fill ph-image text-xl sm:text-2xl animate-float"></i>
+                        </div>
+                        <span class="text-[9px] sm:text-[10px] font-bold text-slate-700 uppercase tracking-wide">2. Share</span>
+                    </div>
+                    
+                    <i class="ph-bold ph-caret-right text-slate-300 text-lg"></i>
+                    
+                    <div class="flex flex-col items-center flex-1 group cursor-default">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-green-100 text-green-600 shadow-sm flex items-center justify-center mb-2 border border-green-200">
+                            <i class="ph-fill ph-gift text-xl sm:text-2xl animate-wiggle"></i>
+                        </div>
+                        <span class="text-[9px] sm:text-[10px] font-bold text-green-700 uppercase tracking-wide">3. Claim</span>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- PRIMARY CALL TO ACTION BUTTON -->
+            <a href="index.html" class="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-xl bg-slate-900 px-6 py-4 font-bold text-white transition-all hover:bg-black active:scale-[0.98] shadow-xl">
+                <span class="absolute inset-0 bg-gradient-to-r from-brand-600/0 via-brand-600/40 to-brand-600/0 translate-x-[-100%] group-hover:animate-[slide_1.5s_ease-in-out_infinite]"></span>
+                <span class="relative z-10 flex items-center gap-2 text-base md:text-lg">
+                    Become a Steward 
+                    <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </span>
+            </a>
+            
+            <!-- Secondary Actions (Verify & WhatsApp) -->
+            <div class="grid grid-cols-2 gap-3 mt-3">
+                <!-- Verify Steward Button -->
+                <a href="index.html" class="flex items-center justify-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors bg-white border border-slate-200 py-3 rounded-xl hover:bg-blue-50 active:scale-[0.98]">
+                    <i class="ph-fill ph-seal-check text-blue-500 text-base sm:text-lg"></i>
+                    Verify Steward
+                </a>
+                
+                <!-- Direct Reach WhatsApp Button -->
+                <a href="https://wa.me/233557750104" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-bold text-slate-600 hover:text-green-700 transition-colors bg-white border border-slate-200 py-3 rounded-xl hover:bg-green-50 active:scale-[0.98]">
+                    <i class="ph-fill ph-whatsapp-logo text-[#25D366] text-base sm:text-lg"></i>
+                    WhatsApp Us
+                </a>
+            </div>
+            
+            <p class="text-[9px] sm:text-[10px] text-slate-500 mt-4 flex items-center justify-center gap-1.5">
+                <i class="ph-fill ph-lock-key text-brand-500"></i> 100% Secure & Bank-Grade Encrypted
+            </p>
+
+            <!-- SHARE SECTION -->
+            <div class="mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-slate-100">
+                <p class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 sm:mb-4">Share This Initiative</p>
+                <div class="flex items-center justify-center gap-4">
+                    <!-- WhatsApp Share -->
+                    <button onclick="shareTo('whatsapp')" class="w-10 h-10 rounded-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white flex items-center justify-center transition-all hover:scale-110" title="Share on WhatsApp">
+                        <i class="ph-fill ph-whatsapp-logo text-xl"></i>
+                    </button>
+                    <!-- X / Twitter Share -->
+                    <button onclick="shareTo('x')" class="w-10 h-10 rounded-full bg-slate-100 text-slate-600 hover:bg-black hover:text-white flex items-center justify-center transition-all hover:scale-110" title="Share on X">
+                        <i class="ph-fill ph-x-logo text-lg"></i>
+                    </button>
+                    <!-- Facebook Share -->
+                    <button onclick="shareTo('facebook')" class="w-10 h-10 rounded-full bg-[#1877F2]/10 text-[#1877F2] hover:bg-[#1877F2] hover:text-white flex items-center justify-center transition-all hover:scale-110" title="Share on Facebook">
+                        <i class="ph-fill ph-facebook-logo text-xl"></i>
+                    </button>
+                    <!-- Copy Link -->
+                    <button onclick="copyToClipboard()" class="relative w-10 h-10 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center transition-all hover:scale-110" title="Copy Link">
+                        <i id="copy-icon" class="ph-bold ph-link text-xl"></i>
+                        <span id="copy-tooltip" class="absolute -top-8 bg-slate-800 text-white text-[10px] py-1 px-2 rounded opacity-0 transition-opacity pointer-events-none whitespace-nowrap">Copied!</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer / Branding -->
+        <div class="bg-slate-50 border-t border-slate-100 p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-3 sm:gap-0">
+            <a href="https://www.adwumatech.ai" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
+                <svg class="w-4 h-4 text-[#eab308]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <circle cx="12" cy="12" r="4"></circle>
+                </svg>
+                <span class="text-[10px] font-bold text-slate-800 uppercase tracking-widest">AdwumaTech AI</span>
+            </a>
+            <div class="flex gap-3 text-slate-400">
+                <a href="https://wa.me/233557750104" target="_blank" class="hover:text-[#25D366] transition-colors"><i class="ph-fill ph-whatsapp-logo text-lg sm:text-base"></i></a>
+                <i class="ph-fill ph-instagram-logo text-lg sm:text-base"></i>
+                <i class="ph-fill ph-x-logo text-lg sm:text-base"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Animation for the button shine -->
+    <style>
+        @keyframes slide {
+            100% { transform: translateX(100%); }
+        }
+    </style>
+
+    <!-- Sharing Scripts -->
+    <script>
+        // EDIT THESE VARIABLES ONCE YOUR VERCEL/FIREBASE SITE IS LIVE
+        const shareUrl = "https://www.adwumatech.ai"; // <- Replace with your real Vercel/Firebase link once you have it!
+        const shareText = "Help build a safer digital Ghana! Share online tricks you spot, help us build a Cyber-Shield, and get rewarded. Join the Digital Stewards today:";
+
+        function shareTo(platform) {
+            let url = '';
+            const encodedUrl = encodeURIComponent(shareUrl);
+            const encodedText = encodeURIComponent(shareText);
+
+            if (platform === 'whatsapp') {
+                url = `https://api.whatsapp.com/send?text=${encodedText} ${encodedUrl}`;
+            } else if (platform === 'x') {
+                url = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`;
+            } else if (platform === 'facebook') {
+                url = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+            }
+            
+            if (url) window.open(url, '_blank', 'noopener,noreferrer');
+        }
+
+        function copyToClipboard() {
+            const textToCopy = `${shareText} ${shareUrl}`;
+            
+            // Modern Clipboard API
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(textToCopy).then(showCopiedTooltip);
+            } else {
+                // Fallback for older browsers or non-HTTPS (like local testing)
+                const textArea = document.createElement("textarea");
+                textArea.value = textToCopy;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-999999px";
+                textArea.style.top = "-999999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showCopiedTooltip();
+                } catch (err) {
+                    console.error('Fallback: Oops, unable to copy', err);
+                }
+                textArea.remove();
+            }
+        }
+
+        function showCopiedTooltip() {
+            const tooltip = document.getElementById('copy-tooltip');
+            const icon = document.getElementById('copy-icon');
+            
+            // Swap icon and show tooltip
+            icon.classList.replace('ph-link', 'ph-check');
+            icon.classList.add('text-green-500');
+            tooltip.classList.replace('opacity-0', 'opacity-100');
+            
+            // Reset after 2 seconds
+            setTimeout(() => {
+                icon.classList.replace('ph-check', 'ph-link');
+                icon.classList.remove('text-green-500');
+                tooltip.classList.replace('opacity-100', 'opacity-0');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
