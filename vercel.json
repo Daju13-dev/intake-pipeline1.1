@@ -5,6 +5,6 @@
   ],
   "routes": [
     { "src": "/api/face-check", "dest": "/api/face_check.py" },
-    { "src": "/(.*)", "dest": "/public/$1" }
+    { "handle": "filesystem" }
   ]
 }
