@@ -394,6 +394,7 @@
             height: min(760px, calc(100svh - 24px));
             display: flex;
             flex-direction: column;
+            min-height: 0;
         }
         @media (min-width: 640px) {
             .pitch-card { height: min(760px, calc(100svh - 48px)); }
@@ -403,11 +404,12 @@
         }
         .card-header { flex: 0 0 auto; }
         .card-body {
-            flex: 1 1 auto;
             overflow: hidden;
             display: flex;
             flex-direction: column;
             gap: 0;
+            flex: 1 1 auto;
+            min-height: 0; /* critical for nested scroll in flex (iOS/Chrome mobile) */
         }
         .card-scroll {
             flex: 1 1 auto;
@@ -415,6 +417,7 @@
             -webkit-overflow-scrolling: touch;
             overscroll-behavior: contain;
             padding-right: 2px;
+            min-height: 0;
         }
         .card-actions { flex: 0 0 auto; }
         @media (max-width: 640px) {
