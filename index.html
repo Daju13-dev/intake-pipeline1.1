@@ -324,9 +324,9 @@
         </div>
     </div>
 
-    <!-- Chatbot Widget -->
+    <!-- Support (WhatsApp) -->
     <div id="chatbot-modal" class="fixed inset-0 z-[75] bg-black/50 backdrop-blur-sm hidden items-end sm:items-center justify-center p-3 sm:p-6">
-        <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[75vh] sm:h-[560px]">
+        <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[78vh] sm:h-[560px]">
             <div class="px-4 sm:px-5 py-3 border-b border-ink-100 flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-ink-900 text-white flex items-center justify-center shadow-md">
@@ -334,40 +334,52 @@
                     </div>
                     <div>
                         <p class="text-[10px] font-bold uppercase tracking-widest text-ink-400">Support</p>
-                        <h3 class="text-base sm:text-lg font-bold text-ink-900">Chat with Us</h3>
-                        <p id="chat-status" class="text-[10px] text-ink-400">Online</p>
+                        <h3 class="text-base sm:text-lg font-bold text-ink-900">Message a Representative</h3>
+                        <p id="chat-status" class="text-[10px] text-ink-400">Connect via WhatsApp</p>
                     </div>
                 </div>
-                <button onclick="toggleChatbot(false)" class="w-8 h-8 rounded-full bg-ink-100 text-ink-600 hover:bg-ink-200 flex items-center justify-center">
+                <button onclick="toggleChatbot(false)" class="w-8 h-8 rounded-full bg-ink-100 text-ink-600 hover:bg-ink-200 flex items-center justify-center" aria-label="Close support">
                     <i class="ph-bold ph-x"></i>
                 </button>
             </div>
-            <div id="chat-log" class="flex-1 p-4 space-y-3 overflow-y-auto bg-ink-50"></div>
-            <div id="typing-indicator" class="hidden px-4 pb-2">
-                <div class="typing-bubble">
-                    <span class="typing-dot"></span>
-                    <span class="typing-dot"></span>
-                    <span class="typing-dot"></span>
+
+            <div class="flex-1 p-4 space-y-4 overflow-y-auto bg-ink-50">
+                <div id="support-rep" class="rounded-2xl bg-white border border-ink-200/60 shadow-sm p-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-ink-100 flex items-center justify-center text-ink-500 font-black" id="support-rep-avatar">AT</div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs font-bold text-ink-900" id="support-rep-name">Assigning a representative?</p>
+                            <p class="text-[11px] text-ink-500" id="support-rep-sub">We?ll connect you to the next available staff.</p>
+                        </div>
+                        <button id="support-pick" class="rounded-xl bg-white border border-ink-200/60 px-3 py-2 text-[11px] font-bold text-ink-700 hover:bg-ink-50">Switch</button>
+                    </div>
                 </div>
-            </div>
-            <div class="px-4 pb-4">
-                <div class="flex flex-wrap gap-2 mb-3">
-                    <button id="chat-retry" class="quick-reply hidden">Retry</button>
-                    <button class="quick-reply" data-reply="How do I participate?">How to participate</button>
-                    <button class="quick-reply" data-reply="Is my data safe?">Is my data safe?</button>
-                    <button class="quick-reply" data-reply="How do I claim reward?">Claim reward</button>
-                    <button class="quick-reply" data-reply="Verify a representative">Verify rep</button>
+
+                <div class="flex flex-wrap gap-2">
+                    <button class="quick-reply" data-template="How do I participate?">How to participate</button>
+                    <button class="quick-reply" data-template="Is my data safe?">Is my data safe?</button>
+                    <button class="quick-reply" data-template="How do I claim my reward?">Claim reward</button>
+                    <button class="quick-reply" data-template="I want to verify a representative.">Verify rep</button>
                 </div>
-                <div class="flex items-center gap-2">
-                    <input id="chat-input" type="text" class="flex-1 border border-ink-200/60 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="Ask a quick question..." />
-                    <button id="chat-send" class="rounded-xl bg-ink-900 text-white px-4 py-3 text-sm font-bold hover:bg-black">Send</button>
+
+                <div>
+                    <label class="block text-xs font-bold text-ink-700 mb-1">Your message</label>
+                    <textarea id="support-message" rows="3" class="w-full border border-ink-200/60 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white" placeholder="Type your question?"></textarea>
+                    <p class="text-[10px] text-ink-400 mt-2">We?ll open WhatsApp so you can chat directly. Replies will come in WhatsApp.</p>
                 </div>
-                <p class="text-[10px] text-ink-400 mt-2">Powered by AdwumaTech AI. Ask about participation, rewards, privacy, or verifying a representative.</p>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <button id="support-send" class="col-span-2 rounded-xl bg-ink-900 text-white px-4 py-3 text-sm font-bold hover:bg-black active:scale-[0.99]">Open WhatsApp</button>
+                </div>
+
+                <div id="support-notice" class="hidden rounded-xl bg-amber-50 border border-amber-200 text-amber-900 p-3 text-xs"></div>
+
+                <p class="text-[10px] text-ink-400">Staff-only onboarding is available internally. If a representative shares a code/QR with you, verify it before sharing details.</p>
             </div>
         </div>
     </div>
 
-    <style>
+<style>
         body.modal-open { overflow: hidden; }
         @keyframes floaty {
             0%, 100% { transform: translateY(0) scale(1); }
@@ -1374,7 +1386,9 @@
             const code = window.jsQR ? window.jsQR(imageData.data, canvas.width, canvas.height) : null;
             if (code) {
                 qrResult.classList.remove('hidden');
+                qrCodeInput.value = code.data;
                 qrResult.textContent = `QR Found: ${code.data}`;
+                verifyQRCode();
                 qrStatus.textContent = "Verified. You can close this window.";
                 trackEvent("verify_qr_success");
                 stopQRScan();
@@ -1395,125 +1409,187 @@
         });
 
         function verifyQRCode() {
-            const v = qrCodeInput.value.trim();
-            if (v.length < 4) {
+            const raw = (qrCodeInput.value || "").trim();
+            const code = raw.toUpperCase().replace(/[^A-Z0-9]/g, "");
+            if (code.length < 4) {
                 qrResult.classList.remove('hidden');
                 qrResult.textContent = "Please enter a valid code.";
                 trackEvent("verify_code_error");
                 return;
             }
+
+            qrStatus.textContent = "Checking?";
             qrResult.classList.remove('hidden');
-            qrResult.textContent = `Code Entered: ${v}`;
-            qrStatus.textContent = "Verified. You can close this window.";
-            trackEvent("verify_code_submit");
-        }
+            qrResult.textContent = `Code: ${code}`;
+
+            fetch(`/api/reps/${encodeURIComponent(code)}`)
+                .then(r => r.ok ? r.json() : Promise.reject(r))
+                .then(data => {
+                    const rep = data && data.rep ? data.rep : null;
+                    if (!rep) throw new Error('no_rep');
+                    localStorage.setItem('verifiedRepCode', code);
+                    const name = rep.name || 'Representative';
+                    qrStatus.textContent = "Verified. You can close this window.";
+                    qrResult.textContent = `Verified: ${name} (${code})`;
+                    trackEvent("verify_code_submit");
+                })
+                .catch(async (err) => {
+                    let msg = "Representative not found.";
+                    try {
+                        const j = await err.json();
+                        if (j && j.detail) msg = String(j.detail);
+                    } catch (_) {}
+                    qrStatus.textContent = "Not verified.";
+                    qrResult.textContent = msg;
+                    trackEvent("verify_code_error");
+                });
+        }}
 
         
-        // --- Chatbot (AI) ---
+        
+        // --- Support (WhatsApp) ---
         const chatbotModal = document.getElementById('chatbot-modal');
-        const chatLog = document.getElementById('chat-log');
-        const chatInput = document.getElementById('chat-input');
-        const chatSend = document.getElementById('chat-send');
+        const supportStatus = document.getElementById('chat-status');
+        const supportRepName = document.getElementById('support-rep-name');
+        const supportRepSub = document.getElementById('support-rep-sub');
+        const supportRepAvatar = document.getElementById('support-rep-avatar');
+        const supportPick = document.getElementById('support-pick');
+        const supportMessage = document.getElementById('support-message');
+        const supportSend = document.getElementById('support-send');
+        const supportNotice = document.getElementById('support-notice');
         const quickReplies = document.querySelectorAll('.quick-reply');
-        const chatRetry = document.getElementById('chat-retry');
-        const chatStatus = document.getElementById('chat-status');
 
-        const chatHistory = [];
-        let lastChatPayload = null;
+        let preferredRepCode = null;
+        let lastAssignedRep = null;
 
-        function setChatStatus(text) {
-            if (!chatStatus) return;
-            chatStatus.textContent = text;
+        function setSupportStatus(text) {
+            if (!supportStatus) return;
+            supportStatus.textContent = text;
         }
 
-        function appendMessage(text, isUser = false) {
-            const bubble = document.createElement('div');
-            bubble.className = `chat-bubble ${isUser ? 'chat-user' : 'chat-bot'}`;
-            bubble.textContent = text;
-            chatLog.appendChild(bubble);
-            chatLog.scrollTop = chatLog.scrollHeight;
+        function initials(name) {
+            const parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+            const a = (parts[0] || 'A')[0];
+            const b = (parts[1] || 'T')[0];
+            return (a + b).toUpperCase();
         }
 
-        function initChat() {
-            if (chatLog.dataset.init === '1') return;
-            chatLog.dataset.init = '1';
-            appendMessage("Hi! I'm the AdwumaTech AI assistant. How can I help today?");
+        function renderRep(rep) {
+            if (!rep) {
+                supportRepName.textContent = 'Assigning a representative?';
+                supportRepSub.textContent = 'We?ll connect you to the next available staff.';
+                supportRepAvatar.textContent = 'AT';
+                supportRepAvatar.style.backgroundImage = '';
+                supportRepAvatar.style.backgroundSize = '';
+                supportRepAvatar.style.backgroundPosition = '';
+                supportRepAvatar.style.color = '';
+                return;
+            }
+
+            lastAssignedRep = rep;
+            const name = rep.name || 'AdwumaTech AI Support';
+            supportRepName.textContent = name;
+            supportRepSub.textContent = rep.code && rep.code !== 'DEFAULT'
+                ? `Verified code: ${rep.code}`
+                : 'Available now on WhatsApp.';
+
+            if (rep.photo_url) {
+                supportRepAvatar.textContent = '';
+                supportRepAvatar.style.backgroundImage = `url(${rep.photo_url})`;
+                supportRepAvatar.style.backgroundSize = 'cover';
+                supportRepAvatar.style.backgroundPosition = 'center';
+                supportRepAvatar.style.color = 'transparent';
+            } else {
+                supportRepAvatar.textContent = initials(name);
+                supportRepAvatar.style.backgroundImage = '';
+                supportRepAvatar.style.color = '#64748b';
+            }
         }
 
-        async function callChatApi(payload) {
-            const resp = await fetch('/api/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
+        function showNotice(text) {
+            if (!supportNotice) return;
+            if (!text) {
+                supportNotice.classList.add('hidden');
+                supportNotice.textContent = '';
+                return;
+            }
+            supportNotice.textContent = text;
+            supportNotice.classList.remove('hidden');
+        }
 
-            if (!resp.ok) {
-                let detail = '';
+        async function fetchRepByCode(code) {
+            const resp = await fetch(`/api/reps/${encodeURIComponent(code)}`);
+            if (!resp.ok) throw new Error('rep_not_found');
+            const data = await resp.json();
+            return data && data.rep ? data.rep : null;
+        }
+
+        async function assignAndOpenWhatsApp(message, { forceSwitch = false } = {}) {
+            showNotice('');
+            setSupportStatus('Connecting?');
+            supportSend.disabled = true;
+
+            const prefer = (!forceSwitch && preferredRepCode) ? preferredRepCode : null;
+
+            try {
+                const resp = await fetch('/api/support/assign', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message,
+                        prefer_code: prefer,
+                        page_url: window.location.href
+                    })
+                });
+
+                const data = await resp.json();
+                if (!resp.ok) {
+                    const d = data && data.detail ? data.detail : 'Could not connect right now.';
+                    throw new Error(typeof d === 'string' ? d : JSON.stringify(d));
+                }
+
+                const rep = data.rep;
+                const url = data.wa_url;
+                renderRep(rep);
+
+                if (!url) throw new Error('WhatsApp link unavailable');
+
+                setSupportStatus('Opening WhatsApp?');
+
+                const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+                if (isMobile) {
+                    window.location.href = url;
+                } else {
+                    window.open(url, '_blank', 'noopener,noreferrer');
+                }
+
+                trackEvent?.('support_whatsapp_open');
+
+            } catch (e) {
+                const msg = (e && e.message) ? String(e.message) : 'Could not connect right now.';
+                showNotice(msg);
+                setSupportStatus('Temporarily offline');
+                trackEvent?.('support_whatsapp_error');
+            } finally {
+                supportSend.disabled = false;
+            }
+        }
+
+        async function initSupport() {
+            preferredRepCode = localStorage.getItem('verifiedRepCode');
+            renderRep(null);
+            setSupportStatus('Connect via WhatsApp');
+
+            if (preferredRepCode) {
                 try {
-                    const err = await resp.json();
-                    if (err && err.detail) {
-                        if (typeof err.detail === 'string') detail = err.detail;
-                        else detail = JSON.stringify(err.detail);
+                    const rep = await fetchRepByCode(preferredRepCode);
+                    if (rep && rep.active) {
+                        renderRep(rep);
+                        setSupportStatus('Verified representative');
                     }
                 } catch (_) {
                     // ignore
                 }
-                const e = new Error('chat_api_error');
-                e.detail = detail;
-                throw e;
-            }
-
-            const data = await resp.json();
-            const reply = (data && data.reply) ? String(data.reply) : '';
-            if (!reply) throw new Error('empty_reply');
-            return reply;
-        }
-
-        async function sendChat(text, { skipUserBubble = false } = {}) {
-            const typing = document.getElementById('typing-indicator');
-            const msg = (text ?? chatInput.value).trim();
-            if (!msg) return;
-
-            if (!skipUserBubble) {
-                appendMessage(msg, true);
-                chatInput.value = '';
-                chatHistory.push({ role: 'user', content: msg });
-            }
-
-            // Keep a retry payload that reproduces this request.
-            lastChatPayload = { message: msg, history: chatHistory.slice(-8) };
-            if (chatRetry) chatRetry.classList.add('hidden');
-
-            setChatStatus('Online');
-            chatSend.disabled = true;
-            chatInput.disabled = true;
-            typing.classList.remove('hidden');
-
-            try {
-                const reply = await callChatApi(lastChatPayload);
-                typing.classList.add('hidden');
-                appendMessage(reply, false);
-                chatHistory.push({ role: 'assistant', content: reply });
-                lastChatPayload = null;
-                setChatStatus('Online');
-                trackEvent?.('chat_reply_ok');
-            } catch (e) {
-                typing.classList.add('hidden');
-
-                // Honest UX: don't pretend we answered with FAQ.
-                const detail = (e && e.detail) ? String(e.detail) : '';
-                if (detail && detail.toLowerCase().includes('not configured')) {
-                    appendMessage("Chat isn't set up yet. Please add OPENAI_API_KEY on Vercel and redeploy.", false);
-                } else {
-                    appendMessage("I'm having trouble connecting right now. Tap Retry in a moment.", false);
-                }
-
-                if (chatRetry) chatRetry.classList.remove('hidden');
-                setChatStatus('Temporarily offline');
-                trackEvent?.('chat_reply_error');
-            } finally {
-                chatSend.disabled = false;
-                chatInput.disabled = false;
             }
         }
 
@@ -1523,8 +1599,8 @@
                 chatbotModal.classList.add('flex');
                 chatbotModal.style.display = 'flex';
                 document.body.classList.add('modal-open');
-                initChat();
-                chatInput.focus();
+                initSupport();
+                supportMessage?.focus();
             } else {
                 chatbotModal.classList.add('hidden');
                 chatbotModal.classList.remove('flex');
@@ -1537,22 +1613,33 @@
             }
         }
 
-        chatSend.addEventListener('click', () => sendChat(chatInput.value));
-        chatInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') sendChat(chatInput.value);
+        supportPick?.addEventListener('click', async () => {
+            preferredRepCode = null;
+            localStorage.removeItem('verifiedRepCode');
+            renderRep(null);
+            setSupportStatus('Connect via WhatsApp');
+            showNotice('');
+            trackEvent?.('support_switch_rep');
+        });
+
+        supportSend?.addEventListener('click', () => {
+            const msg = (supportMessage?.value || '').trim();
+            if (!msg) {
+                showNotice('Please type a short message first.');
+                return;
+            }
+            assignAndOpenWhatsApp(msg);
         });
 
         quickReplies.forEach((btn) => {
             btn.addEventListener('click', () => {
-                if (btn.id === 'chat-retry') {
-                    if (lastChatPayload) sendChat(lastChatPayload.message, { skipUserBubble: true });
-                    return;
-                }
-                const text = btn.getAttribute('data-reply');
-                if (!text) return;
-                sendChat(text);
+                const tpl = btn.getAttribute('data-template');
+                if (!tpl) return;
+                supportMessage.value = tpl;
+                supportMessage.focus();
             });
         });
+
 
     </script>
 </body>

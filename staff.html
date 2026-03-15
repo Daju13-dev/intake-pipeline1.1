@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AdwumaTech AI | Staff Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <style>
+    body { background: #0b1220; }
+    .card { background: rgba(255,255,255,0.96); }
+  </style>
+</head>
+<body class="min-h-screen text-slate-100">
+  <main class="max-w-5xl mx-auto px-4 py-10">
+    <header class="flex items-start justify-between gap-6 mb-8">
+      <div>
+        <p class="text-xs uppercase tracking-[0.24em] text-slate-400 font-bold">Staff</p>
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Representative Onboarding</h1>
+        <p class="text-sm text-slate-300 mt-2 max-w-2xl">
+          Create official reps, assign a unique code + QR, and enable WhatsApp support routing.
+        </p>
+      </div>
+      <a href="/" class="shrink-0 inline-flex items-center gap-2 rounded-xl bg-white/10 hover:bg-white/15 px-4 py-2 text-sm font-bold">
+        <i class="ph-bold ph-arrow-left"></i> Back to Site
+      </a>
+    </header>
+
+    <section class="grid lg:grid-cols-2 gap-6">
+      <div class="card rounded-2xl border border-white/10 shadow-2xl p-5 sm:p-6 text-slate-900">
+        <h2 class="text-lg font-bold mb-3 flex items-center gap-2">
+          <i class="ph-fill ph-lock-key text-orange-600"></i> Staff Access
+        </h2>
+        <p class="text-sm text-slate-600 mb-4">
+          Enter the admin token (set as <span class="font-mono text-[12px] bg-slate-100 px-1.5 py-0.5 rounded">STAFF_ADMIN_TOKEN</span> in Vercel).
+        </p>
+        <div class="flex gap-2">
+          <input id="adminToken" class="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                 placeholder="Paste admin token…" type="password" autocomplete="off" />
+          <button id="saveToken" class="rounded-xl bg-slate-900 text-white px-4 py-3 text-sm font-bold hover:bg-black">
+            Save
+          </button>
+        </div>
+        <p id="tokenStatus" class="mt-3 text-xs text-slate-500"></p>
+      </div>
+
+      <div class="card rounded-2xl border border-white/10 shadow-2xl p-5 sm:p-6 text-slate-900">
+        <h2 class="text-lg font-bold mb-3 flex items-center gap-2">
+          <i class="ph-fill ph-user-plus text-emerald-600"></i> Create Representative
+        </h2>
+        <div class="grid sm:grid-cols-2 gap-3">
+          <div class="sm:col-span-2">
+            <label class="text-xs font-bold text-slate-700">Full name</label>
+            <input id="repName" class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                   placeholder="e.g. Sarah Mensah" />
+          </div>
+          <div>
+            <label class="text-xs font-bold text-slate-700">Email</label>
+            <input id="repEmail" type="email" class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                   placeholder="name@adwumatech.ai" />
+          </div>
+          <div>
+            <label class="text-xs font-bold text-slate-700">WhatsApp number</label>
+            <input id="repWA" class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                   placeholder="+233557750104" />
+            <p class="text-[11px] text-slate-500 mt-1">Use E.164 (preferred). We store digits only.</p>
+          </div>
+          <div>
+            <label class="text-xs font-bold text-slate-700">Custom code (optional)</label>
+            <input id="repCode" class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                   placeholder="e.g. AKRR2026" />
+          </div>
+          <div>
+            <label class="text-xs font-bold text-slate-700">Photo (optional)</label>
+            <input id="repPhoto" type="file" accept="image/*" class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm bg-white" />
+          </div>
+          <div class="sm:col-span-2 flex items-center justify-between gap-3 pt-2">
+            <label class="inline-flex items-center gap-2 text-sm font-bold text-slate-800">
+              <input id="repActive" type="checkbox" class="w-4 h-4" checked />
+              Active
+            </label>
+            <button id="createRep" class="rounded-xl bg-orange-600 text-white px-5 py-3 text-sm font-black hover:bg-orange-700">
+              Create
+            </button>
+          </div>
+        </div>
+        <p id="createStatus" class="mt-3 text-xs text-slate-600"></p>
+      </div>
+    </section>
+
+    <section class="mt-6 card rounded-2xl border border-white/10 shadow-2xl p-5 sm:p-6 text-slate-900">
+      <div class="flex items-start justify-between gap-4 mb-4">
+        <div>
+          <h2 class="text-lg font-bold flex items-center gap-2">
+            <i class="ph-fill ph-users-three text-blue-600"></i> Registered Representatives
+          </h2>
+          <p class="text-sm text-slate-600 mt-1">Use the code for QR verification and WhatsApp support routing.</p>
+        </div>
+        <button id="refreshReps" class="rounded-xl bg-slate-900 text-white px-4 py-2.5 text-sm font-bold hover:bg-black">
+          Refresh
+        </button>
+      </div>
+
+      <div id="repList" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </section>
+  </main>
+
+  <script>
+    const API_BASE = '';
+    const TOKEN_KEY = 'staff_admin_token';
+
+    function getToken() {
+      return sessionStorage.getItem(TOKEN_KEY) || '';
+    }
+    function setToken(v) {
+      sessionStorage.setItem(TOKEN_KEY, v);
+    }
+
+    const adminTokenEl = document.getElementById('adminToken');
+    const tokenStatus = document.getElementById('tokenStatus');
+    const saveToken = document.getElementById('saveToken');
+
+    const repName = document.getElementById('repName');
+    const repEmail = document.getElementById('repEmail');
+    const repWA = document.getElementById('repWA');
+    const repCode = document.getElementById('repCode');
+    const repPhoto = document.getElementById('repPhoto');
+    const repActive = document.getElementById('repActive');
+    const createRep = document.getElementById('createRep');
+    const createStatus = document.getElementById('createStatus');
+    const repList = document.getElementById('repList');
+    const refreshReps = document.getElementById('refreshReps');
+
+    adminTokenEl.value = getToken();
+    tokenStatus.textContent = getToken() ? 'Token saved for this session.' : 'No token saved.';
+
+    saveToken.addEventListener('click', () => {
+      const v = adminTokenEl.value.trim();
+      setToken(v);
+      tokenStatus.textContent = v ? 'Token saved for this session.' : 'Token cleared.';
+    });
+
+    async function fileToDataUrl(file) {
+      if (!file) return null;
+      return await new Promise((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => resolve(String(r.result));
+        r.onerror = reject;
+        r.readAsDataURL(file);
+      });
+    }
+
+    function repCard(rep) {
+      const isActive = !!rep.active;
+      const code = rep.code || '';
+      const name = rep.name || 'Representative';
+      const wa = rep.whatsapp_number || '';
+      const photo = rep.photo_url || '';
+      const badge = isActive
+        ? '<span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 px-2.5 py-1 text-[11px] font-black"><i class="ph-bold ph-check-circle"></i> Active</span>'
+        : '<span class="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-700 px-2.5 py-1 text-[11px] font-black"><i class="ph-bold ph-pause-circle"></i> Inactive</span>';
+
+      const avatar = photo
+        ? `<div class="w-12 h-12 rounded-2xl bg-slate-100 overflow-hidden"><img src="${photo}" class="w-full h-full object-cover"/></div>`
+        : `<div class="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center font-black text-slate-500">${(name.split(' ')[0]||'A')[0]}${(name.split(' ')[1]||'T')[0]}</div>`;
+
+      return `
+        <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div class="flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              ${avatar}
+              <div class="min-w-0">
+                <p class="text-sm font-black text-slate-900 truncate">${name}</p>
+                <p class="text-[11px] text-slate-500 truncate">${wa}</p>
+              </div>
+            </div>
+            ${badge}
+          </div>
+          <div class="mt-3 flex items-center justify-between gap-2">
+            <div class="text-xs font-black text-slate-900 font-mono">${code}</div>
+            <div class="flex gap-2">
+              <button data-copy="${code}" class="copyCode rounded-lg bg-slate-900 text-white px-3 py-2 text-[11px] font-black hover:bg-black">Copy</button>
+              <button data-qr="${code}" class="showQR rounded-lg bg-orange-600 text-white px-3 py-2 text-[11px] font-black hover:bg-orange-700">QR</button>
+            </div>
+          </div>
+          <div class="mt-3 hidden" id="qr-${code}"></div>
+        </div>
+      `;
+    }
+
+    async function loadReps() {
+      repList.innerHTML = '<div class="text-sm text-slate-600">Loading…</div>';
+      try {
+        const token = getToken();
+        const resp = await fetch(`${API_BASE}/api/reps/all`, {
+          headers: { 'x-admin-token': token }
+        });
+        const data = await resp.json();
+        if (!resp.ok) throw new Error(data?.detail || 'Failed to load reps');
+        const reps = data.reps || [];
+        repList.innerHTML = reps.length ? reps.map(repCard).join('') : '<div class="text-sm text-slate-600">No reps yet.</div>';
+
+        document.querySelectorAll('.copyCode').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const code = btn.getAttribute('data-copy') || '';
+            try { await navigator.clipboard.writeText(code); } catch(_) {}
+            btn.textContent = 'Copied';
+            setTimeout(() => (btn.textContent = 'Copy'), 1200);
+          });
+        });
+
+        document.querySelectorAll('.showQR').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const code = btn.getAttribute('data-qr') || '';
+            const el = document.getElementById(`qr-${code}`);
+            if (!el) return;
+            el.classList.toggle('hidden');
+            if (!el.classList.contains('hidden') && !el.dataset.done) {
+              const canvas = document.createElement('canvas');
+              el.appendChild(canvas);
+              await QRCode.toCanvas(canvas, code, { margin: 1, width: 160 });
+              el.dataset.done = '1';
+            }
+          });
+        });
+      } catch (e) {
+        repList.innerHTML = `<div class="text-sm text-red-600">${String(e.message || e)}</div>`;
+      }
+    }
+
+    refreshReps.addEventListener('click', loadReps);
+
+    createRep.addEventListener('click', async () => {
+      createStatus.textContent = '';
+      createRep.disabled = true;
+      try {
+        const token = getToken();
+        if (!token) throw new Error('Missing admin token.');
+        if (!repName.value.trim()) throw new Error('Name is required.');
+        if (!repEmail.value.trim()) throw new Error('Email is required.');
+        if (!repWA.value.trim()) throw new Error('WhatsApp number is required.');
+
+        const photoFile = repPhoto.files && repPhoto.files[0] ? repPhoto.files[0] : null;
+        const dataUrl = await fileToDataUrl(photoFile);
+
+        const payload = {
+          code: repCode.value.trim() || null,
+          name: repName.value.trim(),
+          email: repEmail.value.trim(),
+          whatsapp_number: repWA.value.trim(),
+          image_data_url: dataUrl,
+          active: !!repActive.checked,
+        };
+
+        const resp = await fetch(`${API_BASE}/api/reps`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-admin-token': token,
+          },
+          body: JSON.stringify(payload),
+        });
+        const data = await resp.json();
+        if (!resp.ok) throw new Error(data?.detail || 'Create failed');
+        const rep = data.rep;
+        createStatus.textContent = `Created: ${rep.name} (${rep.code})`;
+        repName.value = '';
+        repEmail.value = '';
+        repWA.value = '';
+        repCode.value = '';
+        repPhoto.value = '';
+        repActive.checked = true;
+        await loadReps();
+      } catch (e) {
+        createStatus.textContent = String(e.message || e);
+      } finally {
+        createRep.disabled = false;
+      }
+    });
+
+    // initial load (optional)
+    loadReps();
+  </script>
+</body>
+</html>
+
