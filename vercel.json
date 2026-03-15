@@ -10,7 +10,8 @@
     { "src": "*.mp4", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "^/$", "dest": "/pitchcardex.html" },
+    { "src": "^/$", "dest": "/index.html" },
+    { "src": "^/pitchcardex\\.html$", "status": 308, "headers": { "Location": "/index.html" } },
     { "src": "/api/face-check", "dest": "/api/face_check.py" },
     { "src": "/api/chat", "dest": "/api/chat.py" },
     { "handle": "filesystem" }
