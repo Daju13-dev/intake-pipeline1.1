@@ -73,6 +73,9 @@ def normalize_code(code: str) -> str:
 def normalize_whatsapp(raw: str) -> str:
     # Store as digits only (E.164 without +). Example: 233557750104
     digits = re.sub(r"\D", "", (raw or ""))
+    # Convenience: convert Ghana local "0XXXXXXXXX" to "233XXXXXXXXX"
+    if len(digits) == 10 and digits.startswith("0"):
+        digits = "233" + digits[1:]
     if len(digits) < 10 or len(digits) > 15:
         raise ValueError("Invalid WhatsApp number")
     return digits

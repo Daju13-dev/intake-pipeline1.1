@@ -70,6 +70,7 @@
             <label class="text-xs font-bold text-slate-700">Custom code (optional)</label>
             <input id="repCode" class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
                    placeholder="e.g. AKRR2026" />
+            <p class="text-[11px] text-slate-500 mt-1">6–12 letters/numbers. Used for QR verification.</p>
           </div>
           <div>
             <label class="text-xs font-bold text-slate-700">Photo (optional)</label>
@@ -143,12 +144,56 @@
 
     async function fileToDataUrl(file) {
       if (!file) return null;
-      return await new Promise((resolve, reject) => {
-        const r = new FileReader();
-        r.onload = () => resolve(String(r.result));
-        r.onerror = reject;
-        r.readAsDataURL(file);
+      // Prevent Vercel request-size errors by compressing to a small JPEG.
+      // This keeps uploads fast and within the backend limit (~650KB).
+      const readAsDataURL = () =>
+        new Promise((resolve, reject) => {
+          const r = new FileReader();
+          r.onload = () => resolve(String(r.result));
+          r.onerror = reject;
+          r.readAsDataURL(file);
+        });
+
+      const srcUrl = await readAsDataURL();
+      const img = await new Promise((resolve, reject) => {
+        const i = new Image();
+        i.onload = () => resolve(i);
+        i.onerror = reject;
+        i.src = srcUrl;
       });
+
+      function bytesFromDataUrl(dataUrl) {
+        const idx = dataUrl.indexOf(',');
+        const b64 = idx >= 0 ? dataUrl.slice(idx + 1) : dataUrl;
+        return Math.floor((b64.length * 3) / 4);
+      }
+
+      // Downscale + iteratively reduce quality until under 600KB.
+      const MAX_EDGE = 512;
+      const targetBytes = 600 * 1024;
+
+      const w = img.naturalWidth || img.width;
+      const h = img.naturalHeight || img.height;
+      const scale = Math.min(1, MAX_EDGE / Math.max(w, h));
+      const cw = Math.max(1, Math.round(w * scale));
+      const ch = Math.max(1, Math.round(h * scale));
+
+      const canvas = document.createElement('canvas');
+      canvas.width = cw;
+      canvas.height = ch;
+      const ctx = canvas.getContext('2d');
+      // White background so PNG transparency doesn't turn black in JPEG.
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, cw, ch);
+      ctx.drawImage(img, 0, 0, cw, ch);
+
+      let quality = 0.82;
+      let out = canvas.toDataURL('image/jpeg', quality);
+      while (bytesFromDataUrl(out) > targetBytes && quality > 0.5) {
+        quality -= 0.08;
+        out = canvas.toDataURL('image/jpeg', quality);
+      }
+      return out;
     }
 
     function repCard(rep) {
@@ -241,11 +286,17 @@
         if (!repEmail.value.trim()) throw new Error('Email is required.');
         if (!repWA.value.trim()) throw new Error('WhatsApp number is required.');
 
+        const rawCode = repCode.value.trim();
+        const cleanCode = rawCode ? rawCode.toUpperCase().replace(/[^A-Z0-9]/g, '') : '';
+        if (cleanCode && (cleanCode.length < 6 || cleanCode.length > 12)) {
+          throw new Error('Custom code must be 6–12 letters/numbers (no spaces).');
+        }
+
         const photoFile = repPhoto.files && repPhoto.files[0] ? repPhoto.files[0] : null;
         const dataUrl = await fileToDataUrl(photoFile);
 
         const payload = {
-          code: repCode.value.trim() || null,
+          code: cleanCode || null,
           name: repName.value.trim(),
           email: repEmail.value.trim(),
           whatsapp_number: repWA.value.trim(),
@@ -261,8 +312,15 @@
           },
           body: JSON.stringify(payload),
         });
-        const data = await resp.json();
-        if (!resp.ok) throw new Error(data?.detail || 'Create failed');
+
+        const ct = resp.headers.get('content-type') || '';
+        const data = ct.includes('application/json') ? await resp.json() : null;
+        if (!resp.ok) {
+          if (data && data.detail) throw new Error(typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail));
+          const text = await resp.text();
+          throw new Error(text ? text.slice(0, 180) : 'Create failed');
+        }
+
         const rep = data.rep;
         createStatus.textContent = `Created: ${rep.name} (${rep.code})`;
         repName.value = '';
@@ -284,4 +342,3 @@
   </script>
 </body>
 </html>
-
