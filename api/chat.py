@@ -7,6 +7,8 @@ from pydantic import BaseModel, Field
 
 app = FastAPI()
 
+BUILD_VERSION = "2026-03-15.2"
+
 SYSTEM_PROMPT = (
     "You are AdwumaTech AI's helpful support assistant for the Digital Safety Initiative.\n"
     "Tone: warm, concise, professional.\n"
@@ -56,7 +58,14 @@ def _safe_trunc(s: str, n: int = 1000) -> str:
 
 @app.get("/api/chat")
 async def chat_health():
-    return {"ok": True, "message": "Chat endpoint online. Use POST with {message, history}."}
+    return {
+        "ok": True,
+        "message": "Chat endpoint online. Use POST with {message, history}.",
+        "build": BUILD_VERSION,
+        "commit": os.environ.get("VERCEL_GIT_COMMIT_SHA")
+        or os.environ.get("VERCEL_GITHUB_COMMIT_SHA"),
+        "model_default": os.environ.get("OPENAI_MODEL", "gpt-5-mini"),
+    }
 
 
 @app.post("/api/chat")
