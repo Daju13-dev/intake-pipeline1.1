@@ -82,79 +82,84 @@
 
         <!-- Body -->
         <div class="card-body p-4 sm:p-6 md:p-8 text-center flex flex-col">
-            <h2 class="hero-title text-2xl sm:text-3xl md:text-4xl font-extrabold text-ink-900 leading-[1.2] mb-3 md:mb-4 tracking-tight">
-                Building a Safer <br class="hidden sm:block">
-                <span class="text-brand-600">Digital World,</span> Together.
-            </h2>
+            <!-- Scrollable content (actions stay visible on mobile) -->
+            <div class="card-scroll">
+                <h2 class="hero-title text-2xl sm:text-3xl md:text-4xl font-extrabold text-ink-900 leading-[1.2] mb-3 md:mb-4 tracking-tight">
+                    Building a Safer <br class="hidden sm:block">
+                    <span class="text-brand-600">Digital World,</span> Together.
+                </h2>
 
-            <p class="hero-copy text-[12px] sm:text-sm text-ink-400 mb-5 sm:mb-6 leading-relaxed px-1">
-                Help us build a stronger, safer digital space. By securely sharing examples of deceptive messages you encounter, you protect others and receive a token of appreciation for your time.
-            </p>
+                <p class="hero-copy text-[12px] sm:text-sm text-ink-400 mb-5 sm:mb-6 leading-relaxed px-1">
+                    Help us build a stronger, safer digital space. By securely sharing examples of deceptive messages you encounter, you protect others and receive a token of appreciation for your time.
+                </p>
 
-            <!-- How It Works -->
-            <div class="how-block bg-ink-50/70  rounded-2xl p-3.5 sm:p-5 mb-5 sm:mb-6">
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div class="how-card">
-                        <div class="icon-badge icon-brand">
-                            <i class="ph-fill ph-check-square-offset text-lg sm:text-xl"></i>
+                <!-- How It Works -->
+                <div class="how-block bg-ink-50/70  rounded-2xl p-3.5 sm:p-5">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div class="how-card">
+                            <div class="icon-badge icon-brand">
+                                <i class="ph-fill ph-check-square-offset text-lg sm:text-xl"></i>
+                            </div>
+                            <span class="text-[9px] sm:text-[10px] font-bold text-ink-800 uppercase tracking-wide">1. Choose</span>
+                            <p class="text-[10px] sm:text-[11px] text-ink-400 mt-1">Select a suspicious message.</p>
                         </div>
-                        <span class="text-[9px] sm:text-[10px] font-bold text-ink-800 uppercase tracking-wide">1. Choose</span>
-                        <p class="text-[10px] sm:text-[11px] text-ink-400 mt-1">Select a suspicious message.</p>
-                    </div>
-                    <div class="how-card">
-                        <div class="icon-badge icon-accent">
-                            <i class="ph-fill ph-image text-lg sm:text-xl"></i>
+                        <div class="how-card">
+                            <div class="icon-badge icon-accent">
+                                <i class="ph-fill ph-image text-lg sm:text-xl"></i>
+                            </div>
+                            <span class="text-[9px] sm:text-[10px] font-bold text-ink-800 uppercase tracking-wide">2. Share</span>
+                            <p class="text-[10px] sm:text-[11px] text-ink-400 mt-1">Upload a screenshot safely.</p>
                         </div>
-                        <span class="text-[9px] sm:text-[10px] font-bold text-ink-800 uppercase tracking-wide">2. Share</span>
-                        <p class="text-[10px] sm:text-[11px] text-ink-400 mt-1">Upload a screenshot safely.</p>
-                    </div>
-                    <div class="how-card">
-                        <div class="icon-badge icon-green">
-                            <i class="ph-fill ph-gift text-lg sm:text-xl"></i>
+                        <div class="how-card">
+                            <div class="icon-badge icon-green">
+                                <i class="ph-fill ph-gift text-lg sm:text-xl"></i>
+                            </div>
+                            <span class="text-[9px] sm:text-[10px] font-bold text-emerald-700 uppercase tracking-wide">3. Claim</span>
+                            <p class="text-[10px] sm:text-[11px] text-ink-400 mt-1">Get your reward promptly.</p>
                         </div>
-                        <span class="text-[9px] sm:text-[10px] font-bold text-emerald-700 uppercase tracking-wide">3. Claim</span>
-                        <p class="text-[10px] sm:text-[11px] text-ink-400 mt-1">Get your reward promptly.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Primary CTA -->
-            <button onclick="openMissionPicker()" class="primary-cta group relative flex w-full items-center justify-center gap-3 rounded-xl bg-ink-900 px-6 py-3.5 sm:py-4 font-bold text-white transition-all hover:bg-black active:scale-[0.98] shadow-lg">
-                <span class="relative z-10 flex items-center gap-2 text-base sm:text-lg">
-                    Participate Now
-                    <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
-                </span>
-            </button>
-
-            <!-- Secondary Actions -->
-            <div class="secondary-actions grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 mt-3">
-                <button onclick="openQRScanner()" class="flex items-center justify-center gap-2 text-[10px] sm:text-xs font-semibold text-ink-700 hover:text-ink-900 transition-colors bg-white border border-ink-200/60 py-3 rounded-xl hover:bg-ink-50 active:scale-[0.98] shadow-[0_8px_20px_rgba(2,6,23,0.06)]">
-                    <span class="icon-dot icon-accent"><i class="ph-fill ph-seal-check text-base sm:text-lg"></i></span>
-                    Verify Representative
+            <!-- Actions dock -->
+            <div class="card-actions mt-5 sm:mt-6">
+                <!-- Primary CTA -->
+                <button onclick="openMissionPicker()" class="primary-cta group relative flex w-full items-center justify-center gap-3 rounded-xl bg-ink-900 px-6 py-3.5 sm:py-4 font-bold text-white transition-all hover:bg-black active:scale-[0.98] shadow-lg">
+                    <span class="relative z-10 flex items-center gap-2 text-base sm:text-lg">
+                        Participate Now
+                        <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </span>
                 </button>
-                <button onclick="toggleChatbot(true)" class="flex items-center justify-center gap-2 text-[10px] sm:text-xs font-semibold text-ink-700 hover:text-ink-900 transition-colors bg-white border border-ink-200/60 py-3 rounded-xl hover:bg-ink-50 active:scale-[0.98] shadow-[0_8px_20px_rgba(2,6,23,0.06)]">
-                    <span class="icon-dot icon-brand"><i class="ph-fill ph-chat-circle-dots text-base sm:text-lg"></i></span>
-                    Chat with Us
-                </button>
-            </div>
 
-            <p class="text-[9px] sm:text-[10px] text-ink-400 mt-4 flex items-center justify-center gap-1.5">
-                <i class="ph-fill ph-lock-key text-brand-500"></i> 100% Secure & Encrypted
-            </p>
+                <!-- Secondary Actions -->
+                <div class="secondary-actions grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 mt-3">
+                    <button onclick="openQRScanner()" class="flex items-center justify-center gap-2 text-[10px] sm:text-xs font-semibold text-ink-700 hover:text-ink-900 transition-colors bg-white border border-ink-200/60 py-3 rounded-xl hover:bg-ink-50 active:scale-[0.98] shadow-[0_8px_20px_rgba(2,6,23,0.06)]">
+                        <span class="icon-dot icon-accent"><i class="ph-fill ph-seal-check text-base sm:text-lg"></i></span>
+                        Verify Representative
+                    </button>
+                    <button onclick="toggleChatbot(true)" class="flex items-center justify-center gap-2 text-[10px] sm:text-xs font-semibold text-ink-700 hover:text-ink-900 transition-colors bg-white border border-ink-200/60 py-3 rounded-xl hover:bg-ink-50 active:scale-[0.98] shadow-[0_8px_20px_rgba(2,6,23,0.06)]">
+                        <span class="icon-dot icon-brand"><i class="ph-fill ph-chat-circle-dots text-base sm:text-lg"></i></span>
+                        Chat with Us
+                    </button>
+                </div>
 
-            <!-- Share -->
-            <div class="socials mt-5 sm:mt-6 pt-4 sm:pt-5 ">
-                <p class="text-[9px] sm:text-[10px] font-bold text-ink-400 uppercase tracking-widest mb-3 sm:mb-4 text-center">Our Socials</p>
-                <div class="flex items-center justify-center gap-3 sm:gap-4">
-                    <a href="https://x.com/adwumatechai?s=21" target="_blank" rel="noopener noreferrer" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-ink-100 text-ink-700 hover:bg-black hover:text-white flex items-center justify-center transition-all shadow-[0_10px_18px_rgba(2,6,23,0.12)] ring-1 ring-ink-200 hover:-translate-y-0.5" title="X">
-                        <i class="ph-fill ph-x-logo text-base sm:text-lg"></i>
-                    </a>
-                    <a href="https://www.linkedin.com/company/adwumatech-ai" target="_blank" rel="noopener noreferrer" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#0A66C2]/15 text-[#0A66C2] hover:bg-[#0A66C2] hover:text-white flex items-center justify-center transition-all shadow-[0_10px_18px_rgba(2,6,23,0.12)] ring-1 ring-[#0A66C2]/20 hover:-translate-y-0.5" title="LinkedIn">
-                        <i class="ph-fill ph-linkedin-logo text-lg sm:text-xl"></i>
-                    </a>
-                    <a href="mailto:info@adwumatech.ai" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-ink-100 text-ink-700 hover:bg-ink-200 flex items-center justify-center transition-all shadow-[0_10px_18px_rgba(2,6,23,0.12)] ring-1 ring-ink-200 hover:-translate-y-0.5" title="Email">
-                        <i class="ph-fill ph-envelope-simple text-lg sm:text-xl"></i>
-                    </a>
+                <p class="text-[9px] sm:text-[10px] text-ink-400 mt-4 flex items-center justify-center gap-1.5">
+                    <i class="ph-fill ph-lock-key text-brand-500"></i> 100% Secure & Encrypted
+                </p>
+
+                <div class="socials mt-4 sm:mt-5">
+                    <p class="text-[9px] sm:text-[10px] font-bold text-ink-400 uppercase tracking-widest mb-3 text-center">Our Socials</p>
+                    <div class="flex items-center justify-center gap-3 sm:gap-4">
+                        <a href="https://x.com/adwumatechai?s=21" target="_blank" rel="noopener noreferrer" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-ink-100 text-ink-700 hover:bg-black hover:text-white flex items-center justify-center transition-all shadow-[0_10px_18px_rgba(2,6,23,0.12)] ring-1 ring-ink-200 hover:-translate-y-0.5" title="X">
+                            <i class="ph-fill ph-x-logo text-base sm:text-lg"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/company/adwumatech-ai" target="_blank" rel="noopener noreferrer" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#0A66C2]/15 text-[#0A66C2] hover:bg-[#0A66C2] hover:text-white flex items-center justify-center transition-all shadow-[0_10px_18px_rgba(2,6,23,0.12)] ring-1 ring-[#0A66C2]/20 hover:-translate-y-0.5" title="LinkedIn">
+                            <i class="ph-fill ph-linkedin-logo text-lg sm:text-xl"></i>
+                        </a>
+                        <a href="mailto:info@adwumatech.ai" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-ink-100 text-ink-700 hover:bg-ink-200 flex items-center justify-center transition-all shadow-[0_10px_18px_rgba(2,6,23,0.12)] ring-1 ring-ink-200 hover:-translate-y-0.5" title="Email">
+                            <i class="ph-fill ph-envelope-simple text-lg sm:text-xl"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -399,8 +404,30 @@
         .card-header { flex: 0 0 auto; }
         .card-body {
             flex: 1 1 auto;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+        .card-scroll {
+            flex: 1 1 auto;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+            padding-right: 2px;
+        }
+        .card-actions { flex: 0 0 auto; }
+        @media (max-width: 640px) {
+            /* Mobile-first: use the full screen, keep everything reachable, avoid outer-page scrolling */
+            body { overflow: hidden; padding: 0 !important; }
+            .pitch-card { height: 100svh; max-width: none; border-radius: 0 !important; }
+            .card-header {
+                min-height: 190px;
+                border-radius: 0 !important;
+                padding-top: calc(18px + env(safe-area-inset-top)) !important;
+            }
+            .card-body { padding: 14px 14px 12px !important; }
+            .footer-bar { padding-bottom: calc(14px + env(safe-area-inset-bottom)); }
         }
         @keyframes floaty {
             0%, 100% { transform: translateY(0) scale(1); }
