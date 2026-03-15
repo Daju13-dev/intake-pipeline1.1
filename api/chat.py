@@ -98,7 +98,6 @@ async def chat(payload: ChatPayload):
         "model": model,
         "input": input_items,
         "max_output_tokens": 300,
-        "temperature": 0.4,
         "store": False,
     }
 
