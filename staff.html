@@ -289,7 +289,7 @@
         const rawCode = repCode.value.trim();
         const cleanCode = rawCode ? rawCode.toUpperCase().replace(/[^A-Z0-9]/g, '') : '';
         if (cleanCode && (cleanCode.length < 6 || cleanCode.length > 12)) {
-          throw new Error('Custom code must be 6–12 letters/numbers (no spaces).');
+          throw new Error('Custom code must be 6-12 letters/numbers (no spaces). Example: AKRR2026.');
         }
 
         const photoFile = repPhoto.files && repPhoto.files[0] ? repPhoto.files[0] : null;

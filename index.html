@@ -349,7 +349,7 @@
                         <div class="w-12 h-12 rounded-2xl bg-ink-100 flex items-center justify-center text-ink-500 font-black" id="support-rep-avatar">AT</div>
                         <div class="flex-1 min-w-0">
                             <p class="text-xs font-bold text-ink-900" id="support-rep-name">Assigning a representative?</p>
-                            <p class="text-[11px] text-ink-500" id="support-rep-sub">We?ll connect you to the next available staff.</p>
+                            <p class="text-[11px] text-ink-500" id="support-rep-sub">We'll connect you to the next available staff.</p>
                         </div>
                         <button id="support-pick" class="rounded-xl bg-white border border-ink-200/60 px-3 py-2 text-[11px] font-bold text-ink-700 hover:bg-ink-50">Switch</button>
                     </div>
@@ -364,12 +364,15 @@
 
                 <div>
                     <label class="block text-xs font-bold text-ink-700 mb-1">Your message</label>
-                    <textarea id="support-message" rows="3" class="w-full border border-ink-200/60 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white" placeholder="Type your question?"></textarea>
-                    <p class="text-[10px] text-ink-400 mt-2">We?ll open WhatsApp so you can chat directly. Replies will come in WhatsApp.</p>
+                    <textarea id="support-message" rows="3" class="w-full border border-ink-200/60 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white" placeholder="Type your question."></textarea>
+                    <p class="text-[10px] text-ink-400 mt-2">We'll open WhatsApp so you can chat directly. Replies will come in WhatsApp.</p>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
-                    <button id="support-send" class="col-span-2 rounded-xl bg-ink-900 text-white px-4 py-3 text-sm font-bold hover:bg-black active:scale-[0.99]">Open WhatsApp</button>
+                    <button id="support-send" class="col-span-2 rounded-xl bg-ink-900 text-white px-4 py-3 text-sm font-bold hover:bg-black active:scale-[0.99]">Connect on WhatsApp</button>
+                    <a id="support-open-link" href="#" target="_blank" rel="noopener noreferrer" class="hidden col-span-2 rounded-xl bg-brand-600 text-white px-4 py-3 text-sm font-bold hover:bg-brand-700 active:scale-[0.99] text-center">
+                        Continue in WhatsApp
+                    </a>
                 </div>
 
                 <div id="support-notice" class="hidden rounded-xl bg-amber-50 border border-amber-200 text-amber-900 p-3 text-xs"></div>
@@ -1411,14 +1414,14 @@
         function verifyQRCode() {
             const raw = (qrCodeInput.value || "").trim();
             const code = raw.toUpperCase().replace(/[^A-Z0-9]/g, "");
-            if (code.length < 4) {
+            if (code.length < 6) {
                 qrResult.classList.remove('hidden');
-                qrResult.textContent = "Please enter a valid code.";
+                qrResult.textContent = "Please enter a valid code (6-12 letters/numbers).";
                 trackEvent("verify_code_error");
                 return;
             }
 
-            qrStatus.textContent = "Checking?";
+            qrStatus.textContent = "Checking...";
             qrResult.classList.remove('hidden');
             qrResult.textContent = `Code: ${code}`;
 
@@ -1456,6 +1459,7 @@
         const supportPick = document.getElementById('support-pick');
         const supportMessage = document.getElementById('support-message');
         const supportSend = document.getElementById('support-send');
+        const supportOpenLink = document.getElementById('support-open-link');
         const supportNotice = document.getElementById('support-notice');
         const quickReplies = document.querySelectorAll('.quick-reply');
 
@@ -1478,7 +1482,7 @@
         function renderRep(rep) {
             if (!rep) {
                 supportRepName.textContent = 'Assigning a representative?';
-                supportRepSub.textContent = 'We?ll connect you to the next available staff.';
+                supportRepSub.textContent = "We'll connect you to the next available staff.";
                 supportRepAvatar.textContent = 'AT';
                 supportRepAvatar.style.backgroundImage = '';
                 supportRepAvatar.style.backgroundSize = '';
@@ -1527,8 +1531,9 @@
 
         async function assignAndOpenWhatsApp(message, { forceSwitch = false } = {}) {
             showNotice('');
-            setSupportStatus('Connecting…');
+            setSupportStatus('Connecting...');
             supportSend.disabled = true;
+            if (supportOpenLink) supportOpenLink.classList.add('hidden');
 
             const prefer = (!forceSwitch && preferredRepCode) ? preferredRepCode : null;
 
@@ -1557,9 +1562,14 @@
 
                 // Store URL so we can open it on a *user gesture* (mobile Safari can block async navigations).
                 pendingWaUrl = url;
-                supportSend.textContent = 'Open WhatsApp now';
-                showNotice('Ready. Tap “Open WhatsApp now” to continue.');
+                supportSend.textContent = 'Open WhatsApp';
+                showNotice('Ready. Tap "Continue in WhatsApp".');
                 setSupportStatus('Ready');
+
+                if (supportOpenLink) {
+                    supportOpenLink.href = url;
+                    supportOpenLink.classList.remove('hidden');
+                }
 
                 const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
                 // Best-effort auto-open (works in many browsers). If blocked, the user can tap again.
@@ -1567,9 +1577,10 @@
                     const w = window.open(url, '_blank', 'noopener,noreferrer');
                     if (w) {
                         pendingWaUrl = null;
-                        supportSend.textContent = 'Open WhatsApp';
+                        supportSend.textContent = 'Connect on WhatsApp';
                         showNotice('');
                         setSupportStatus('Opened');
+                        if (supportOpenLink) supportOpenLink.classList.add('hidden');
                     }
                 }
 
@@ -1579,6 +1590,7 @@
                 const msg = (e && e.message) ? String(e.message) : 'Could not connect right now.';
                 showNotice(msg);
                 setSupportStatus('Temporarily offline');
+                if (supportOpenLink) supportOpenLink.classList.add('hidden');
                 trackEvent?.('support_whatsapp_error');
             } finally {
                 supportSend.disabled = false;
@@ -1615,6 +1627,7 @@
                 chatbotModal.classList.add('hidden');
                 chatbotModal.classList.remove('flex');
                 chatbotModal.style.display = 'none';
+                if (supportOpenLink) supportOpenLink.classList.add('hidden');
                 const anyOtherModalOpen =
                     (!missionModal.classList.contains('hidden')) ||
                     (!qrModal.classList.contains('hidden')) ||
@@ -1629,6 +1642,7 @@
             renderRep(null);
             setSupportStatus('Connect via WhatsApp');
             showNotice('');
+            if (supportOpenLink) supportOpenLink.classList.add('hidden');
             trackEvent?.('support_switch_rep');
         });
 
@@ -1637,9 +1651,9 @@
             if (pendingWaUrl) {
                 const url = pendingWaUrl;
                 pendingWaUrl = null;
-                supportSend.textContent = 'Open WhatsApp';
+                supportSend.textContent = 'Connect on WhatsApp';
                 showNotice('');
-                setSupportStatus('Opening…');
+                setSupportStatus('Opening...');
                 window.location.href = url;
                 trackEvent?.('support_whatsapp_open_confirm');
                 return;
@@ -1665,12 +1679,5 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
 
 
