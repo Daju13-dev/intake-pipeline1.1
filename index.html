@@ -61,10 +61,10 @@
     </div>
 
     <!-- Pitch Card -->
-    <div class="max-w-[420px] w-full bg-white rounded-[20px] sm:rounded-[24px] shadow-card overflow-hidden border border-ink-100 relative z-10">
+    <div class="pitch-card max-w-[420px] w-full bg-white rounded-[20px] sm:rounded-[24px] shadow-card overflow-hidden  relative z-10">
 
         <!-- Header -->
-        <div class="bg-gradient-to-br from-ink-900 to-ink-700 p-5 sm:p-6 md:p-8 text-center relative overflow-hidden min-h-[180px] sm:min-h-[200px] md:min-h-[220px]">
+        <div class="card-header bg-gradient-to-br from-ink-900 to-ink-700 p-5 sm:p-6 md:p-8 text-center relative overflow-hidden min-h-[180px] sm:min-h-[200px] md:min-h-[220px]">
             <div class="absolute inset-0 z-0">
                 <video class="w-full h-full object-cover video-hue" autoplay muted loop playsinline preload="metadata">
                     <source src="video.MOV" type="video/quicktime">
@@ -81,18 +81,18 @@
         </div>
 
         <!-- Body -->
-        <div class="p-4 sm:p-6 md:p-8 text-center">
-            <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-ink-900 leading-[1.2] mb-3 md:mb-4 tracking-tight">
+        <div class="card-body p-4 sm:p-6 md:p-8 text-center flex flex-col">
+            <h2 class="hero-title text-2xl sm:text-3xl md:text-4xl font-extrabold text-ink-900 leading-[1.2] mb-3 md:mb-4 tracking-tight">
                 Building a Safer <br class="hidden sm:block">
                 <span class="text-brand-600">Digital World,</span> Together.
             </h2>
 
-            <p class="text-[12px] sm:text-sm text-ink-400 mb-5 sm:mb-6 leading-relaxed px-1">
+            <p class="hero-copy text-[12px] sm:text-sm text-ink-400 mb-5 sm:mb-6 leading-relaxed px-1">
                 Help us build a stronger, safer digital space. By securely sharing examples of deceptive messages you encounter, you protect others and receive a token of appreciation for your time.
             </p>
 
             <!-- How It Works -->
-            <div class="bg-ink-50/70 border border-ink-100 rounded-2xl p-3.5 sm:p-5 mb-5 sm:mb-6">
+            <div class="how-block bg-ink-50/70  rounded-2xl p-3.5 sm:p-5 mb-5 sm:mb-6">
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="how-card">
                         <div class="icon-badge icon-brand">
@@ -119,7 +119,7 @@
             </div>
 
             <!-- Primary CTA -->
-            <button onclick="openMissionPicker()" class="group relative flex w-full items-center justify-center gap-3 rounded-xl bg-ink-900 px-6 py-3.5 sm:py-4 font-bold text-white transition-all hover:bg-black active:scale-[0.98] shadow-lg">
+            <button onclick="openMissionPicker()" class="primary-cta group relative flex w-full items-center justify-center gap-3 rounded-xl bg-ink-900 px-6 py-3.5 sm:py-4 font-bold text-white transition-all hover:bg-black active:scale-[0.98] shadow-lg">
                 <span class="relative z-10 flex items-center gap-2 text-base sm:text-lg">
                     Participate Now
                     <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
@@ -127,12 +127,12 @@
             </button>
 
             <!-- Secondary Actions -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 mt-3">
-                <button onclick="openQRScanner()" class="flex items-center justify-center gap-2 text-[10px] sm:text-xs font-semibold text-ink-700 hover:text-ink-900 transition-colors bg-white border border-ink-200 py-3 rounded-xl hover:bg-ink-50 active:scale-[0.98] shadow-[0_8px_20px_rgba(2,6,23,0.06)]">
+            <div class="secondary-actions grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 mt-3">
+                <button onclick="openQRScanner()" class="flex items-center justify-center gap-2 text-[10px] sm:text-xs font-semibold text-ink-700 hover:text-ink-900 transition-colors bg-white border border-ink-200/60 py-3 rounded-xl hover:bg-ink-50 active:scale-[0.98] shadow-[0_8px_20px_rgba(2,6,23,0.06)]">
                     <span class="icon-dot icon-accent"><i class="ph-fill ph-seal-check text-base sm:text-lg"></i></span>
                     Verify Representative
                 </button>
-                <button onclick="toggleChatbot(true)" class="flex items-center justify-center gap-2 text-[10px] sm:text-xs font-semibold text-ink-700 hover:text-ink-900 transition-colors bg-white border border-ink-200 py-3 rounded-xl hover:bg-ink-50 active:scale-[0.98] shadow-[0_8px_20px_rgba(2,6,23,0.06)]">
+                <button onclick="toggleChatbot(true)" class="flex items-center justify-center gap-2 text-[10px] sm:text-xs font-semibold text-ink-700 hover:text-ink-900 transition-colors bg-white border border-ink-200/60 py-3 rounded-xl hover:bg-ink-50 active:scale-[0.98] shadow-[0_8px_20px_rgba(2,6,23,0.06)]">
                     <span class="icon-dot icon-brand"><i class="ph-fill ph-chat-circle-dots text-base sm:text-lg"></i></span>
                     Chat with Us
                 </button>
@@ -143,7 +143,7 @@
             </p>
 
             <!-- Share -->
-            <div class="mt-5 sm:mt-6 pt-4 sm:pt-5 border-t border-ink-100">
+            <div class="socials mt-5 sm:mt-6 pt-4 sm:pt-5 ">
                 <p class="text-[9px] sm:text-[10px] font-bold text-ink-400 uppercase tracking-widest mb-3 sm:mb-4 text-center">Our Socials</p>
                 <div class="flex items-center justify-center gap-3 sm:gap-4">
                     <a href="https://x.com/adwumatechai?s=21" target="_blank" rel="noopener noreferrer" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-ink-100 text-ink-700 hover:bg-black hover:text-white flex items-center justify-center transition-all shadow-[0_10px_18px_rgba(2,6,23,0.12)] ring-1 ring-ink-200 hover:-translate-y-0.5" title="X">
@@ -160,7 +160,7 @@
         </div>
 
         <!-- Footer -->
-        <div class="bg-ink-50 border-t border-ink-100 p-4 sm:p-5 flex flex-col items-center justify-center">
+        <div class="footer-bar bg-ink-50  p-4 sm:p-5 flex flex-col items-center justify-center">
             <a href="https://www.adwumatech.ai" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
                 <img src="Android.png" alt="AdwumaTech AI" class="w-5 h-5 rounded-md object-cover">
                 <span class="text-[9px] sm:text-[10px] font-bold text-ink-800 tracking-widest">AdwumaTech AI</span>
@@ -170,7 +170,7 @@
 
     <!-- Lightweight Mission Modal -->
     <div id="mission-modal" class="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm hidden items-end sm:items-center justify-center p-3 sm:p-6">
-        <div id="mission-modal-card" class="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-ink-100 overflow-hidden transform transition-all duration-200">
+        <div id="mission-modal-card" class="w-full max-w-md bg-white rounded-2xl shadow-2xl  overflow-hidden transform transition-all duration-200">
             <div class="px-4 sm:px-5 py-3 border-b border-ink-100 flex items-center justify-between">
                 <div>
                     <p class="text-[10px] font-bold uppercase tracking-widest text-ink-400">Missions</p>
@@ -183,7 +183,7 @@
 
             <!-- Picker View -->
             <div id="mission-picker" class="p-4 sm:p-5 space-y-3">
-                <button class="w-full text-left p-4 rounded-xl border border-ink-100 hover:border-brand-500 hover:bg-brand-50 transition-all shadow-[0_8px_20px_rgba(2,6,23,0.08)]" onclick="openMissionForm('mission1')">
+                <button class="w-full text-left p-4 rounded-xl  hover:border-brand-500 hover:bg-brand-50 transition-all shadow-[0_8px_20px_rgba(2,6,23,0.08)]" onclick="openMissionForm('mission1')">
                     <div class="flex items-start gap-3">
                         <div class="icon-badge icon-brand shrink-0"><i class="ph-fill ph-shield-warning text-lg"></i></div>
                         <div>
@@ -192,7 +192,7 @@
                         </div>
                     </div>
                 </button>
-                <button class="w-full text-left p-4 rounded-xl border border-ink-100 hover:border-brand-500 hover:bg-brand-50 transition-all shadow-[0_8px_20px_rgba(2,6,23,0.08)]" onclick="openMissionForm('mission2')">
+                <button class="w-full text-left p-4 rounded-xl  hover:border-brand-500 hover:bg-brand-50 transition-all shadow-[0_8px_20px_rgba(2,6,23,0.08)]" onclick="openMissionForm('mission2')">
                     <div class="flex items-start gap-3">
                         <div class="icon-badge icon-accent shrink-0"><i class="ph-fill ph-article text-lg"></i></div>
                         <div>
@@ -201,7 +201,7 @@
                         </div>
                     </div>
                 </button>
-                <button class="w-full text-left p-4 rounded-xl border border-ink-100 hover:border-brand-500 hover:bg-brand-50 transition-all shadow-[0_8px_20px_rgba(2,6,23,0.08)]" onclick="openMissionForm('mission3')">
+                <button class="w-full text-left p-4 rounded-xl  hover:border-brand-500 hover:bg-brand-50 transition-all shadow-[0_8px_20px_rgba(2,6,23,0.08)]" onclick="openMissionForm('mission3')">
                     <div class="flex items-start gap-3">
                         <div class="icon-badge icon-green shrink-0"><i class="ph-fill ph-mask-happy text-lg"></i></div>
                         <div>
@@ -210,7 +210,7 @@
                         </div>
                     </div>
                 </button>
-                <button class="w-full text-left p-4 rounded-xl border border-ink-100 hover:border-brand-500 hover:bg-brand-50 transition-all shadow-[0_8px_20px_rgba(2,6,23,0.08)]" onclick="openMissionForm('mission4')">
+                <button class="w-full text-left p-4 rounded-xl  hover:border-brand-500 hover:bg-brand-50 transition-all shadow-[0_8px_20px_rgba(2,6,23,0.08)]" onclick="openMissionForm('mission4')">
                     <div class="flex items-start gap-3">
                         <div class="icon-badge icon-brand shrink-0"><i class="ph-fill ph-hand-palm text-lg"></i></div>
                         <div>
@@ -260,8 +260,8 @@
                     </label>
 
                     <div class="flex items-center gap-2 pt-1">
-                        <button type="button" id="mission-back" class="flex-1 rounded-xl border border-ink-200 py-2.5 text-sm font-bold text-ink-700 hover:bg-ink-50">Back</button>
-                        <button type="button" id="mission-reset" class="flex-1 rounded-xl border border-ink-200 py-2.5 text-sm font-bold text-ink-700 hover:bg-ink-50">Reset</button>
+                        <button type="button" id="mission-back" class="flex-1 rounded-xl border border-ink-200/60 py-2.5 text-sm font-bold text-ink-700 hover:bg-ink-50">Back</button>
+                        <button type="button" id="mission-reset" class="flex-1 rounded-xl border border-ink-200/60 py-2.5 text-sm font-bold text-ink-700 hover:bg-ink-50">Reset</button>
                         <button type="button" id="mission-next" class="flex-1 rounded-xl bg-ink-900 text-white py-2.5 text-sm font-bold hover:bg-black">Next</button>
                         <button type="submit" id="mission-submit-btn" class="hidden flex-1 rounded-xl bg-ink-900 text-white py-2.5 text-sm font-bold hover:bg-black">Submit</button>
                     </div>
@@ -282,7 +282,7 @@
 
     <!-- QR Scanner Modal -->
     <div id="qr-modal" class="fixed inset-0 z-[70] bg-black/60 backdrop-blur-sm hidden items-end sm:items-center justify-center p-3 sm:p-6">
-        <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-ink-100 overflow-hidden">
+        <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl  overflow-hidden">
             <div class="px-4 sm:px-5 py-3 border-b border-ink-100 flex items-center justify-between">
                 <div>
                     <p class="text-[10px] font-bold uppercase tracking-widest text-ink-400">Verify</p>
@@ -293,23 +293,23 @@
                 </button>
             </div>
             <div class="p-4 sm:p-5">
-                <div class="rounded-xl overflow-hidden border border-ink-100 bg-black aspect-video relative">
+                <div class="rounded-xl overflow-hidden  bg-black aspect-video relative">
                     <video id="qr-video" class="w-full h-full object-cover" playsinline muted autoplay></video>
                     <canvas id="qr-canvas" class="hidden"></canvas>
                 </div>
                 <p id="qr-status" class="text-xs text-ink-500 mt-3">Point your camera at the QR code.</p>
                 <div class="mt-3">
                     <label class="block text-xs font-bold text-ink-700 mb-1">Or enter verification code</label>
-                    <input id="qr-code-input" type="text" inputmode="text" class="w-full border border-ink-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="e.g. DSN-84X2">
+                    <input id="qr-code-input" type="text" inputmode="text" class="w-full border border-ink-200/60 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="e.g. DSN-84X2">
                 </div>
                 <div class="mt-3 flex gap-2">
-                    <button onclick="closeQRScanner()" class="flex-1 rounded-xl border border-ink-200 py-2.5 text-sm font-bold text-ink-700 hover:bg-ink-50">Close</button>
+                    <button onclick="closeQRScanner()" class="flex-1 rounded-xl border border-ink-200/60 py-2.5 text-sm font-bold text-ink-700 hover:bg-ink-50">Close</button>
                     <button onclick="startQRScan()" class="flex-1 rounded-xl bg-ink-900 text-white py-2.5 text-sm font-bold hover:bg-black">Start Scan</button>
                 </div>
                 <div class="mt-2">
                     <button onclick="verifyQRCode()" class="w-full rounded-xl bg-ink-900 text-white py-2.5 text-sm font-bold hover:bg-black">Enter / Verify Code</button>
                 </div>
-                <div id="qr-result" class="hidden mt-3 rounded-xl bg-ink-50 border border-ink-100 p-3 text-xs text-ink-700"></div>
+                <div id="qr-result" class="hidden mt-3 rounded-xl bg-ink-50  p-3 text-xs text-ink-700"></div>
             </div>
         </div>
     </div>
@@ -325,6 +325,47 @@
     </div>
 
     <!-- Chatbot Widget -->
+    <div id="chatbot-modal" class="fixed inset-0 z-[75] bg-black/50 backdrop-blur-sm hidden items-end sm:items-center justify-center p-3 sm:p-6">
+        <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[75vh] sm:h-[560px]">
+            <div class="px-4 sm:px-5 py-3 border-b border-ink-100 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-ink-900 text-white flex items-center justify-center shadow-md">
+                        <i class="ph-fill ph-shield-check text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-ink-400">Support</p>
+                        <h3 class="text-base sm:text-lg font-bold text-ink-900">Chat with Us</h3>
+                        <p class="text-[10px] text-ink-400">We reply instantly</p>
+                    </div>
+                </div>
+                <button onclick="toggleChatbot(false)" class="w-8 h-8 rounded-full bg-ink-100 text-ink-600 hover:bg-ink-200 flex items-center justify-center">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+            <div id="chat-log" class="flex-1 p-4 space-y-3 overflow-y-auto bg-ink-50"></div>
+            <div id="typing-indicator" class="hidden px-4 pb-2">
+                <div class="typing-bubble">
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                </div>
+            </div>
+            <div class="px-4 pb-4">
+                <div class="flex flex-wrap gap-2 mb-3">
+                    <button class="quick-reply" data-reply="How do I participate?">How to participate</button>
+                    <button class="quick-reply" data-reply="Is my data safe?">Is my data safe?</button>
+                    <button class="quick-reply" data-reply="How do I claim reward?">Claim reward</button>
+                    <button class="quick-reply" data-reply="Verify a representative">Verify rep</button>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input id="chat-input" type="text" class="flex-1 border border-ink-200/60 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="Ask a quick question..." />
+                    <button id="chat-send" class="rounded-xl bg-ink-900 text-white px-4 py-3 text-sm font-bold hover:bg-black">Send</button>
+                </div>
+                <p class="text-[10px] text-ink-400 mt-2">This is a quick FAQ assistant. For urgent help, use the contact details on the page.</p>
+            </div>
+        </div>
+    </div>
+
     <style>
         body.modal-open { overflow: hidden; }
         @keyframes floaty {
@@ -382,6 +423,51 @@
         }
         .icon-dot.icon-accent { background: linear-gradient(135deg, #0ea5e9, #0284c7); }
         .icon-dot.icon-green { background: linear-gradient(135deg, #10b981, #059669); }
+        .quick-reply {
+            background: white;
+            border: 1px solid #e2e8f0;
+            color: #0f172a;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.15s ease;
+        }
+        .quick-reply:hover { background: #fff7ed; border-color: #fdba74; }
+        .typing-bubble {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 8px 12px;
+            border-radius: 999px;
+            width: fit-content;
+            box-shadow: 0 6px 14px rgba(2, 6, 23, 0.08);
+        }
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: #94a3b8;
+            animation: typing 1.2s infinite ease-in-out;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing {
+            0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
+            40% { transform: translateY(-4px); opacity: 1; }
+        }
+        .chat-bubble {
+            max-width: 85%;
+            padding: 10px 12px;
+            border-radius: 14px;
+            font-size: 12px;
+            line-height: 1.4;
+            box-shadow: 0 6px 14px rgba(2, 6, 23, 0.08);
+        }
+        .chat-user { background: #0f172a; color: white; margin-left: auto; }
+        .chat-bot { background: white; color: #0f172a; margin-right: auto; border: 1px solid #e2e8f0; }
         .kente-bg::before {
             content: "";
             position: absolute;
@@ -406,10 +492,104 @@
             opacity: 0.5;
             pointer-events: none;
         }
+        @media (max-width: 640px) {
+            body { padding: 8px; align-items: center; }
+            .pitch-card { max-width: 100%; height: calc(100vh - 16px); display: flex; flex-direction: column; }
+            .card-header { min-height: 120px; padding: 12px 14px; }
+            .card-body { padding: 12px; flex: 1 1 auto; overflow: hidden; }
+            .hero-title { font-size: 1.5rem; line-height: 1.15; margin-bottom: 8px; }
+            .hero-copy { font-size: 0.82rem; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+            .how-block { display: none; }
+            .primary-cta { padding-top: 11px; padding-bottom: 11px; font-size: 0.95rem; }
+            .secondary-actions { grid-template-columns: 1fr; gap: 8px; }
+            .secondary-actions button { justify-content: center; height: 44px; padding-top: 0; padding-bottom: 0; }
+            .icon-dot { width: 30px; height: 30px; }
+            .socials { margin-top: auto; padding-top: 8px; }
+            .socials p { display: none; }
+            .footer-bar { padding: 8px 12px; }
+        }
+        /* Chatbot */
+        .chatbot-panel {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 24px 60px rgba(2, 6, 23, 0.35);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .chatbot-messages {
+            padding: 12px;
+            gap: 10px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .chat-bubble {
+            max-width: 82%;
+            padding: 10px 12px;
+            border-radius: 14px;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        .chat-bubble.bot { background: #f1f5f9; color: #0b1220; align-self: flex-start; }
+        .chat-bubble.user { background: #0b1220; color: #fff; align-self: flex-end; }
+        .chat-quick {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 10px 12px 0;
+        }
+        .chat-quick button {
+            font-size: 11px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: #fff7ed;
+            border: 1px solid #ffedd5;
+            color: #9a3412;
+        }
+        .chat-input-wrap {
+            display: flex;
+            gap: 8px;
+            padding: 10px 12px 12px;
+            border-top: 1px solid #eef2f7;
+        }
+        .chat-input-wrap input {
+            flex: 1;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 10px 12px;
+            font-size: 12px;
+        }
+        .chat-send {
+            background: #0b1220;
+            color: #fff;
+            border-radius: 12px;
+            padding: 0 14px;
+            font-weight: 700;
+            font-size: 12px;
+        }
     </style>
 
     <!-- Sharing Scripts -->
     <script>
+        // --- Analytics (GA4) ---
+        const ANALYTICS_ID = "G-XXXXXXXXXX"; // TODO: Replace with your GA4 Measurement ID
+        (function initAnalytics() {
+            window.trackEvent = function () {};
+            if (!ANALYTICS_ID || ANALYTICS_ID === "G-XXXXXXXXXX") return;
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = function () { window.dataLayer.push(arguments); };
+            const ga = document.createElement("script");
+            ga.async = true;
+            ga.src = `https://www.googletagmanager.com/gtag/js?id=${ANALYTICS_ID}`;
+            document.head.appendChild(ga);
+            window.gtag("js", new Date());
+            window.gtag("config", ANALYTICS_ID, { send_page_view: true });
+            window.trackEvent = function (name, params = {}) {
+                window.gtag("event", name, params);
+            };
+        })();
+
         const shareUrl = "https://www.adwumatech.ai";
         const shareText = "Help build a safer digital Ghana! Share online tricks you spot, help us build a Cyber-Shield, and get rewarded. Join the Digital Stewards today:";
 
@@ -549,19 +729,19 @@
                     <div class="grid grid-cols-3 gap-2">
                         <label class="cursor-pointer">
                             <input data-field="reward_network" type="radio" name="network" value="mtn" required class="peer sr-only"/>
-                            <div class="h-12 rounded-xl border border-ink-200 bg-ink-50 flex items-center justify-center peer-checked:border-[#ffcc00] peer-checked:bg-[#ffcc00]/10">
+                            <div class="h-12 rounded-xl border border-ink-200/60 bg-ink-50 flex items-center justify-center peer-checked:border-[#ffcc00] peer-checked:bg-[#ffcc00]/10">
                                 <div class="w-8 h-8 rounded-full bg-[#ffcc00] flex items-center justify-center text-[10px] font-black text-black">MTN</div>
                             </div>
                         </label>
                         <label class="cursor-pointer">
                             <input data-field="reward_network" type="radio" name="network" value="telecel" required class="peer sr-only"/>
-                            <div class="h-12 rounded-xl border border-ink-200 bg-ink-50 flex items-center justify-center peer-checked:border-[#e3112c] peer-checked:bg-[#e3112c]/10">
+                            <div class="h-12 rounded-xl border border-ink-200/60 bg-ink-50 flex items-center justify-center peer-checked:border-[#e3112c] peer-checked:bg-[#e3112c]/10">
                                 <div class="w-8 h-8 rounded-full bg-[#e3112c] flex items-center justify-center text-[8px] font-bold text-white">telecel</div>
                             </div>
                         </label>
                         <label class="cursor-pointer">
                             <input data-field="reward_network" type="radio" name="network" value="airteltigo" required class="peer sr-only"/>
-                            <div class="h-12 rounded-xl border border-ink-200 bg-ink-50 flex items-center justify-center peer-checked:border-black peer-checked:bg-black/5">
+                            <div class="h-12 rounded-xl border border-ink-200/60 bg-ink-50 flex items-center justify-center peer-checked:border-black peer-checked:bg-black/5">
                                 <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[11px] font-black">
                                     <span class="text-black">a</span><span class="text-[#e3112c]">t</span>
                                 </div>
@@ -569,7 +749,7 @@
                         </label>
                     </div>
                     <label class="block text-xs font-bold text-ink-700 mb-1 mt-2">Phone (for reward) <span class="text-red-500">*</span></label>
-                    <input id="reward-phone" data-field="reward_phone" type="tel" inputmode="numeric" pattern="^[0-9]{10}$" maxlength="10" required class="w-full border border-ink-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="024XXXXXXX"/>
+                    <input id="reward-phone" data-field="reward_phone" type="tel" inputmode="numeric" pattern="^[0-9]{10}$" maxlength="10" required class="w-full border border-ink-200/60 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="024XXXXXXX"/>
                     <p id="phone-error" class="hidden text-[11px] text-red-600">Enter a valid 10-digit number (numbers only).</p>
                 </div>
             `;
@@ -586,7 +766,7 @@
                         html: `
                             <div>
                                 <label class="block text-xs font-bold text-ink-700 mb-1">Platform Received On <span class="text-red-500">*</span></label>
-                                <select data-field="m1_platform" required class="w-full border border-ink-200 rounded-xl p-3 text-sm">
+                                <select data-field="m1_platform" required class="w-full border border-ink-200/60 rounded-xl p-3 text-sm">
                                     <option value="">Select Platform...</option>
                                     <option>WhatsApp</option><option>SMS</option><option>Facebook</option>
                                     <option>Telegram</option><option>Phone Call</option><option>Other</option>
@@ -594,7 +774,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-ink-700 mb-1">Theme of the Trick <span class="text-red-500">*</span></label>
-                                <select data-field="m1_theme" required class="w-full border border-ink-200 rounded-xl p-3 text-sm">
+                                <select data-field="m1_theme" required class="w-full border border-ink-200/60 rounded-xl p-3 text-sm">
                                     <option value="">Select Typology...</option>
                                     <option>Mobile Money (MoMo) Reversal/Error</option><option>Lottery/Prize Win</option>
                                     <option>Fake Job Offer</option><option>Investment/Crypto Scheme</option>
@@ -603,7 +783,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-ink-700 mb-1">Sender ID / Phone Number</label>
-                                <input data-field="m1_sender" type="text" class="w-full border border-ink-200 rounded-xl p-3 text-sm" placeholder="e.g. MTN-Promo or 024XXXXXXX"/>
+                                <input data-field="m1_sender" type="text" class="w-full border border-ink-200/60 rounded-xl p-3 text-sm" placeholder="e.g. MTN-Promo or 024XXXXXXX"/>
                             </div>
                             <div>
                                 <div class="flex items-center justify-between mb-1">
@@ -612,7 +792,7 @@
                                         <i class="ph-fill ph-microphone"></i> Speak
                                     </button>
                                 </div>
-                                <textarea id="mission1-text" data-field="m1_text" rows="3" class="w-full border border-ink-200 rounded-xl p-3 text-sm" placeholder="Paste the exact message..."></textarea>
+                                <textarea id="mission1-text" data-field="m1_text" rows="3" class="w-full border border-ink-200/60 rounded-xl p-3 text-sm" placeholder="Paste the exact message..."></textarea>
                             </div>
                         `
                     },
@@ -622,12 +802,12 @@
                         html: `
                             <div>
                                 <label class="block text-xs font-bold text-ink-700 mb-1">Upload Screenshot <span class="text-red-500">*</span></label>
-                                <input data-file="m1_screenshot" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200 rounded-xl p-2 bg-ink-50"/>
+                                <input data-file="m1_screenshot" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200/60 rounded-xl p-2 bg-ink-50"/>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-ink-700 mb-1">Upload Voice Recording (optional)</label>
                                 <p class="text-[10px] text-ink-400 mb-1">Upload any recorded call or voice note you suspect is fraudulent.</p>
-                                <input data-file="m1_voice" type="file" accept="audio/*" class="w-full text-sm border border-ink-200 rounded-xl p-2 bg-ink-50"/>
+                                <input data-file="m1_voice" type="file" accept="audio/*" class="w-full text-sm border border-ink-200/60 rounded-xl p-2 bg-ink-50"/>
                             </div>
                         `
                     },
@@ -638,11 +818,11 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div>
                                     <label class="block text-xs font-bold text-ink-700 mb-1">ID Front <span class="text-red-500">*</span></label>
-                                    <input data-file="m1_id_front" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200 rounded-xl p-2 bg-ink-50"/>
+                                    <input data-file="m1_id_front" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200/60 rounded-xl p-2 bg-ink-50"/>
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-ink-700 mb-1">ID Back</label>
-                                    <input data-file="m1_id_back" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200 rounded-xl p-2 bg-ink-50"/>
+                                    <input data-file="m1_id_back" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200/60 rounded-xl p-2 bg-ink-50"/>
                                 </div>
                             </div>
                             <div class="pt-1">
@@ -671,14 +851,14 @@
                         html: `
                             <div>
                                 <label class="block text-xs font-bold text-ink-700 mb-1">Where is this spreading? <span class="text-red-500">*</span></label>
-                                <select data-field="m2_platform" required class="w-full border border-ink-200 rounded-xl p-3 text-sm">
+                                <select data-field="m2_platform" required class="w-full border border-ink-200/60 rounded-xl p-3 text-sm">
                                     <option value="">Select Platform...</option>
                                     <option>WhatsApp Group</option><option>Facebook</option><option>TikTok</option><option>X (Twitter)</option><option>Other</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-ink-700 mb-1">Subject Matter</label>
-                                <select data-field="m2_topic" class="w-full border border-ink-200 rounded-xl p-3 text-sm">
+                                <select data-field="m2_topic" class="w-full border border-ink-200/60 rounded-xl p-3 text-sm">
                                     <option value="">Select Topic...</option>
                                     <option>Health/Medicine/Cures</option><option>Politics/Elections</option><option>Finance/Economy/Banks</option><option>Local Community Incident</option>
                                 </select>
@@ -690,7 +870,7 @@
                                         <i class="ph-fill ph-microphone"></i> Speak
                                     </button>
                                 </div>
-                                <textarea id="mission2-text" data-field="m2_text" rows="3" class="w-full border border-ink-200 rounded-xl p-3 text-sm" placeholder="Paste the rumor or link..."></textarea>
+                                <textarea id="mission2-text" data-field="m2_text" rows="3" class="w-full border border-ink-200/60 rounded-xl p-3 text-sm" placeholder="Paste the rumor or link..."></textarea>
                             </div>
                         `
                     },
@@ -700,12 +880,12 @@
                         html: `
                             <div>
                                 <label class="block text-xs font-bold text-ink-700 mb-1">Upload Evidence <span class="text-red-500">*</span></label>
-                                <input data-file="m2_screenshot" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200 rounded-xl p-2 bg-ink-50"/>
+                                <input data-file="m2_screenshot" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200/60 rounded-xl p-2 bg-ink-50"/>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-ink-700 mb-1">Upload Voice Recording (optional)</label>
                                 <p class="text-[10px] text-ink-400 mb-1">Upload any recorded call or voice note you suspect is fraudulent.</p>
-                                <input data-file="m2_voice" type="file" accept="audio/*" class="w-full text-sm border border-ink-200 rounded-xl p-2 bg-ink-50"/>
+                                <input data-file="m2_voice" type="file" accept="audio/*" class="w-full text-sm border border-ink-200/60 rounded-xl p-2 bg-ink-50"/>
                             </div>
                         `
                     },
@@ -716,11 +896,11 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div>
                                     <label class="block text-xs font-bold text-ink-700 mb-1">ID Front <span class="text-red-500">*</span></label>
-                                    <input data-file="m2_id_front" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200 rounded-xl p-2 bg-ink-50"/>
+                                    <input data-file="m2_id_front" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200/60 rounded-xl p-2 bg-ink-50"/>
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-ink-700 mb-1">ID Back</label>
-                                    <input data-file="m2_id_back" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200 rounded-xl p-2 bg-ink-50"/>
+                                    <input data-file="m2_id_back" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200/60 rounded-xl p-2 bg-ink-50"/>
                                 </div>
                             </div>
                             <div class="pt-1">
@@ -749,7 +929,7 @@
                         html: `
                             <div>
                                 <label class="block text-xs font-bold text-ink-700 mb-1">Who is the account pretending to be? <span class="text-red-500">*</span></label>
-                                <select data-field="m3_target" required class="w-full border border-ink-200 rounded-xl p-3 text-sm">
+                                <select data-field="m3_target" required class="w-full border border-ink-200/60 rounded-xl p-3 text-sm">
                                     <option value="">Select Target...</option>
                                     <option>Government Official / Politician</option><option>Bank / Mobile Money Agent</option>
                                     <option>Celebrity / Public Figure</option><option>A Friend / Family Member</option>
@@ -757,7 +937,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-ink-700 mb-1">Fake Account Details <span class="text-red-500">*</span></label>
-                                <input data-field="m3_account" type="text" required class="w-full border border-ink-200 rounded-xl p-3 text-sm" placeholder="Exact username, handle, or phone number..."/>
+                                <input data-field="m3_account" type="text" required class="w-full border border-ink-200/60 rounded-xl p-3 text-sm" placeholder="Exact username, handle, or phone number..."/>
                             </div>
                         `
                     },
@@ -767,12 +947,12 @@
                         html: `
                             <div>
                                 <label class="block text-xs font-bold text-ink-700 mb-1">Upload Screenshot of Profile <span class="text-red-500">*</span></label>
-                                <input data-file="m3_screenshot" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200 rounded-xl p-2 bg-ink-50"/>
+                                <input data-file="m3_screenshot" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200/60 rounded-xl p-2 bg-ink-50"/>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-ink-700 mb-1">Upload Voice Recording (optional)</label>
                                 <p class="text-[10px] text-ink-400 mb-1">Upload any recorded call or voice note you suspect is fraudulent.</p>
-                                <input data-file="m3_voice" type="file" accept="audio/*" class="w-full text-sm border border-ink-200 rounded-xl p-2 bg-ink-50"/>
+                                <input data-file="m3_voice" type="file" accept="audio/*" class="w-full text-sm border border-ink-200/60 rounded-xl p-2 bg-ink-50"/>
                             </div>
                         `
                     },
@@ -783,11 +963,11 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div>
                                     <label class="block text-xs font-bold text-ink-700 mb-1">ID Front <span class="text-red-500">*</span></label>
-                                    <input data-file="m3_id_front" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200 rounded-xl p-2 bg-ink-50"/>
+                                    <input data-file="m3_id_front" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200/60 rounded-xl p-2 bg-ink-50"/>
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-ink-700 mb-1">ID Back</label>
-                                    <input data-file="m3_id_back" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200 rounded-xl p-2 bg-ink-50"/>
+                                    <input data-file="m3_id_back" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200/60 rounded-xl p-2 bg-ink-50"/>
                                 </div>
                             </div>
                             <div class="pt-1">
@@ -816,7 +996,7 @@
                         html: `
                             <div>
                                 <label class="block text-xs font-bold text-ink-700 mb-1">Threat Typology <span class="text-red-500">*</span></label>
-                                <select data-field="m4_threat" required class="w-full border border-ink-200 rounded-xl p-3 text-sm">
+                                <select data-field="m4_threat" required class="w-full border border-ink-200/60 rounded-xl p-3 text-sm">
                                     <option value="">Select Threat Type...</option>
                                     <option>Sextortion (Threatening to release private photos)</option><option>Financial Blackmail</option>
                                     <option>Severe Bullying / Hate Speech</option><option>Stalking</option>
@@ -824,7 +1004,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-ink-700 mb-1">Do you know this person offline?</label>
-                                <select data-field="m4_known" class="w-full border border-ink-200 rounded-xl p-3 text-sm">
+                                <select data-field="m4_known" class="w-full border border-ink-200/60 rounded-xl p-3 text-sm">
                                     <option value="">Select...</option>
                                     <option>Yes</option><option>No</option><option>Not Sure</option>
                                 </select>
@@ -837,12 +1017,12 @@
                         html: `
                             <div>
                                 <label class="block text-xs font-bold text-ink-700 mb-1">Upload Screenshot <span class="text-red-500">*</span></label>
-                                <input data-file="m4_screenshot" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200 rounded-xl p-2 bg-ink-50"/>
+                                <input data-file="m4_screenshot" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200/60 rounded-xl p-2 bg-ink-50"/>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-ink-700 mb-1">Upload Voice Recording (optional)</label>
                                 <p class="text-[10px] text-ink-400 mb-1">Upload any recorded call or voice note you suspect is fraudulent.</p>
-                                <input data-file="m4_voice" type="file" accept="audio/*" class="w-full text-sm border border-ink-200 rounded-xl p-2 bg-ink-50"/>
+                                <input data-file="m4_voice" type="file" accept="audio/*" class="w-full text-sm border border-ink-200/60 rounded-xl p-2 bg-ink-50"/>
                             </div>
                         `
                     },
@@ -853,11 +1033,11 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div>
                                     <label class="block text-xs font-bold text-ink-700 mb-1">ID Front <span class="text-red-500">*</span></label>
-                                    <input data-file="m4_id_front" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200 rounded-xl p-2 bg-ink-50"/>
+                                    <input data-file="m4_id_front" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200/60 rounded-xl p-2 bg-ink-50"/>
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-ink-700 mb-1">ID Back</label>
-                                    <input data-file="m4_id_back" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200 rounded-xl p-2 bg-ink-50"/>
+                                    <input data-file="m4_id_back" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200/60 rounded-xl p-2 bg-ink-50"/>
                                 </div>
                             </div>
                             
@@ -878,6 +1058,7 @@
         };
 
         function openMissionPicker() {
+            trackEvent("mission_picker_open");
             modalTitle.textContent = "Choose a Mission";
             pickerView.classList.remove('hidden');
             formView.classList.add('hidden');
@@ -890,6 +1071,7 @@
         function openMissionForm(missionId) {
             const mission = missionFlowData[missionId];
             if (!mission) return;
+            trackEvent("mission_selected", { mission_id: missionId });
             modalTitle.textContent = mission.title;
             formDesc.textContent = mission.desc;
             pickerView.classList.add('hidden');
@@ -911,6 +1093,11 @@
         function renderStep() {
             const mission = missionFlowData[currentMissionId];
             const step = mission.steps[currentStepIndex];
+            trackEvent("funnel_step_view", {
+                mission_id: currentMissionId,
+                step_index: currentStepIndex + 1,
+                step_title: step.title
+            });
             stepFields.innerHTML = step.html;
             const stepIcon = document.getElementById('mission-step-icon');
             stepTitle.textContent = step.title;
@@ -1033,12 +1220,20 @@
         btnNext.addEventListener('click', () => {
             if (!validateStep()) return;
             saveStepState();
+            trackEvent("funnel_step_next", {
+                mission_id: currentMissionId,
+                step_index: currentStepIndex + 1
+            });
             currentStepIndex += 1;
             renderStep();
         });
 
         btnBack.addEventListener('click', () => {
             saveStepState();
+            trackEvent("funnel_step_back", {
+                mission_id: currentMissionId,
+                step_index: currentStepIndex + 1
+            });
             currentStepIndex = Math.max(0, currentStepIndex - 1);
             renderStep();
         });
@@ -1058,14 +1253,17 @@
             e.preventDefault();
             if (!validateStep()) return;
             saveStepState();
+            trackEvent("mission_submit_attempt", { mission_id: currentMissionId });
             if (multiSubmit.checked) {
                 missionFormEl.reset();
                 backToPicker();
+                trackEvent("mission_submit_multi", { mission_id: currentMissionId });
                 return;
             }
             pickerView.classList.add('hidden');
             formView.classList.add('hidden');
             successView.classList.remove('hidden');
+            trackEvent("mission_complete", { mission_id: currentMissionId });
         });
 
         function closeMissionModal() {
@@ -1076,6 +1274,7 @@
 
 
         function openQRScanner() {
+            trackEvent("verify_qr_open");
             qrModal.classList.remove('hidden');
             qrModal.classList.add('flex');
             document.body.classList.add('modal-open');
@@ -1083,6 +1282,7 @@
 
         function openFaceCheck() {
             const modal = document.getElementById('facecheck-modal');
+            trackEvent("facecheck_open");
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             document.body.classList.add('modal-open');
@@ -1098,9 +1298,11 @@
         window.addEventListener('message', (event) => {
             if (event?.data?.type === 'facecheck:close') {
                 closeFaceCheck();
+                trackEvent("facecheck_close");
             }
             if (event?.data?.type === 'facecheck:complete') {
                 closeFaceCheck();
+                trackEvent("facecheck_complete");
                 if (currentMissionId && missionFlowData[currentMissionId]) {
                     const steps = missionFlowData[currentMissionId].steps;
                     const rewardIndex = steps.findIndex(step => step.title === "Claim Reward");
@@ -1128,13 +1330,16 @@
             try {
                 if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
                     qrStatus.textContent = "Camera not supported on this device.";
+                    trackEvent("verify_qr_error", { reason: "not_supported" });
                     return;
                 }
                 if (!window.isSecureContext) {
                     qrStatus.textContent = "Camera requires HTTPS. Open this page on https://.";
+                    trackEvent("verify_qr_error", { reason: "not_https" });
                     return;
                 }
                 qrStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" } } });
+                trackEvent("verify_qr_scan_start");
                 qrVideo.muted = true;
                 qrVideo.setAttribute('playsinline', '');
                 qrVideo.setAttribute('webkit-playsinline', '');
@@ -1145,6 +1350,7 @@
                 scanFrame();
             } catch (err) {
                 qrStatus.textContent = "Camera permission denied. Please enable camera access.";
+                trackEvent("verify_qr_error", { reason: "permission_denied" });
             }
         }
 
@@ -1169,6 +1375,7 @@
                 qrResult.classList.remove('hidden');
                 qrResult.textContent = `QR Found: ${code.data}`;
                 qrStatus.textContent = "Verified. You can close this window.";
+                trackEvent("verify_qr_success");
                 stopQRScan();
                 return;
             }
@@ -1191,16 +1398,127 @@
             if (v.length < 4) {
                 qrResult.classList.remove('hidden');
                 qrResult.textContent = "Please enter a valid code.";
+                trackEvent("verify_code_error");
                 return;
             }
             qrResult.classList.remove('hidden');
             qrResult.textContent = `Code Entered: ${v}`;
             qrStatus.textContent = "Verified. You can close this window.";
+            trackEvent("verify_code_submit");
         }
+
+        // --- Chatbot (FAQ) ---
+        const chatbotModal = document.getElementById('chatbot-modal');
+        const chatLog = document.getElementById('chat-log');
+        const chatInput = document.getElementById('chat-input');
+        const chatSend = document.getElementById('chat-send');
+        const quickReplies = document.querySelectorAll('.quick-reply');
+
+        function appendMessage(text, isUser = false) {
+            const bubble = document.createElement('div');
+            bubble.className = `chat-bubble ${isUser ? 'chat-user' : 'chat-bot'}`;
+            bubble.textContent = text;
+            chatLog.appendChild(bubble);
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
+
+        function initChat() {
+            if (chatLog.dataset.init === '1') return;
+            chatLog.dataset.init = '1';
+            appendMessage("Hi! I’m the Digital Stewards assistant. How can I help you today?");
+        }
+
+        function getFallbackReply(message) {
+            const msg = message.toLowerCase();
+            if (msg.includes('participate') || msg.includes('join') || msg.includes('start')) {
+                return "Tap “Participate Now”, pick a mission, and follow the guided steps. It takes about a minute.";
+            }
+            if (msg.includes('reward') || msg.includes('momo') || msg.includes('claim')) {
+                return "Complete the mission steps, then choose your mobile network and enter your MoMo number to claim your reward.";
+            }
+            if (msg.includes('safe') || msg.includes('data') || msg.includes('privacy')) {
+                return "Your info is encrypted and used only to keep the community safe. You stay in control at all times.";
+            }
+            if (msg.includes('verify') || msg.includes('representative') || msg.includes('qr')) {
+                return "Use “Verify Representative” to scan a QR code or enter the verification code manually.";
+            }
+            return "I couldn’t reach support right now. Email us at info@adwumatech.ai and we’ll help.";
+        }
+
+        const chatHistory = [];
+
+        async function sendChat() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+            appendMessage(text, true);
+            chatInput.value = '';
+            chatHistory.push({ role: "user", content: text });
+            const typing = document.getElementById('typing-indicator');
+            typing.classList.remove('hidden');
+            try {
+                const resp = await fetch("/api/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        message: text,
+                        history: chatHistory.slice(-8)
+                    })
+                });
+                if (!resp.ok) throw new Error("bad_status");
+                const data = await resp.json();
+                const reply = (data && data.reply) ? String(data.reply) : "";
+                if (!reply) throw new Error("empty_reply");
+                typing.classList.add('hidden');
+                appendMessage(reply, false);
+                chatHistory.push({ role: "assistant", content: reply });
+                trackEvent?.("chat_reply_ok");
+            } catch (e) {
+                typing.classList.add('hidden');
+                const fb = getFallbackReply(text);
+                appendMessage(fb, false);
+                chatHistory.push({ role: "assistant", content: fb });
+                trackEvent?.("chat_reply_error");
+            }
+        }
+
+        function toggleChatbot(open) {
+            if (open) {
+                chatbotModal.classList.remove('hidden');
+                chatbotModal.classList.add('flex');
+                chatbotModal.style.display = 'flex';
+                document.body.classList.add('modal-open');
+                initChat();
+                chatInput.focus();
+            } else {
+                chatbotModal.classList.add('hidden');
+                chatbotModal.classList.remove('flex');
+                chatbotModal.style.display = 'none';
+                const anyOtherModalOpen =
+                    (!missionModal.classList.contains('hidden')) ||
+                    (!qrModal.classList.contains('hidden')) ||
+                    (!document.getElementById('facecheck-modal').classList.contains('hidden'));
+                if (!anyOtherModalOpen) document.body.classList.remove('modal-open');
+            }
+        }
+
+        chatSend.addEventListener('click', sendChat);
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') sendChat();
+        });
+        quickReplies.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const text = btn.getAttribute('data-reply');
+                chatInput.value = text;
+                sendChat();
+            });
+        });
 
     </script>
 </body>
 </html>
+
+
+
 
 
 

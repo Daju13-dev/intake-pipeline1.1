@@ -68,6 +68,99 @@
                 }
             }
         }
+        // --- Chatbot (AI) ---
+        const chatbotModal = document.getElementById('chatbot-modal');
+        const chatbotCard = document.getElementById('chatbot-card');
+        const chatLog = document.getElementById('chat-log');
+        const chatInput = document.getElementById('chat-input');
+        const chatSend = document.getElementById('chat-send');
+        const typingIndicator = document.getElementById('typing-indicator');
+        const chatChips = document.querySelectorAll('.chat-chip');
+        const chatHistory = [];
+
+        function chatAppend(text, isUser = false) {
+            if (!chatLog) return;
+            const wrap = document.createElement('div');
+            wrap.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
+            const bubble = document.createElement('div');
+            bubble.className = `${isUser ? 'bg-slate-900 text-white' : 'bg-white text-slate-900 border border-slate-200'} max-w-[85%] px-4 py-3 rounded-2xl shadow-sm text-sm leading-relaxed`;
+            bubble.textContent = text;
+            wrap.appendChild(bubble);
+            chatLog.appendChild(wrap);
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
+
+        function chatInit() {
+            if (!chatLog || chatLog.dataset.init === '1') return;
+            chatLog.dataset.init = '1';
+            chatAppend("Hi! How can I help you today?");
+        }
+
+        async function chatSendMessage() {
+            const text = (chatInput?.value || '').trim();
+            if (!text) return;
+            chatAppend(text, true);
+            chatInput.value = '';
+            chatHistory.push({ role: "user", content: text });
+            typingIndicator?.classList.remove('hidden');
+            try {
+                const resp = await fetch("/api/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: text, history: chatHistory.slice(-8) })
+                });
+                if (!resp.ok) throw new Error("bad_status");
+                const data = await resp.json();
+                const reply = (data && data.reply) ? String(data.reply) : "";
+                if (!reply) throw new Error("empty_reply");
+                typingIndicator?.classList.add('hidden');
+                chatAppend(reply, false);
+                chatHistory.push({ role: "assistant", content: reply });
+            } catch (e) {
+                typingIndicator?.classList.add('hidden');
+                chatAppend("We couldn’t reach support right now. Please try again in a moment, or email info@adwumatech.ai.", false);
+            }
+        }
+
+        function toggleChatbot(open) {
+            if (!chatbotModal || !chatbotCard) return;
+            if (open) {
+                chatbotModal.classList.remove('hidden');
+                chatbotModal.classList.add('flex');
+                chatbotModal.style.display = 'flex';
+                document.body.classList.add('modal-open');
+                setTimeout(() => {
+                    chatbotModal.classList.remove('opacity-0');
+                    chatbotModal.classList.add('opacity-100');
+                    if (window.innerWidth < 768) chatbotCard.classList.remove('translate-y-full');
+                    else { chatbotCard.classList.remove('scale-95'); chatbotCard.classList.add('scale-100'); }
+                }, 10);
+                chatInit();
+                setTimeout(() => chatInput?.focus(), 60);
+            } else {
+                chatbotModal.classList.remove('opacity-100');
+                chatbotModal.classList.add('opacity-0');
+                if (window.innerWidth < 768) chatbotCard.classList.add('translate-y-full');
+                else { chatbotCard.classList.remove('scale-100'); chatbotCard.classList.add('scale-95'); }
+                setTimeout(() => {
+                    chatbotModal.classList.add('hidden');
+                    chatbotModal.classList.remove('flex');
+                    chatbotModal.style.display = 'none';
+                    document.body.classList.remove('modal-open');
+                }, 200);
+            }
+        }
+
+        chatSend?.addEventListener('click', chatSendMessage);
+        chatInput?.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') chatSendMessage();
+        });
+        chatChips.forEach((b) => b.addEventListener('click', () => {
+            const t = b.getAttribute('data-reply') || '';
+            chatInput.value = t;
+            chatSendMessage();
+        }));
+
     </script>
     <style>
         /* Smooth scrolling and native accordion transitions */
@@ -86,6 +179,16 @@
         
         /* Phone perspective */
         .perspective-1000 { perspective: 1000px; }
+
+        @media (max-width: 640px) {
+            header .container { height: 56px; padding-left: 12px; padding-right: 12px; }
+            .verify-btn span { display: none; }
+            .verify-btn { padding-left: 8px; padding-right: 8px; }
+            .hero-title { font-size: 1.9rem; line-height: 1.2; }
+            .hero-copy { font-size: 0.95rem; }
+            .hero-cta { height: 48px; font-size: 0.95rem; padding-left: 20px; padding-right: 20px; }
+            .hero-media { max-width: 260px; margin-top: 1.5rem; }
+        }
     </style>
 </head>
 <body class="min-h-screen bg-slate-50 text-slate-800 font-sans antialiased selection:bg-brand-100 selection:text-brand-900 relative overflow-x-hidden">
@@ -113,7 +216,7 @@
                 </a>
                 
                 <!-- Trust & Security Validation Button -->
-                <button onclick="openVerifyModal()" class="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold text-slate-700 bg-white border border-slate-200 shadow-sm hover:shadow-md px-3 py-1.5 sm:px-4 sm:py-2 rounded-full transition-all group shrink-0">
+                <button onclick="openVerifyModal()" class="verify-btn flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold text-slate-700 bg-white border border-slate-200 shadow-sm hover:shadow-md px-3 py-1.5 sm:px-4 sm:py-2 rounded-full transition-all group shrink-0">
                     <i class="ph-bold ph-seal-check text-green-600 text-base sm:text-lg group-hover:animate-spin-slow"></i>
                     <span>Verify Steward</span>
                 </button>
@@ -175,16 +278,16 @@
                             <i class="ph-fill ph-hands-clapping mr-2 text-base md:text-lg group-hover:animate-wiggle text-brand-500"></i>
                             Join the AI Revolution
                         </div>
-                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 leading-[1.15] mb-4 md:mb-6 tracking-tight">
+                        <h1 class="hero-title text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 leading-[1.15] mb-4 md:mb-6 tracking-tight">
                             Building a Safer <br class="hidden sm:block"/>
                             <span class="text-brand-600">Digital Community.</span>
                         </h1>
-                        <p class="text-base sm:text-lg md:text-xl text-slate-600 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed px-2 sm:px-0">
+                        <p class="hero-copy text-base sm:text-lg md:text-xl text-slate-600 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed px-2 sm:px-0">
                             Help us prevent identity misuse and enhance digital safety. By sharing everyday data securely and with your full consent, you help train the next generation of financial security tools. 
                         </p>
                         <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
                             <a href="#participate" class="w-full sm:w-auto">
-                                <button class="w-full sm:w-auto inline-flex items-center justify-center text-base font-bold h-14 rounded-full px-8 bg-brand-600 hover:bg-brand-700 text-white shadow-xl transition-all hover:-translate-y-1">
+                                <button class="hero-cta w-full sm:w-auto inline-flex items-center justify-center text-base font-bold h-14 rounded-full px-8 bg-brand-600 hover:bg-brand-700 text-white shadow-xl transition-all hover:-translate-y-1">
                                     Participate & Claim Reward
                                     <i class="ph-bold ph-arrow-right ml-2 text-xl"></i>
                                 </button>
@@ -193,7 +296,7 @@
                     </div>
                     
                     <!-- Hero Mascot Area (Replacing the Video) -->
-                    <div class="relative mx-auto w-full max-w-[320px] sm:max-w-md lg:max-w-lg mt-12 lg:mt-0 flex justify-center items-center">
+                    <div class="hero-media relative mx-auto w-full max-w-[320px] sm:max-w-md lg:max-w-lg mt-12 lg:mt-0 flex justify-center items-center">
                         
                         <!-- Glowing aura behind the mascot -->
                         <div class="absolute inset-0 bg-gradient-to-tr from-orange-400 to-amber-300 rounded-full blur-3xl opacity-30 animate-pulse pointer-events-none"></div>
@@ -760,17 +863,56 @@
         </p>
     </div>
 
-    <!-- FLOATING WHATSAPP HELP WIDGET -->
-    <a href="https://wa.me/233557750104" target="_blank" rel="noopener noreferrer" class="fixed bottom-6 right-4 md:right-6 z-[50] w-14 h-14 md:w-16 md:h-16 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-[0_8px_30px_rgba(37,211,102,0.4)] hover:scale-110 hover:-translate-y-1 transition-all group border-[3px] border-white">
-        <i class="ph-fill ph-whatsapp-logo text-3xl md:text-4xl group-hover:animate-wiggle"></i>
+    <!-- FLOATING CHAT SUPPORT -->
+    <button type="button" onclick="toggleChatbot(true)" class="fixed bottom-6 right-4 md:right-6 z-[50] w-14 h-14 md:w-16 md:h-16 bg-brand-600 text-white rounded-full flex items-center justify-center shadow-[0_10px_32px_rgba(234,88,12,0.45)] hover:scale-110 hover:-translate-y-1 transition-all group border-[3px] border-white">
+        <i class="ph-fill ph-chat-teardrop-dots text-3xl md:text-4xl group-hover:animate-wiggle"></i>
         <span class="absolute -top-12 right-0 bg-slate-900 text-white text-[10px] md:text-xs font-bold px-3 py-1.5 md:px-4 md:py-2 rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl border border-slate-700">
-            Live Support
-            <!-- Tooltip pointer -->
+            Chat Support
             <svg class="absolute text-slate-900 h-2 w-full left-0 top-full" x="0px" y="0px" viewBox="0 0 255 255"><polygon class="fill-current" points="0,0 127.5,127.5 255,0"/></svg>
         </span>
-        <!-- Ping animation ring -->
-        <span class="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-20 group-hover:hidden"></span>
-    </a>
+        <span class="absolute inset-0 rounded-full bg-brand-600 animate-ping opacity-20 group-hover:hidden"></span>
+    </button>
+
+    <!-- CHATBOT MODAL -->
+    <div id="chatbot-modal" class="fixed inset-0 z-[110] bg-slate-900/60 backdrop-blur-sm hidden flex items-end md:items-center justify-center opacity-0 transition-opacity duration-200 md:px-4">
+        <div id="chatbot-card" class="bg-white w-full h-[85vh] rounded-t-3xl md:h-auto md:max-w-md md:rounded-3xl shadow-2xl overflow-hidden transform translate-y-full md:translate-y-0 md:scale-95 transition-all duration-200 ease-out flex flex-col">
+            <div class="px-5 py-3 md:px-6 md:py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50 shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center shadow-md">
+                        <i class="ph-fill ph-shield-check text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-base md:text-lg font-bold text-slate-900 leading-tight">Chat with Us</h2>
+                        <p class="text-[10px] md:text-xs text-slate-500">We reply instantly</p>
+                    </div>
+                </div>
+                <button type="button" onclick="toggleChatbot(false)" class="w-9 h-9 rounded-full bg-white hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors shadow-sm border border-slate-200 shrink-0">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+            <div id="chat-log" class="flex-1 overflow-y-auto p-5 bg-slate-50 space-y-3"></div>
+            <div id="typing-indicator" class="hidden px-5 pb-2 bg-slate-50">
+                <div class="inline-flex items-center gap-2 bg-white border border-slate-200 px-3 py-2 rounded-full shadow-sm">
+                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style="animation-delay:0ms"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style="animation-delay:120ms"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style="animation-delay:240ms"></span>
+                </div>
+            </div>
+            <div class="p-5 pt-3 bg-white border-t border-slate-100">
+                <div class="flex flex-wrap gap-2 mb-3">
+                    <button type="button" class="chat-chip" data-reply="How do I participate?">How to participate</button>
+                    <button type="button" class="chat-chip" data-reply="Is my data safe?">Is my data safe?</button>
+                    <button type="button" class="chat-chip" data-reply="How do I claim reward?">Claim reward</button>
+                    <button type="button" class="chat-chip" data-reply="How do I verify a representative?">Verify rep</button>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input id="chat-input" type="text" class="flex-1 bg-slate-50 border border-slate-300 text-slate-900 py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white text-sm transition-colors" placeholder="Ask a quick question..." />
+                    <button id="chat-send" type="button" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-4 py-3 rounded-xl transition-transform active:scale-95 text-sm">Send</button>
+                </div>
+                <p class="text-[10px] text-slate-500 mt-2">For urgent danger, contact local emergency services.</p>
+            </div>
+        </div>
+    </div>
 
     <!-- QUESTIONNAIRE MODAL OVERLAY -->
     <div id="questionnaire-modal" class="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm hidden flex items-end md:items-center justify-center opacity-0 transition-opacity duration-300 md:px-4 md:py-6">
@@ -1137,6 +1279,24 @@
 
     <!-- Scripts -->
     <script>
+        // --- Analytics (GA4) ---
+        const ANALYTICS_ID = "G-XXXXXXXXXX"; // TODO: Replace with your GA4 Measurement ID
+        (function initAnalytics() {
+            window.trackEvent = function () {};
+            if (!ANALYTICS_ID || ANALYTICS_ID === "G-XXXXXXXXXX") return;
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = function () { window.dataLayer.push(arguments); };
+            const ga = document.createElement("script");
+            ga.async = true;
+            ga.src = `https://www.googletagmanager.com/gtag/js?id=${ANALYTICS_ID}`;
+            document.head.appendChild(ga);
+            window.gtag("js", new Date());
+            window.gtag("config", ANALYTICS_ID, { send_page_view: true });
+            window.trackEvent = function (name, params = {}) {
+                window.gtag("event", name, params);
+            };
+        })();
+
         // --- MOBILE MENU LOGIC ---
         const btn = document.getElementById('mobile-menu-btn');
         const menu = document.getElementById('mobile-menu');
@@ -1308,6 +1468,7 @@
         };
 
         function openMissionModal(missionId, titleOverride) {
+            trackEvent("mission_selected", { mission_id: missionId });
             modalTitle.innerText = titleOverride || missionData[missionId].title;
             dynamicQuestions.innerHTML = missionData[missionId].html;
             
@@ -1354,6 +1515,7 @@
             successState.classList.remove('hidden');
             successState.classList.add('flex');
             document.querySelector('.modal-scroll').scrollTo(0,0);
+            trackEvent("mission_complete");
         }
 
         // --- AI WOW FEATURES (GEMINI API) ---
@@ -1510,6 +1672,7 @@
 
         function openVerifyModal() {
             resetVerifyModal();
+            trackEvent("verify_open");
             verifyModal.classList.remove('hidden');
             document.body.classList.add('modal-open');
             
@@ -1545,6 +1708,7 @@
         }
 
         function checkStewardValidity() {
+            trackEvent("verify_check_submit");
             verifyFormState.classList.remove('block', 'flex');
             verifyFormState.classList.add('hidden');
             verifyLoadingState.classList.remove('hidden');
@@ -1633,5 +1797,19 @@
         }, 3000);
 
     </script>
+
+    <style>
+        .chat-chip{
+            background:#fff;
+            border:1px solid rgba(226,232,240,1);
+            color:#0f172a;
+            padding:6px 10px;
+            border-radius:999px;
+            font-size:11px;
+            font-weight:700;
+            transition:all .15s ease;
+        }
+        .chat-chip:hover{ background:rgba(255,237,213,.6); border-color:rgba(251,146,60,.65); }
+    </style>
 </body>
 </html>
