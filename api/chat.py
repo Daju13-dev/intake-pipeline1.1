@@ -54,6 +54,11 @@ def _safe_trunc(s: str, n: int = 1000) -> str:
     return s[:n] + "..."
 
 
+@app.get("/api/chat")
+async def chat_health():
+    return {"ok": True, "message": "Chat endpoint online. Use POST with {message, history}."}
+
+
 @app.post("/api/chat")
 async def chat(payload: ChatPayload):
     api_key = os.environ.get("OPENAI_API_KEY")
@@ -132,3 +137,4 @@ async def chat(payload: ChatPayload):
         raise HTTPException(status_code=502, detail="Empty AI response")
 
     return {"ok": True, "reply": reply}
+

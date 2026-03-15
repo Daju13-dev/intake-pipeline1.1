@@ -335,7 +335,7 @@
                     <div>
                         <p class="text-[10px] font-bold uppercase tracking-widest text-ink-400">Support</p>
                         <h3 class="text-base sm:text-lg font-bold text-ink-900">Chat with Us</h3>
-                        <p class="text-[10px] text-ink-400">We reply instantly</p>
+                        <p id="chat-status" class="text-[10px] text-ink-400">Online</p>
                     </div>
                 </div>
                 <button onclick="toggleChatbot(false)" class="w-8 h-8 rounded-full bg-ink-100 text-ink-600 hover:bg-ink-200 flex items-center justify-center">
@@ -352,6 +352,7 @@
             </div>
             <div class="px-4 pb-4">
                 <div class="flex flex-wrap gap-2 mb-3">
+                    <button id="chat-retry" class="quick-reply hidden">Retry</button>
                     <button class="quick-reply" data-reply="How do I participate?">How to participate</button>
                     <button class="quick-reply" data-reply="Is my data safe?">Is my data safe?</button>
                     <button class="quick-reply" data-reply="How do I claim reward?">Claim reward</button>
@@ -361,7 +362,7 @@
                     <input id="chat-input" type="text" class="flex-1 border border-ink-200/60 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="Ask a quick question..." />
                     <button id="chat-send" class="rounded-xl bg-ink-900 text-white px-4 py-3 text-sm font-bold hover:bg-black">Send</button>
                 </div>
-                <p class="text-[10px] text-ink-400 mt-2">This is a quick FAQ assistant. For urgent help, use the contact details on the page.</p>
+                <p class="text-[10px] text-ink-400 mt-2">Powered by AdwumaTech AI. Ask about participation, rewards, privacy, or verifying a representative.</p>
             </div>
         </div>
     </div>
@@ -1407,12 +1408,23 @@
             trackEvent("verify_code_submit");
         }
 
-        // --- Chatbot (FAQ) ---
+        
+        // --- Chatbot (AI) ---
         const chatbotModal = document.getElementById('chatbot-modal');
         const chatLog = document.getElementById('chat-log');
         const chatInput = document.getElementById('chat-input');
         const chatSend = document.getElementById('chat-send');
         const quickReplies = document.querySelectorAll('.quick-reply');
+        const chatRetry = document.getElementById('chat-retry');
+        const chatStatus = document.getElementById('chat-status');
+
+        const chatHistory = [];
+        let lastChatPayload = null;
+
+        function setChatStatus(text) {
+            if (!chatStatus) return;
+            chatStatus.textContent = text;
+        }
 
         function appendMessage(text, isUser = false) {
             const bubble = document.createElement('div');
@@ -1425,59 +1437,83 @@
         function initChat() {
             if (chatLog.dataset.init === '1') return;
             chatLog.dataset.init = '1';
-            appendMessage("Hi! I’m the Digital Stewards assistant. How can I help you today?");
+            appendMessage("Hi! I'm the AdwumaTech AI assistant. How can I help today?");
         }
 
-        function getFallbackReply(message) {
-            const msg = message.toLowerCase();
-            if (msg.includes('participate') || msg.includes('join') || msg.includes('start')) {
-                return "Tap “Participate Now”, pick a mission, and follow the guided steps. It takes about a minute.";
+        async function callChatApi(payload) {
+            const resp = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+
+            if (!resp.ok) {
+                let detail = '';
+                try {
+                    const err = await resp.json();
+                    if (err && err.detail) {
+                        if (typeof err.detail === 'string') detail = err.detail;
+                        else detail = JSON.stringify(err.detail);
+                    }
+                } catch (_) {
+                    // ignore
+                }
+                const e = new Error('chat_api_error');
+                e.detail = detail;
+                throw e;
             }
-            if (msg.includes('reward') || msg.includes('momo') || msg.includes('claim')) {
-                return "Complete the mission steps, then choose your mobile network and enter your MoMo number to claim your reward.";
-            }
-            if (msg.includes('safe') || msg.includes('data') || msg.includes('privacy')) {
-                return "Your info is encrypted and used only to keep the community safe. You stay in control at all times.";
-            }
-            if (msg.includes('verify') || msg.includes('representative') || msg.includes('qr')) {
-                return "Use “Verify Representative” to scan a QR code or enter the verification code manually.";
-            }
-            return "I couldn’t reach support right now. Email us at info@adwumatech.ai and we’ll help.";
+
+            const data = await resp.json();
+            const reply = (data && data.reply) ? String(data.reply) : '';
+            if (!reply) throw new Error('empty_reply');
+            return reply;
         }
 
-        const chatHistory = [];
-
-        async function sendChat() {
-            const text = chatInput.value.trim();
-            if (!text) return;
-            appendMessage(text, true);
-            chatInput.value = '';
-            chatHistory.push({ role: "user", content: text });
+        async function sendChat(text, { skipUserBubble = false } = {}) {
             const typing = document.getElementById('typing-indicator');
+            const msg = (text ?? chatInput.value).trim();
+            if (!msg) return;
+
+            if (!skipUserBubble) {
+                appendMessage(msg, true);
+                chatInput.value = '';
+                chatHistory.push({ role: 'user', content: msg });
+            }
+
+            // Keep a retry payload that reproduces this request.
+            lastChatPayload = { message: msg, history: chatHistory.slice(-8) };
+            if (chatRetry) chatRetry.classList.add('hidden');
+
+            setChatStatus('Online');
+            chatSend.disabled = true;
+            chatInput.disabled = true;
             typing.classList.remove('hidden');
+
             try {
-                const resp = await fetch("/api/chat", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        message: text,
-                        history: chatHistory.slice(-8)
-                    })
-                });
-                if (!resp.ok) throw new Error("bad_status");
-                const data = await resp.json();
-                const reply = (data && data.reply) ? String(data.reply) : "";
-                if (!reply) throw new Error("empty_reply");
+                const reply = await callChatApi(lastChatPayload);
                 typing.classList.add('hidden');
                 appendMessage(reply, false);
-                chatHistory.push({ role: "assistant", content: reply });
-                trackEvent?.("chat_reply_ok");
+                chatHistory.push({ role: 'assistant', content: reply });
+                lastChatPayload = null;
+                setChatStatus('Online');
+                trackEvent?.('chat_reply_ok');
             } catch (e) {
                 typing.classList.add('hidden');
-                const fb = getFallbackReply(text);
-                appendMessage(fb, false);
-                chatHistory.push({ role: "assistant", content: fb });
-                trackEvent?.("chat_reply_error");
+
+                // Honest UX: don't pretend we answered with FAQ.
+                const detail = (e && e.detail) ? String(e.detail) : '';
+                if (detail && detail.toLowerCase().includes('not configured')) {
+                    appendMessage("Chat isn't set up yet. Please add OPENAI_API_KEY on Vercel and redeploy.", false);
+                } else {
+                    appendMessage("I'm having trouble connecting right now. Tap Retry in a moment.", false);
+                }
+
+                if (chatRetry) chatRetry.classList.remove('hidden');
+                setChatStatus('Temporarily offline');
+                trackEvent?.('chat_reply_error');
+            } finally {
+                chatSend.disabled = false;
+                chatInput.disabled = false;
             }
         }
 
@@ -1501,15 +1537,20 @@
             }
         }
 
-        chatSend.addEventListener('click', sendChat);
+        chatSend.addEventListener('click', () => sendChat(chatInput.value));
         chatInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') sendChat();
+            if (e.key === 'Enter') sendChat(chatInput.value);
         });
+
         quickReplies.forEach((btn) => {
             btn.addEventListener('click', () => {
+                if (btn.id === 'chat-retry') {
+                    if (lastChatPayload) sendChat(lastChatPayload.message, { skipUserBubble: true });
+                    return;
+                }
                 const text = btn.getAttribute('data-reply');
-                chatInput.value = text;
-                sendChat();
+                if (!text) return;
+                sendChat(text);
             });
         });
 
