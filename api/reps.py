@@ -105,7 +105,14 @@ async def get_rep(code: str):
     if len(code) < 4:
         raise HTTPException(status_code=400, detail="Invalid code")
 
-    snap = _db.collection("reps").document(code).get()
+    try:
+        snap = _db.collection("reps").document(code).get()
+    except Exception as e:
+        print("[reps] firestore error (get_rep):", repr(e))
+        raise HTTPException(
+            status_code=500,
+            detail="Firestore is not set up yet. In Firebase Console, create Firestore Database and try again.",
+        )
     if not snap.exists:
         raise HTTPException(status_code=404, detail="Representative not found")
 
@@ -120,14 +127,21 @@ async def list_reps(active: Optional[bool] = True):
     except Exception:
         raise HTTPException(status_code=500, detail="Firebase is not configured")
 
-    q = _db.collection("reps")
-    if active is not None:
-        q = q.where("active", "==", bool(active))
+    try:
+        q = _db.collection("reps")
+        if active is not None:
+            q = q.where("active", "==", bool(active))
 
-    reps = []
-    for doc in q.limit(50).stream():
-        reps.append(rep_to_public(doc.id, doc.to_dict() or {}))
-    return {"ok": True, "reps": reps}
+        reps = []
+        for doc in q.limit(50).stream():
+            reps.append(rep_to_public(doc.id, doc.to_dict() or {}))
+        return {"ok": True, "reps": reps}
+    except Exception as e:
+        print("[reps] firestore error (list_reps):", repr(e))
+        raise HTTPException(
+            status_code=500,
+            detail="Firestore is not set up yet. In Firebase Console, create Firestore Database and try again.",
+        )
 
 
 @app.get("/api/reps/all")
@@ -138,10 +152,17 @@ async def list_reps_all(req: Request):
     except Exception:
         raise HTTPException(status_code=500, detail="Firebase is not configured")
 
-    reps = []
-    for doc in _db.collection("reps").limit(200).stream():
-        reps.append(rep_to_public(doc.id, doc.to_dict() or {}))
-    return {"ok": True, "reps": reps}
+    try:
+        reps = []
+        for doc in _db.collection("reps").limit(200).stream():
+            reps.append(rep_to_public(doc.id, doc.to_dict() or {}))
+        return {"ok": True, "reps": reps}
+    except Exception as e:
+        print("[reps] firestore error (list_reps_all):", repr(e))
+        raise HTTPException(
+            status_code=500,
+            detail="Firestore is not set up yet. In Firebase Console, create Firestore Database and try again.",
+        )
 
 
 @app.post("/api/reps")
