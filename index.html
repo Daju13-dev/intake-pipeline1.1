@@ -1461,6 +1461,7 @@
 
         let preferredRepCode = null;
         let lastAssignedRep = null;
+        let pendingWaUrl = null;
 
         function setSupportStatus(text) {
             if (!supportStatus) return;
@@ -1526,7 +1527,7 @@
 
         async function assignAndOpenWhatsApp(message, { forceSwitch = false } = {}) {
             showNotice('');
-            setSupportStatus('Connecting?');
+            setSupportStatus('Connecting…');
             supportSend.disabled = true;
 
             const prefer = (!forceSwitch && preferredRepCode) ? preferredRepCode : null;
@@ -1554,13 +1555,22 @@
 
                 if (!url) throw new Error('WhatsApp link unavailable');
 
-                setSupportStatus('Opening WhatsApp?');
+                // Store URL so we can open it on a *user gesture* (mobile Safari can block async navigations).
+                pendingWaUrl = url;
+                supportSend.textContent = 'Open WhatsApp now';
+                showNotice('Ready. Tap “Open WhatsApp now” to continue.');
+                setSupportStatus('Ready');
 
                 const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-                if (isMobile) {
-                    window.location.href = url;
-                } else {
-                    window.open(url, '_blank', 'noopener,noreferrer');
+                // Best-effort auto-open (works in many browsers). If blocked, the user can tap again.
+                if (!isMobile) {
+                    const w = window.open(url, '_blank', 'noopener,noreferrer');
+                    if (w) {
+                        pendingWaUrl = null;
+                        supportSend.textContent = 'Open WhatsApp';
+                        showNotice('');
+                        setSupportStatus('Opened');
+                    }
                 }
 
                 trackEvent?.('support_whatsapp_open');
@@ -1623,6 +1633,17 @@
         });
 
         supportSend?.addEventListener('click', () => {
+            // If we already have a WhatsApp URL prepared, open it immediately (gesture-safe).
+            if (pendingWaUrl) {
+                const url = pendingWaUrl;
+                pendingWaUrl = null;
+                supportSend.textContent = 'Open WhatsApp';
+                showNotice('');
+                setSupportStatus('Opening…');
+                window.location.href = url;
+                trackEvent?.('support_whatsapp_open_confirm');
+                return;
+            }
             const msg = (supportMessage?.value || '').trim();
             if (!msg) {
                 showNotice('Please type a short message first.');
@@ -1644,7 +1665,6 @@
     </script>
 </body>
 </html>
-
 
 
 
