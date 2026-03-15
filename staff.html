@@ -238,6 +238,10 @@
       repList.innerHTML = '<div class="text-sm text-slate-600">Loading…</div>';
       try {
         const token = getToken();
+        if (!token) {
+          repList.innerHTML = '<div class="text-sm text-slate-600">Enter your admin token above, click <span class="font-bold">Save</span>, then press <span class="font-bold">Refresh</span>.</div>';
+          return;
+        }
         const resp = await fetch(`${API_BASE}/api/reps/all`, {
           headers: { 'x-admin-token': token }
         });

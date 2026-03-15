@@ -384,6 +384,24 @@
 
 <style>
         body.modal-open { overflow: hidden; }
+        /* Keep the cinematic header video in view while the card content scrolls */
+        .pitch-card {
+            height: min(760px, calc(100svh - 24px));
+            display: flex;
+            flex-direction: column;
+        }
+        @media (min-width: 640px) {
+            .pitch-card { height: min(760px, calc(100svh - 48px)); }
+        }
+        @media (min-width: 768px) {
+            .pitch-card { height: min(760px, calc(100svh - 64px)); }
+        }
+        .card-header { flex: 0 0 auto; }
+        .card-body {
+            flex: 1 1 auto;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
         @keyframes floaty {
             0%, 100% { transform: translateY(0) scale(1); }
             50% { transform: translateY(-6px) scale(1.01); }
@@ -1679,5 +1697,3 @@
     </script>
 </body>
 </html>
-
-

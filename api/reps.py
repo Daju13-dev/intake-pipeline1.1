@@ -117,8 +117,9 @@ async def get_rep(code: str):
         raise HTTPException(status_code=500, detail="Firebase is not configured")
 
     code = normalize_code(code)
-    if len(code) < 4:
-        raise HTTPException(status_code=400, detail="Invalid code")
+    # Codes are generated/accepted as 6-12 chars (letters/numbers).
+    if len(code) < 6 or len(code) > 12:
+        raise HTTPException(status_code=400, detail="Code must be 6-12 letters/numbers")
 
     try:
         snap = _db.collection("reps").document(code).get()
