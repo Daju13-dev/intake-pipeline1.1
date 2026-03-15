@@ -14,6 +14,8 @@ from firebase_admin import credentials, firestore, storage
 
 app = FastAPI()
 
+BUILD_VERSION = "2026-03-15.reps.1"
+
 _firebase_app = None
 _db = None
 _bucket = None
@@ -44,6 +46,16 @@ def require_admin(req: Request):
         raise HTTPException(status_code=500, detail="Admin is not configured")
     if token.strip() != expected.strip():
         raise HTTPException(status_code=401, detail="Unauthorized")
+
+
+@app.get("/api/reps/health")
+async def reps_health():
+    return {
+        "ok": True,
+        "build": BUILD_VERSION,
+        "commit": os.environ.get("VERCEL_GIT_COMMIT_SHA")
+        or os.environ.get("VERCEL_GITHUB_COMMIT_SHA"),
+    }
 
 
 def decode_data_url(data_url: str) -> bytes:
