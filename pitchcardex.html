@@ -67,99 +67,131 @@
                     }
                 }
             }
-        }
-        // --- Chatbot (AI) ---
-        const chatbotModal = document.getElementById('chatbot-modal');
-        const chatbotCard = document.getElementById('chatbot-card');
-        const chatLog = document.getElementById('chat-log');
-        const chatInput = document.getElementById('chat-input');
-        const chatSend = document.getElementById('chat-send');
-        const typingIndicator = document.getElementById('typing-indicator');
-        const chatChips = document.querySelectorAll('.chat-chip');
-        const chatHistory = [];
+        }        // --- Chatbot (AI) ---
+        (function () {
+            var bound = false;
+            var chatHistory = [];
+            var refs = {
+                modal: null,
+                card: null,
+                log: null,
+                input: null,
+                send: null,
+                typing: null,
+                chips: null,
+                init: null,
+                sendMessage: null
+            };
 
-        function chatAppend(text, isUser = false) {
-            if (!chatLog) return;
-            const wrap = document.createElement('div');
-            wrap.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
-            const bubble = document.createElement('div');
-            bubble.className = `${isUser ? 'bg-slate-900 text-white' : 'bg-white text-slate-900 border border-slate-200'} max-w-[85%] px-4 py-3 rounded-2xl shadow-sm text-sm leading-relaxed`;
-            bubble.textContent = text;
-            wrap.appendChild(bubble);
-            chatLog.appendChild(wrap);
-            chatLog.scrollTop = chatLog.scrollHeight;
-        }
+            function bindChatbot() {
+                if (bound) return;
+                refs.modal = document.getElementById('chatbot-modal');
+                refs.card = document.getElementById('chatbot-card');
+                refs.log = document.getElementById('chat-log');
+                refs.input = document.getElementById('chat-input');
+                refs.send = document.getElementById('chat-send');
+                refs.typing = document.getElementById('typing-indicator');
+                refs.chips = document.querySelectorAll('.chat-chip');
 
-        function chatInit() {
-            if (!chatLog || chatLog.dataset.init === '1') return;
-            chatLog.dataset.init = '1';
-            chatAppend("Hi! How can I help you today?");
-        }
+                if (!refs.modal || !refs.card || !refs.log || !refs.input || !refs.send) return;
+                bound = true;
 
-        async function chatSendMessage() {
-            const text = (chatInput?.value || '').trim();
-            if (!text) return;
-            chatAppend(text, true);
-            chatInput.value = '';
-            chatHistory.push({ role: "user", content: text });
-            typingIndicator?.classList.remove('hidden');
-            try {
-                const resp = await fetch("/api/chat", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: text, history: chatHistory.slice(-8) })
+                function append(text, isUser) {
+                    var wrap = document.createElement('div');
+                    wrap.className = 'flex ' + (isUser ? 'justify-end' : 'justify-start');
+                    var bubble = document.createElement('div');
+                    bubble.className = (isUser ? 'bg-slate-900 text-white' : 'bg-white text-slate-900 border border-slate-200') + ' max-w-[85%] px-4 py-3 rounded-2xl shadow-sm text-sm leading-relaxed';
+                    bubble.textContent = text;
+                    wrap.appendChild(bubble);
+                    refs.log.appendChild(wrap);
+                    refs.log.scrollTop = refs.log.scrollHeight;
+                }
+
+                refs.init = function () {
+                    if (refs.log.dataset.init === '1') return;
+                    refs.log.dataset.init = '1';
+                    append('Hi! How can I help you today?', false);
+                };
+
+                refs.sendMessage = async function () {
+                    var text = (refs.input.value || '').trim();
+                    if (!text) return;
+                    append(text, true);
+                    refs.input.value = '';
+                    chatHistory.push({ role: 'user', content: text });
+                    if (refs.typing) refs.typing.classList.remove('hidden');
+
+                    try {
+                        var resp = await fetch('/api/chat', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ message: text, history: chatHistory.slice(-8) })
+                        });
+                        if (!resp.ok) throw new Error('bad_status');
+                        var data = await resp.json();
+                        var reply = (data && data.reply) ? String(data.reply) : '';
+                        if (!reply) throw new Error('empty_reply');
+                        if (refs.typing) refs.typing.classList.add('hidden');
+                        append(reply, false);
+                        chatHistory.push({ role: 'assistant', content: reply });
+                    } catch (e) {
+                        if (refs.typing) refs.typing.classList.add('hidden');
+                        append("We couldn't reach support right now. Please try again in a moment, or email info@adwumatech.ai.", false);
+                    }
+                };
+
+                refs.send.addEventListener('click', refs.sendMessage);
+                refs.input.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter') refs.sendMessage();
                 });
-                if (!resp.ok) throw new Error("bad_status");
-                const data = await resp.json();
-                const reply = (data && data.reply) ? String(data.reply) : "";
-                if (!reply) throw new Error("empty_reply");
-                typingIndicator?.classList.add('hidden');
-                chatAppend(reply, false);
-                chatHistory.push({ role: "assistant", content: reply });
-            } catch (e) {
-                typingIndicator?.classList.add('hidden');
-                chatAppend("We couldn’t reach support right now. Please try again in a moment, or email info@adwumatech.ai.", false);
+                refs.chips.forEach(function (b) {
+                    b.addEventListener('click', function () {
+                        refs.input.value = b.getAttribute('data-reply') || '';
+                        refs.sendMessage();
+                    });
+                });
             }
-        }
 
-        function toggleChatbot(open) {
-            if (!chatbotModal || !chatbotCard) return;
-            if (open) {
-                chatbotModal.classList.remove('hidden');
-                chatbotModal.classList.add('flex');
-                chatbotModal.style.display = 'flex';
-                document.body.classList.add('modal-open');
-                setTimeout(() => {
-                    chatbotModal.classList.remove('opacity-0');
-                    chatbotModal.classList.add('opacity-100');
-                    if (window.innerWidth < 768) chatbotCard.classList.remove('translate-y-full');
-                    else { chatbotCard.classList.remove('scale-95'); chatbotCard.classList.add('scale-100'); }
-                }, 10);
-                chatInit();
-                setTimeout(() => chatInput?.focus(), 60);
-            } else {
-                chatbotModal.classList.remove('opacity-100');
-                chatbotModal.classList.add('opacity-0');
-                if (window.innerWidth < 768) chatbotCard.classList.add('translate-y-full');
-                else { chatbotCard.classList.remove('scale-100'); chatbotCard.classList.add('scale-95'); }
-                setTimeout(() => {
-                    chatbotModal.classList.add('hidden');
-                    chatbotModal.classList.remove('flex');
-                    chatbotModal.style.display = 'none';
-                    document.body.classList.remove('modal-open');
-                }, 200);
-            }
-        }
+            window.toggleChatbot = function (open) {
+                bindChatbot();
+                if (!bound) return;
 
-        chatSend?.addEventListener('click', chatSendMessage);
-        chatInput?.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') chatSendMessage();
-        });
-        chatChips.forEach((b) => b.addEventListener('click', () => {
-            const t = b.getAttribute('data-reply') || '';
-            chatInput.value = t;
-            chatSendMessage();
-        }));
+                refs.init();
+
+                if (open) {
+                    refs.modal.classList.remove('hidden');
+                    refs.modal.classList.add('flex');
+                    refs.modal.style.display = 'flex';
+                    document.body.classList.add('modal-open');
+                    setTimeout(function () {
+                        refs.modal.classList.remove('opacity-0');
+                        refs.modal.classList.add('opacity-100');
+                        if (window.innerWidth < 768) refs.card.classList.remove('translate-y-full');
+                        else {
+                            refs.card.classList.remove('scale-95');
+                            refs.card.classList.add('scale-100');
+                        }
+                    }, 10);
+                    setTimeout(function () { refs.input.focus(); }, 60);
+                } else {
+                    refs.modal.classList.remove('opacity-100');
+                    refs.modal.classList.add('opacity-0');
+                    if (window.innerWidth < 768) refs.card.classList.add('translate-y-full');
+                    else {
+                        refs.card.classList.remove('scale-100');
+                        refs.card.classList.add('scale-95');
+                    }
+                    setTimeout(function () {
+                        refs.modal.classList.add('hidden');
+                        refs.modal.classList.remove('flex');
+                        refs.modal.style.display = 'none';
+                        document.body.classList.remove('modal-open');
+                    }, 200);
+                }
+            };
+
+            window.addEventListener('DOMContentLoaded', bindChatbot);
+        })();
 
     </script>
     <style>
@@ -1813,3 +1845,4 @@
     </style>
 </body>
 </html>
+
