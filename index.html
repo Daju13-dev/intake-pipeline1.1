@@ -389,6 +389,8 @@
 
 <style>
         body.modal-open { overflow: hidden !important; }
+        html, body { height: 100%; }
+        body { overflow-y: auto; }
 
         /* Desktop/tablet: keep the centered card look, scroll inside the card body. */
         .pitch-card {
@@ -423,7 +425,7 @@
         .card-actions { flex: 0 0 auto; }
         @media (max-width: 640px) {
             /* Mobile: fullscreen card, scroll inside card */
-            body { overflow: hidden; padding: 0 !important; }
+            body { padding: 0 !important; }
             .pitch-card { height: 100svh; max-width: none; border-radius: 0 !important; }
             .card-scroll { overflow-y: auto; overscroll-behavior: contain; }
             .card-header {
@@ -559,7 +561,7 @@
             pointer-events: none;
         }
         @media (max-width: 640px) {
-            body { padding: 8px; align-items: center; overflow: hidden; }
+            body { padding: 8px; align-items: center; }
             .pitch-card { max-width: 100%; height: calc(100svh - 16px); display: flex; flex-direction: column; }
             .card-header { min-height: 120px; padding: 12px 14px; }
             .card-body { padding: 12px; flex: 1 1 auto; overflow: hidden; }
@@ -1730,6 +1732,29 @@
             });
         });
 
+        // Make scroll feel consistent: scrolling anywhere over the card should scroll the inner content.
+        // Without this, wheel/trackpad scrolling over the header/actions can appear "stuck" because only
+        // `.card-scroll` is scrollable.
+        (function bindCardScrollProxy() {
+            const card = document.querySelector('.pitch-card');
+            const scroller = document.querySelector('.card-scroll');
+            if (!card || !scroller) return;
+
+            card.addEventListener('wheel', (e) => {
+                if (e.ctrlKey) return; // allow browser zoom gestures
+                if (scroller.contains(e.target)) return; // native scrolling inside the scroller
+
+                const canScroll = (scroller.scrollHeight - scroller.clientHeight) > 2;
+                if (!canScroll) return;
+
+                const atTop = scroller.scrollTop <= 0;
+                const atBottom = (scroller.scrollTop + scroller.clientHeight) >= (scroller.scrollHeight - 1);
+                if ((e.deltaY < 0 && atTop) || (e.deltaY > 0 && atBottom)) return;
+
+                scroller.scrollTop += e.deltaY;
+                e.preventDefault();
+            }, { passive: false });
+        })();
 
     </script>
 </body>
