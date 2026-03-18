@@ -388,34 +388,44 @@
     </div>
 
 <style>
-        html, body { height: auto; }
-        html { overflow-y: auto !important; }
-        body { overflow-y: auto !important; }
-        body { display: block !important; }
         body.modal-open { overflow: hidden !important; }
-        .pitch-card { margin-left: auto; margin-right: auto; }
-        /* Desktop: allow natural page scroll (avoid nested-scroll traps). */
+
+        /* Desktop/tablet: keep the centered card look, scroll inside the card body. */
         .pitch-card {
-            height: auto;
+            height: min(760px, calc(100vh - 64px));
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
         }
         @media (min-width: 640px) {
-            .pitch-card { height: auto; }
+            .pitch-card { height: min(760px, calc(100vh - 48px)); }
         }
         @media (min-width: 768px) {
-            .pitch-card { height: auto; }
+            .pitch-card { height: min(760px, calc(100vh - 64px)); }
         }
+        .card-header { flex: 0 0 auto; }
         .card-body {
-            overflow: visible;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            flex: 1 1 auto;
+            min-height: 0; /* critical for nested scroll in flex */
         }
         .card-scroll {
-            overflow: visible;
-            overscroll-behavior: auto;
+            flex: 1 1 auto;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+            padding-right: 2px;
+            min-height: 0;
         }
+        .card-actions { flex: 0 0 auto; }
         @media (max-width: 640px) {
-            /* Mobile-first: use the full screen, keep everything reachable, avoid outer-page scrolling */
-            body { overflow-y: auto; padding: 0 !important; }
-            .pitch-card { height: auto; min-height: 100svh; max-width: none; border-radius: 0 !important; }
-            .card-scroll { overflow: visible; overscroll-behavior: auto; }
+            /* Mobile: fullscreen card, scroll inside card */
+            body { overflow: hidden; padding: 0 !important; }
+            .pitch-card { height: 100svh; max-width: none; border-radius: 0 !important; }
+            .card-scroll { overflow-y: auto; overscroll-behavior: contain; }
             .card-header {
                 min-height: 190px;
                 border-radius: 0 !important;
@@ -549,11 +559,11 @@
             pointer-events: none;
         }
         @media (max-width: 640px) {
-            body { padding: 8px; align-items: center; overflow-y: auto; }
-            .pitch-card { max-width: 100%; height: auto; min-height: calc(100svh - 16px); display: flex; flex-direction: column; }
+            body { padding: 8px; align-items: center; overflow: hidden; }
+            .pitch-card { max-width: 100%; height: calc(100svh - 16px); display: flex; flex-direction: column; }
             .card-header { min-height: 120px; padding: 12px 14px; }
-            .card-body { padding: 12px; flex: 1 1 auto; overflow: visible; }
-            .card-scroll { overflow: visible; overscroll-behavior: auto; }
+            .card-body { padding: 12px; flex: 1 1 auto; overflow: hidden; }
+            .card-scroll { overflow-y: auto; overscroll-behavior: contain; }
             .hero-title { font-size: 1.5rem; line-height: 1.15; margin-bottom: 8px; }
             .hero-copy { font-size: 0.82rem; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
             .how-block { display: none; }
