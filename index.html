@@ -422,8 +422,8 @@
         .card-actions { flex: 0 0 auto; }
         @media (max-width: 640px) {
             /* Mobile-first: use the full screen, keep everything reachable, avoid outer-page scrolling */
-            body { overflow: hidden; padding: 0 !important; }
-            .pitch-card { height: 100svh; max-width: none; border-radius: 0 !important; }
+            body { overflow-y: auto; padding: 0 !important; }
+            .pitch-card { height: auto; min-height: 100svh; max-width: none; border-radius: 0 !important; }
             .card-header {
                 min-height: 190px;
                 border-radius: 0 !important;
