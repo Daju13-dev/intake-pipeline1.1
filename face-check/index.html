@@ -19,19 +19,38 @@
         <span class="label">Reward Progress</span>
       </div>
       <div class="progress__line"></div>
+      <div class="progress__step" id="progressClaim">
+        <span class="dot"></span>
+        <span class="label">Claim Reward</span>
+      </div>
+      <div class="progress__line"></div>
       <div class="progress__step" id="progressDone">
         <span class="dot"></span>
-        <span class="label">Complete</span>
+        <span class="label">Celebration</span>
       </div>
     </div>
 
     <!-- Start Screen -->
     <section id="startScreen" class="panel screen panel--start">
-      <h1 class="title">Face Check</h1>
+      <h1 class="title">
+        <svg class="title__icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M7 7h3l2-2h2l2 2h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z" />
+          <circle cx="12" cy="13" r="3" />
+        </svg>
+        Face Check
+      </h1>
       <p class="subtitle">This takes just a few seconds.</p>
       <p id="cameraError" class="start-error hidden"></p>
       <div class="actions">
-        <button id="startBtn" class="btn btn--primary">Start</button>
+        <button id="startBtn" class="btn btn--primary">
+          <span class="btn__content">
+            <svg class="btn__icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 7h3l2-2h2l2 2h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z" />
+              <circle cx="12" cy="13" r="3" />
+            </svg>
+            Start
+          </span>
+        </button>
         <button id="closeBtn" class="btn btn--ghost">Back</button>
       </div>
     </section>
@@ -40,7 +59,12 @@
     <section id="cameraScreen" class="panel screen panel--camera hidden">
       <div class="topbar">
         <button id="backBtn" type="button" class="icon-btn" aria-label="Back">
-          Back
+          <span class="icon-btn__content">
+            <svg class="icon-btn__icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+            Back
+          </span>
         </button>
       </div>
 
@@ -68,8 +92,17 @@
         </button>
       </div>
 
-      <h2 class="complete__title">Reward Progress</h2>
+      <h2 class="complete__title">
+        <svg class="section__icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 12h6l2-3 3 6 2-3h3" />
+        </svg>
+        Reward Progress
+      </h2>
       <p class="complete__text">We are securing your submission and reward.</p>
+      <div class="tracking" aria-label="Reward tracking indicator">
+        <span class="tracking__dot" aria-hidden="true"></span>
+        <span>Tracking reward</span>
+      </div>
 
       <div class="meter">
         <div class="meter__header">
@@ -94,7 +127,7 @@
       </div>
 
       <div id="thankCard" class="thank-card hidden">
-        <div class="thank-card__icon">✨</div>
+        <div class="thank-card__icon" aria-hidden="true"><svg class="thank-card__svg" viewBox="0 0 24 24"><path d="M16 7H8a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z" /><path d="M9 7V6a3 3 0 0 1 6 0v1" /></svg></div>
         <div>
           <p class="thank-card__title">Thank you for participating</p>
           <p id="thankCardMsg" class="thank-card__msg"></p>
@@ -103,16 +136,89 @@
 
       <div class="reward-actions">
         <button id="retryBtn" class="btn btn--ghost hidden" type="button">Retry submission</button>
-        <button id="homeBtn" class="btn btn--primary" disabled>Go Home</button>
+        <button id="nextBtn" class="btn btn--primary" disabled>Next</button>
+      </div>
+    </section>
+
+    <!-- Claim Reward Screen -->
+    <section id="claimScreen" class="panel screen panel--reward hidden">
+      <div class="topbar claim-topbar">
+        <button id="claimBackBtn" type="button" class="icon-btn" aria-label="Back">
+          <span class="icon-btn__content">
+            <svg class="icon-btn__icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+            Back
+          </span>
+        </button>
+        <button id="claimCloseBtn" type="button" class="icon-btn" aria-label="Close">
+          Close
+        </button>
+      </div>
+
+      <h2 class="complete__title">
+        <svg class="section__icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2H6a2 2 0 0 0 0 4h16v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7Z" />
+          <path d="M18 13h4v4h-4a2 2 0 0 1 0-4Z" />
+          <path d="M19.5 15h.01" />
+        </svg>
+        Claim Reward
+      </h2>
+      <p class="complete__text">Enter your Mobile Money details to receive your reward.</p>
+
+      <form id="claimForm" class="form" novalidate>
+        <div class="field">
+          <label class="field__label" for="networkSelect">Mobile Network</label>
+          <select id="networkSelect" class="control control--select" required>
+            <option value="" selected disabled>Select network</option>
+            <option value="MTN">MTN</option>
+            <option value="Telecel">Telecel</option>
+            <option value="AirtelTigo">AirtelTigo</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="momoNumber">Mobile Money Number</label>
+          <input
+            id="momoNumber"
+            class="control"
+            inputmode="tel"
+            autocomplete="tel"
+            placeholder="e.g. 055 123 4567"
+            required
+          />
+          <p id="claimError" class="form__error hidden" role="alert"></p>
+        </div>
+
+        <button id="claimBtn" class="btn btn--primary" type="submit">Claim Reward</button>
+      </form>
+
+      <div id="claimSuccess" class="claim-success hidden" aria-live="polite">
+        <div class="claim-success__icon" aria-hidden="true">
+          <svg class="claim-success__svg" viewBox="0 0 24 24">
+            <path d="M20 6 9 17l-5-5" />
+          </svg>
+        </div>
+        <div class="claim-success__text">
+          <p class="claim-success__title">Thank you</p>
+          <p class="claim-success__msg">Thank you for participating</p>
+          <p class="claim-success__sub">Your reward has been sent successfully</p>
+        </div>
+        <button id="doneBtn" class="btn btn--ghost" type="button">Done</button>
       </div>
     </section>
 
     <!-- Thank You Overlay -->
     <div id="thankOverlay" class="thank hidden" aria-live="polite">
       <div class="thank__card">
-        <div class="thank__spark">✨</div>
-        <h3>Thank you for participating</h3>
-        <p>Your submission is complete.</p>
+        <div class="thank__spark" aria-hidden="true">
+          <svg class="thank__check" viewBox="0 0 24 24">
+            <path d="M20 6 9 17l-5-5" />
+          </svg>
+        </div>
+        <h3>Thank you</h3>
+        <p class="thank__msg">Thank you for participating</p>
+        <p class="thank__sub">Your reward has been sent successfully</p>
       </div>
       <svg id="confettiBurst" class="confetti-burst" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
         <g class="confetti-layer confetti-layer--a">

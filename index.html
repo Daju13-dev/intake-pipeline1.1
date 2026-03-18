@@ -1354,6 +1354,10 @@
 
         function closeFaceCheck() {
             const modal = document.getElementById('facecheck-modal');
+            try {
+                const frame = document.getElementById('facecheck-frame');
+                frame?.contentWindow?.postMessage({ type: 'facecheck:shutdown' }, '*');
+            } catch (_) {}
             modal.classList.add('hidden');
             modal.classList.remove('flex');
             document.body.classList.remove('modal-open');
