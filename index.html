@@ -557,10 +557,10 @@
             pointer-events: none;
         }
         @media (max-width: 640px) {
-            body { padding: 8px; align-items: center; }
-            .pitch-card { max-width: 100%; height: calc(100vh - 16px); display: flex; flex-direction: column; }
+            body { padding: 8px; align-items: center; overflow-y: auto; }
+            .pitch-card { max-width: 100%; height: auto; min-height: calc(100svh - 16px); display: flex; flex-direction: column; }
             .card-header { min-height: 120px; padding: 12px 14px; }
-            .card-body { padding: 12px; flex: 1 1 auto; overflow: hidden; }
+            .card-body { padding: 12px; flex: 1 1 auto; overflow: visible; }
             .hero-title { font-size: 1.5rem; line-height: 1.15; margin-bottom: 8px; }
             .hero-copy { font-size: 0.82rem; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
             .how-block { display: none; }
