@@ -388,7 +388,9 @@
     </div>
 
 <style>
-        body.modal-open { overflow: hidden; }
+        html, body { height: auto; }
+        body { overflow-y: auto !important; }
+        body.modal-open { overflow: hidden !important; }
         /* Desktop: allow natural page scroll (avoid nested-scroll traps). */
         .pitch-card {
             height: auto;
