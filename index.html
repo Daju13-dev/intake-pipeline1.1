@@ -181,7 +181,7 @@
                     <p class="text-[10px] font-bold uppercase tracking-widest text-ink-400">Missions</p>
                     <h3 class="text-base sm:text-lg font-bold text-ink-900" id="mission-modal-title">Choose a Mission</h3>
                 </div>
-                <button onclick="closeMissionModal()" class="w-8 h-8 rounded-full bg-ink-100 text-ink-600 hover:bg-ink-200 flex items-center justify-center">
+                <button id="mission-modal-close" onclick="closeMissionModal()" class="w-8 h-8 rounded-full bg-ink-100 text-ink-600 hover:bg-ink-200 flex items-center justify-center">
                     <i class="ph-bold ph-x"></i>
                 </button>
             </div>
@@ -268,14 +268,50 @@
                 </form>
             </div>
 
-            <!-- Success View -->
-            <div id="mission-success" class="p-5 hidden text-center">
-                <div class="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-3">
-                    <i class="ph-bold ph-check text-2xl"></i>
+            <!-- Celebration View -->
+            <div id="mission-success" class="p-5 hidden text-center relative overflow-hidden">
+                <canvas id="confetti-canvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+                <div class="relative">
+                    <div class="w-14 h-14 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto mb-3 shadow-sm">
+                        <i class="ph-bold ph-check text-2xl"></i>
+                    </div>
+                    <p class="text-[11px] font-bold uppercase tracking-widest text-ink-400">All Set</p>
+                    <h3 class="text-xl font-extrabold text-ink-900 mt-1">Thank you</h3>
+                    <p class="text-sm text-ink-600 mt-2">Thank you for participating</p>
+                    <p class="text-xs text-ink-400 mt-1">Your reward has been sent successfully</p>
+
+                    <div class="mt-4 rounded-2xl border border-ink-200/60 bg-ink-50 p-4 text-left">
+                        <div class="flex items-start gap-3">
+                            <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-white shadow-sm border border-ink-200/60 text-ink-900">
+                                <i class="ph-bold ph-gift"></i>
+                            </span>
+                            <div class="min-w-0">
+                                <p class="font-bold text-ink-900 leading-tight">Referral bonus opportunity</p>
+                                <p class="text-xs text-ink-500 mt-1 leading-relaxed">
+                                    Refer a friend using your personal link. After a successful referred completion, you may receive an additional bonus.
+                                </p>
+                                <p class="text-[11px] text-ink-600 mt-2">
+                                    Bonus type: <span id="referral-bonus-type" class="font-bold text-ink-900">Airtime</span>
+                                </p>
+                                <p class="text-[11px] text-ink-500 mt-1 break-all">
+                                    Link: <span id="referral-link" class="font-semibold text-ink-700"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <button type="button" id="celebrate-home" class="w-full rounded-xl border border-ink-200/60 bg-white py-3 text-sm font-bold text-ink-900 hover:bg-ink-50 active:scale-[0.99]">
+                            Return Home
+                        </button>
+                        <button type="button" id="celebrate-refer" class="w-full rounded-xl bg-ink-900 text-white py-3 text-sm font-bold hover:bg-black active:scale-[0.99] flex items-center justify-center gap-2">
+                            <i class="ph-bold ph-link-simple"></i>
+                            Refer a Friend
+                        </button>
+                    </div>
+
+                    <p id="referral-toast" class="mt-3 text-[11px] text-emerald-700 font-semibold hidden">Referral link copied.</p>
                 </div>
-                <p class="font-bold text-ink-900">Submission Received</p>
-                <p class="text-xs text-ink-400 mt-1 mb-4">Thanks for helping keep the community safe.</p>
-                <button onclick="closeMissionModal()" class="w-full rounded-xl bg-ink-900 text-white py-2.5 text-sm font-bold hover:bg-black">Close</button>
             </div>
         </div>
     </div>
@@ -739,6 +775,7 @@
         const successView = document.getElementById('mission-success');
         const modalTitle = document.getElementById('mission-modal-title');
         const formDesc = document.getElementById('mission-form-desc');
+        const missionCloseBtn = document.getElementById('mission-modal-close');
         const safeSpaceAlert = document.getElementById('safe-space-alert');
         const missionFormEl = document.getElementById('mission-form-el');
         const stepFields = document.getElementById('mission-step-fields');
@@ -751,6 +788,12 @@
         const btnReset = document.getElementById('mission-reset');
         const btnNext = document.getElementById('mission-next');
         const btnSubmit = document.getElementById('mission-submit-btn');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const celebrateHomeBtn = document.getElementById('celebrate-home');
+        const celebrateReferBtn = document.getElementById('celebrate-refer');
+        const referralBonusTypeEl = document.getElementById('referral-bonus-type');
+        const referralLinkEl = document.getElementById('referral-link');
+        const referralToastEl = document.getElementById('referral-toast');
         const qrModal = document.getElementById('qr-modal');
         const qrVideo = document.getElementById('qr-video');
         const qrCanvas = document.getElementById('qr-canvas');
@@ -761,6 +804,9 @@
         let qrScanActive = false;
         let currentMissionId = null;
         let currentStepIndex = 0;
+        let confettiRaf = 0;
+        let confettiStopAt = 0;
+        let lastMainRewardType = 'momo';
         const stepState = {};
         const fileState = {};
 
@@ -786,28 +832,56 @@
         function getRewardStepHtml() {
             return `
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-ink-700 mb-1">Select Network <span class="text-red-500">*</span></label>
+                    <label class="block text-xs font-bold text-ink-700 mb-1">Reward Type <span class="text-red-500">*</span></label>
                     <div class="grid grid-cols-3 gap-2">
                         <label class="cursor-pointer">
-                            <input data-field="reward_network" type="radio" name="network" value="mtn" required class="peer sr-only"/>
-                            <div class="h-12 rounded-xl border border-ink-200/60 bg-ink-50 flex items-center justify-center peer-checked:border-[#ffcc00] peer-checked:bg-[#ffcc00]/10">
-                                <div class="w-8 h-8 rounded-full bg-[#ffcc00] flex items-center justify-center text-[10px] font-black text-black">MTN</div>
+                            <input data-field="reward_type" type="radio" name="reward_type" value="momo" required class="peer sr-only"/>
+                            <div class="h-12 rounded-xl border border-ink-200/60 bg-white flex items-center justify-center gap-2 peer-checked:border-ink-900 peer-checked:bg-ink-50">
+                                <i class="ph-bold ph-wallet text-base text-ink-900"></i>
+                                <span class="text-[11px] font-extrabold text-ink-900">MoMo</span>
                             </div>
                         </label>
                         <label class="cursor-pointer">
-                            <input data-field="reward_network" type="radio" name="network" value="telecel" required class="peer sr-only"/>
-                            <div class="h-12 rounded-xl border border-ink-200/60 bg-ink-50 flex items-center justify-center peer-checked:border-[#e3112c] peer-checked:bg-[#e3112c]/10">
-                                <div class="w-8 h-8 rounded-full bg-[#e3112c] flex items-center justify-center text-[8px] font-bold text-white">telecel</div>
+                            <input data-field="reward_type" type="radio" name="reward_type" value="airtime" required class="peer sr-only"/>
+                            <div class="h-12 rounded-xl border border-ink-200/60 bg-white flex items-center justify-center gap-2 peer-checked:border-ink-900 peer-checked:bg-ink-50">
+                                <i class="ph-bold ph-phone text-base text-ink-900"></i>
+                                <span class="text-[11px] font-extrabold text-ink-900">Airtime</span>
                             </div>
                         </label>
                         <label class="cursor-pointer">
-                            <input data-field="reward_network" type="radio" name="network" value="airteltigo" required class="peer sr-only"/>
-                            <div class="h-12 rounded-xl border border-ink-200/60 bg-ink-50 flex items-center justify-center peer-checked:border-black peer-checked:bg-black/5">
-                                <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[11px] font-black">
-                                    <span class="text-black">a</span><span class="text-[#e3112c]">t</span>
+                            <input data-field="reward_type" type="radio" name="reward_type" value="data" required class="peer sr-only"/>
+                            <div class="h-12 rounded-xl border border-ink-200/60 bg-white flex items-center justify-center gap-2 peer-checked:border-ink-900 peer-checked:bg-ink-50">
+                                <i class="ph-bold ph-wifi-high text-base text-ink-900"></i>
+                                <span class="text-[11px] font-extrabold text-ink-900">Data</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div id="reward-momo-fields" class="space-y-2 mt-2">
+                        <label class="block text-xs font-bold text-ink-700 mb-1">Mobile Network <span class="text-red-500">*</span></label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <label class="cursor-pointer">
+                                <input data-field="reward_network" type="radio" name="network" value="mtn" class="peer sr-only"/>
+                                <div class="h-12 rounded-xl border border-ink-200/60 bg-ink-50 flex items-center justify-center peer-checked:border-[#ffcc00] peer-checked:bg-[#ffcc00]/10">
+                                    <div class="w-8 h-8 rounded-full bg-[#ffcc00] flex items-center justify-center text-[10px] font-black text-black">MTN</div>
                                 </div>
-                            </div>
-                        </label>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input data-field="reward_network" type="radio" name="network" value="telecel" class="peer sr-only"/>
+                                <div class="h-12 rounded-xl border border-ink-200/60 bg-ink-50 flex items-center justify-center peer-checked:border-[#e3112c] peer-checked:bg-[#e3112c]/10">
+                                    <div class="w-8 h-8 rounded-full bg-[#e3112c] flex items-center justify-center text-[8px] font-bold text-white">telecel</div>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input data-field="reward_network" type="radio" name="network" value="airteltigo" class="peer sr-only"/>
+                                <div class="h-12 rounded-xl border border-ink-200/60 bg-ink-50 flex items-center justify-center peer-checked:border-black peer-checked:bg-black/5">
+                                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[11px] font-black">
+                                        <span class="text-black">a</span><span class="text-[#e3112c]">t</span>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                        <p id="network-error" class="hidden text-[11px] text-red-600">Select a network.</p>
                     </div>
                     <label class="block text-xs font-bold text-ink-700 mb-1 mt-2">Phone (for reward) <span class="text-red-500">*</span></label>
                     <input id="reward-phone" data-field="reward_phone" type="tel" inputmode="numeric" pattern="^[0-9]{10}$" maxlength="10" required class="w-full border border-ink-200/60 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="024XXXXXXX"/>
@@ -897,7 +971,7 @@
                     },
                     {
                         title: "Claim Reward",
-                        story: "Pick your MoMo network and get paid.",
+                        story: "Choose your reward option and share where to send it.",
                         html: getRewardStepHtml()
                     }
                 ]
@@ -975,7 +1049,7 @@
                     },
                     {
                         title: "Claim Reward",
-                        story: "Choose your network and receive your reward.",
+                        story: "Choose your reward option and share where to send it.",
                         html: getRewardStepHtml()
                     }
                 ]
@@ -1042,7 +1116,7 @@
                     },
                     {
                         title: "Claim Reward",
-                        story: "Choose your network and receive your reward.",
+                        story: "Choose your reward option and share where to send it.",
                         html: getRewardStepHtml()
                     }
                 ]
@@ -1185,6 +1259,26 @@
 
             const rewardPhone = document.getElementById('reward-phone');
             const phoneError = document.getElementById('phone-error');
+            const rewardTypeEls = stepFields.querySelectorAll('input[name="reward_type"][data-field="reward_type"]');
+            const momoFields = document.getElementById('reward-momo-fields');
+            const networkError = document.getElementById('network-error');
+
+            function getSelectedRewardType() {
+                return stepFields.querySelector('input[name="reward_type"][data-field="reward_type"]:checked')?.value || '';
+            }
+
+            function syncRewardUi() {
+                const type = getSelectedRewardType();
+                if (!momoFields) return;
+                const showMomo = type === 'momo' || type === '';
+                momoFields.classList.toggle('hidden', !showMomo);
+                networkError?.classList.add('hidden');
+            }
+
+            if (rewardTypeEls.length) {
+                rewardTypeEls.forEach((el) => el.addEventListener('change', syncRewardUi));
+            }
+
             if (rewardPhone) {
                 rewardPhone.addEventListener('input', () => {
                     rewardPhone.value = rewardPhone.value.replace(/[^0-9]/g, '').slice(0, 10);
@@ -1193,6 +1287,7 @@
             }
 
             restoreStepState();
+            syncRewardUi();
             setupFileInputs();
         }
 
@@ -1204,6 +1299,19 @@
                     return false;
                 }
             }
+
+            // Conditional: MoMo reward requires a network choice.
+            const rewardType = stepFields.querySelector('input[name="reward_type"][data-field="reward_type"]:checked')?.value;
+            if (rewardType === 'momo') {
+                const networkChecked = !!stepFields.querySelector('input[name="network"][data-field="reward_network"]:checked');
+                const networkError = document.getElementById('network-error');
+                if (!networkChecked) {
+                    networkError?.classList.remove('hidden');
+                    return false;
+                }
+                networkError?.classList.add('hidden');
+            }
+
             const rewardPhone = document.getElementById('reward-phone');
             const phoneError = document.getElementById('phone-error');
             if (rewardPhone && !/^[0-9]{10}$/.test(rewardPhone.value.trim())) {
@@ -1247,6 +1355,210 @@
                     }
                 }
             });
+        }
+
+        function safeGetLocalStorage(key) {
+            try { return localStorage.getItem(key); } catch (_) { return null; }
+        }
+        function safeSetLocalStorage(key, value) {
+            try { localStorage.setItem(key, value); } catch (_) {}
+        }
+
+        // Capture incoming referral params so they can be attached to a submission later.
+        (function captureReferralParams() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const ref = params.get('ref');
+                const rb = params.get('rb');
+                const self = safeGetLocalStorage('participantRefCode');
+                if (ref && ref !== self) safeSetLocalStorage('referrerCode', ref);
+                if (rb) safeSetLocalStorage('referrerBonus', rb);
+            } catch (_) {}
+        })();
+
+        function getOrCreateParticipantCode() {
+            const existing = safeGetLocalStorage('participantRefCode');
+            if (existing) return existing;
+            const id = (crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`).replace(/[^a-zA-Z0-9]/g, '');
+            const code = id.slice(0, 10).toLowerCase();
+            safeSetLocalStorage('participantRefCode', code);
+            return code;
+        }
+
+        function getBaseAppUrl() {
+            // Same web app URL, without query/hash.
+            return `${window.location.origin}${window.location.pathname}`;
+        }
+
+        function formatBonusType(type) {
+            if (type === 'airtime') return 'Airtime';
+            if (type === 'data') return 'Data Bundle';
+            return 'MoMo';
+        }
+
+        function pickReferralBonusType(mainRewardType) {
+            const main = (mainRewardType || '').toLowerCase();
+            const allowed = (main === 'momo') ? ['airtime', 'data'] : ['airtime', 'data', 'momo'];
+            const last = (safeGetLocalStorage('refBonusLast') || '').toLowerCase();
+            let options = allowed.slice();
+            if (options.length > 1 && last && options.includes(last)) options = options.filter((t) => t !== last);
+            if (options.length > 1 && main && options.includes(main)) options = options.filter((t) => t !== main);
+            if (!options.length) options = allowed.slice();
+
+            const cursor = parseInt(safeGetLocalStorage('refBonusCursor') || '0', 10) || 0;
+            const next = options[cursor % options.length];
+            safeSetLocalStorage('refBonusCursor', String(cursor + 1));
+            safeSetLocalStorage('refBonusLast', next);
+            return next;
+        }
+
+        function buildReferralLink(mainRewardType) {
+            const refCode = getOrCreateParticipantCode();
+            const bonusType = pickReferralBonusType(mainRewardType);
+            const url = new URL(getBaseAppUrl());
+            url.searchParams.set('ref', refCode);
+            url.searchParams.set('rb', bonusType);
+            return { url: url.toString(), bonusType };
+        }
+
+        function stopConfetti() {
+            if (confettiRaf) cancelAnimationFrame(confettiRaf);
+            confettiRaf = 0;
+            confettiStopAt = 0;
+            if (!confettiCanvas) return;
+            const ctx = confettiCanvas.getContext('2d');
+            if (!ctx) return;
+            ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        }
+
+        function startConfetti() {
+            if (!confettiCanvas) return;
+            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+            const ctx = confettiCanvas.getContext('2d');
+            if (!ctx) return;
+
+            const dpr = window.devicePixelRatio || 1;
+            const rect = confettiCanvas.getBoundingClientRect();
+            confettiCanvas.width = Math.max(1, Math.floor(rect.width * dpr));
+            confettiCanvas.height = Math.max(1, Math.floor(rect.height * dpr));
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+            const colors = ['#f97316', '#0ea5e9', '#10b981', '#eab308', '#ffffff'];
+            const count = 120;
+            const pieces = Array.from({ length: count }).map(() => ({
+                x: Math.random() * rect.width,
+                y: -20 - Math.random() * rect.height * 0.3,
+                w: 6 + Math.random() * 6,
+                h: 8 + Math.random() * 10,
+                r: Math.random() * Math.PI,
+                vr: (-0.18 + Math.random() * 0.36),
+                vx: (-1.2 + Math.random() * 2.4),
+                vy: (2.2 + Math.random() * 2.6),
+                c: colors[Math.floor(Math.random() * colors.length)],
+                a: 0.9
+            }));
+
+            confettiStopAt = performance.now() + 3200;
+            const gravity = 0.06;
+
+            function frame(t) {
+                ctx.clearRect(0, 0, rect.width, rect.height);
+                for (const p of pieces) {
+                    p.vy += gravity;
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.r += p.vr;
+                    p.a *= 0.997;
+
+                    ctx.save();
+                    ctx.globalAlpha = Math.max(0, Math.min(1, p.a));
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.r);
+                    ctx.fillStyle = p.c;
+                    ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                    ctx.restore();
+                }
+                if (t < confettiStopAt) {
+                    confettiRaf = requestAnimationFrame(frame);
+                } else {
+                    stopConfetti();
+                }
+            }
+
+            stopConfetti();
+            confettiRaf = requestAnimationFrame(frame);
+        }
+
+        function showCelebration(mainRewardType) {
+            // Lock the journey: celebration is the final screen.
+            lastMainRewardType = (mainRewardType || 'momo').toLowerCase();
+            modalTitle.textContent = "Complete";
+            pickerView.classList.add('hidden');
+            formView.classList.add('hidden');
+            successView.classList.remove('hidden');
+            missionCloseBtn?.classList.add('hidden');
+
+            const { url, bonusType } = buildReferralLink(lastMainRewardType);
+            if (referralBonusTypeEl) referralBonusTypeEl.textContent = formatBonusType(bonusType);
+            if (referralLinkEl) referralLinkEl.textContent = url;
+            referralToastEl?.classList.add('hidden');
+
+            requestAnimationFrame(() => startConfetti());
+        }
+
+        async function copyTextToClipboard(text) {
+            if (!text) return false;
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(text);
+                    return true;
+                }
+            } catch (_) {}
+            try {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-999999px';
+                textArea.style.top = '-999999px';
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                const ok = document.execCommand('copy');
+                textArea.remove();
+                return ok;
+            } catch (_) {
+                return false;
+            }
+        }
+
+        async function shareOrCopyReferral() {
+            const { url, bonusType } = buildReferralLink(lastMainRewardType);
+            if (referralBonusTypeEl) referralBonusTypeEl.textContent = formatBonusType(bonusType);
+            if (referralLinkEl) referralLinkEl.textContent = url;
+
+            const shareText =
+                `Join the Digital Stewards and help build a safer digital community. ` +
+                `Use my link to participate: ${url}\n\n` +
+                `After a successful referred completion, I may receive an extra referral bonus (${formatBonusType(bonusType)}).`;
+
+            // Prefer native share where available; always copy the link for reliability.
+            let shared = false;
+            try {
+                if (navigator.share) {
+                    await navigator.share({ title: 'Digital Stewards', text: shareText, url });
+                    shared = true;
+                }
+            } catch (_) {
+                // user canceled or share failed; fall back to copy
+            }
+
+            const copied = await copyTextToClipboard(url);
+            if (copied) {
+                referralToastEl?.classList.remove('hidden');
+                setTimeout(() => referralToastEl?.classList.add('hidden'), 2200);
+            }
+            trackEvent?.('referral_share', { shared: shared ? 1 : 0, copied: copied ? 1 : 0, bonus: bonusType });
         }
 
         function setupFileInputs() {
@@ -1312,17 +1624,39 @@
             e.preventDefault();
             if (!validateStep()) return;
             saveStepState();
-            trackEvent("mission_submit_attempt", { mission_id: currentMissionId });
-            pickerView.classList.add('hidden');
-            formView.classList.add('hidden');
-            successView.classList.remove('hidden');
+            trackEvent("mission_submit_attempt", {
+                mission_id: currentMissionId,
+                ref: safeGetLocalStorage('referrerCode') ? 1 : 0,
+                rb: safeGetLocalStorage('referrerBonus') || ''
+            });
+            const mainRewardType =
+                stepFields.querySelector('input[name="reward_type"][data-field="reward_type"]:checked')?.value || 'momo';
+            showCelebration(mainRewardType);
             trackEvent("mission_complete", { mission_id: currentMissionId });
         });
 
+        celebrateHomeBtn?.addEventListener('click', () => {
+            // Reset the mission state after completion.
+            try { missionFormEl.reset(); } catch (_) {}
+            Object.keys(stepState).forEach((k) => { if (currentMissionId && k.startsWith(`${currentMissionId}:`)) delete stepState[k]; });
+            Object.keys(fileState).forEach((k) => { if (currentMissionId && k.startsWith(`${currentMissionId}:`)) delete fileState[k]; });
+            trackEvent?.('celebration_home', { mission_id: currentMissionId || '' });
+            currentMissionId = null;
+            currentStepIndex = 0;
+            closeMissionModal();
+        });
+
+        celebrateReferBtn?.addEventListener('click', () => {
+            shareOrCopyReferral();
+        });
+
         function closeMissionModal() {
+            stopConfetti();
             missionModal.classList.add('hidden');
             missionModal.classList.remove('flex');
             document.body.classList.remove('modal-open');
+            missionCloseBtn?.classList.remove('hidden');
+            backToPicker();
         }
 
 
