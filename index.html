@@ -407,7 +407,9 @@
         }
         .card-header { flex: 0 0 auto; }
         .card-body {
-            overflow: hidden;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
             display: flex;
             flex-direction: column;
             gap: 0;
@@ -415,19 +417,16 @@
             min-height: 0; /* critical for nested scroll in flex */
         }
         .card-scroll {
-            flex: 1 1 auto;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            overscroll-behavior: contain;
-            padding-right: 2px;
-            min-height: 0;
+            flex: 0 0 auto;
+            overflow: visible;
+            padding-right: 0;
         }
         .card-actions { flex: 0 0 auto; }
         @media (max-width: 640px) {
             /* Mobile: fullscreen card, scroll inside card */
             body { padding: 0 !important; }
             .pitch-card { height: 100svh; max-width: none; border-radius: 0 !important; }
-            .card-scroll { overflow-y: auto; overscroll-behavior: contain; }
+            .card-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding-right: 2px; }
             .card-header {
                 min-height: 190px;
                 border-radius: 0 !important;
@@ -565,7 +564,7 @@
             .pitch-card { max-width: 100%; height: calc(100svh - 16px); display: flex; flex-direction: column; }
             .card-header { min-height: 120px; padding: 12px 14px; }
             .card-body { padding: 12px; flex: 1 1 auto; overflow: hidden; }
-            .card-scroll { overflow-y: auto; overscroll-behavior: contain; }
+            .card-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding-right: 2px; }
             .hero-title { font-size: 1.5rem; line-height: 1.15; margin-bottom: 8px; }
             .hero-copy { font-size: 0.82rem; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
             .how-block { display: none; }
@@ -1732,13 +1731,36 @@
             });
         });
 
-        // Make scroll feel consistent: scrolling anywhere over the card should scroll the inner content.
-        // Without this, wheel/trackpad scrolling over the header/actions can appear "stuck" because only
-        // `.card-scroll` is scrollable.
+        // Make scroll feel consistent: scrolling anywhere over the card should scroll the card body.
+        // Without this, wheel/trackpad scrolling over the header can appear "stuck" because only the
+        // inner body is scrollable.
         (function bindCardScrollProxy() {
             const card = document.querySelector('.pitch-card');
-            const scroller = document.querySelector('.card-scroll');
+            const scroller = document.querySelector('.card-body');
             if (!card || !scroller) return;
+
+            // Optional: `?debugScroll=1` prints scroll diagnostics in DevTools console.
+            try {
+                const params = new URLSearchParams(window.location.search);
+                if (params.get('debugScroll') === '1') {
+                    const body = document.body;
+                    const cardScroll = document.querySelector('.card-scroll');
+                    const csBody = window.getComputedStyle(body);
+                    const csScroller = window.getComputedStyle(scroller);
+                    const csCardScroll = cardScroll ? window.getComputedStyle(cardScroll) : null;
+                    // eslint-disable-next-line no-console
+                    console.table({
+                        body_overflowY: csBody.overflowY,
+                        body_has_modal_open: body.classList.contains('modal-open'),
+                        cardBody_overflowY: csScroller.overflowY,
+                        cardBody_clientHeight: scroller.clientHeight,
+                        cardBody_scrollHeight: scroller.scrollHeight,
+                        cardScroll_overflowY: csCardScroll ? csCardScroll.overflowY : '(missing)',
+                        cardScroll_clientHeight: cardScroll ? cardScroll.clientHeight : 0,
+                        cardScroll_scrollHeight: cardScroll ? cardScroll.scrollHeight : 0,
+                    });
+                }
+            } catch (_) {}
 
             card.addEventListener('wheel', (e) => {
                 if (e.ctrlKey) return; // allow browser zoom gestures
