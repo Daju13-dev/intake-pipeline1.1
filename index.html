@@ -259,11 +259,6 @@
                 <form id="mission-form-el" class="space-y-3">
                     <div id="mission-step-fields" class="space-y-3"></div>
 
-                    <label class="flex items-center gap-2 text-xs text-ink-500 pt-1" id="multi-submit-wrap">
-                        <input id="multi-submit" type="checkbox" class="accent-ink-900">
-                        I want to submit another report after this.
-                    </label>
-
                     <div class="flex items-center gap-2 pt-1">
                         <button type="button" id="mission-back" class="flex-1 rounded-xl border border-ink-200/60 py-2.5 text-sm font-bold text-ink-700 hover:bg-ink-50">Back</button>
                         <button type="button" id="mission-reset" class="flex-1 rounded-xl border border-ink-200/60 py-2.5 text-sm font-bold text-ink-700 hover:bg-ink-50">Reset</button>
@@ -746,8 +741,6 @@
         const formDesc = document.getElementById('mission-form-desc');
         const safeSpaceAlert = document.getElementById('safe-space-alert');
         const missionFormEl = document.getElementById('mission-form-el');
-        const multiSubmit = document.getElementById('multi-submit');
-        const multiSubmitWrap = document.getElementById('multi-submit-wrap');
         const stepFields = document.getElementById('mission-step-fields');
         const stepTitle = document.getElementById('mission-step-title');
         const stepStory = document.getElementById('mission-story');
@@ -1184,12 +1177,10 @@
             btnBack.classList.toggle('hidden', currentStepIndex === 0);
             btnNext.classList.toggle('hidden', currentStepIndex === mission.steps.length - 1);
             btnSubmit.classList.toggle('hidden', currentStepIndex !== mission.steps.length - 1);
-            multiSubmitWrap.classList.toggle('hidden', currentStepIndex !== mission.steps.length - 1);
 
             if (step.title === "Verify Identity") {
                 btnNext.classList.add('hidden');
                 btnSubmit.classList.add('hidden');
-                multiSubmitWrap.classList.add('hidden');
             }
 
             const rewardPhone = document.getElementById('reward-phone');
@@ -1322,12 +1313,6 @@
             if (!validateStep()) return;
             saveStepState();
             trackEvent("mission_submit_attempt", { mission_id: currentMissionId });
-            if (multiSubmit.checked) {
-                missionFormEl.reset();
-                backToPicker();
-                trackEvent("mission_submit_multi", { mission_id: currentMissionId });
-                return;
-            }
             pickerView.classList.add('hidden');
             formView.classList.add('hidden');
             successView.classList.remove('hidden');
