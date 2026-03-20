@@ -53,6 +53,31 @@
 </head>
 <body class="min-h-screen bg-ink-900 text-ink-900 flex items-start sm:items-center justify-center p-3 sm:p-6 md:p-8 font-sans selection:bg-brand-500 selection:text-white relative overflow-x-hidden">
 
+    <!-- Floating Brand (Dynamic Island) -->
+    <div id="brand-island" class="brand-island" aria-label="Brand navigation">
+        <button id="brand-island-btn" class="brand-island__button" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="brand-island-panel">
+            <span class="brand-island__inner">
+                <span class="brand-island__mark" aria-hidden="true">
+                    <img id="brand-island-logo" src="Android.png" alt="" class="brand-island__logo" onerror="this.style.display='none'; document.getElementById('brand-island-fallback').classList.remove('hidden');">
+                    <span id="brand-island-fallback" class="brand-island__fallback hidden">A</span>
+                </span>
+                <span class="brand-island__name">AdwumaTech AI</span>
+                <i class="ph-bold ph-caret-down brand-island__chev" aria-hidden="true"></i>
+            </span>
+        </button>
+        <div id="brand-island-panel" class="brand-island__panel" role="menu" aria-label="Brand menu">
+            <a role="menuitem" class="brand-island__item" href="https://www.adwumatech.ai" target="_blank" rel="noopener noreferrer">
+                <span class="brand-island__itemTitle">Open AdwumaTech</span>
+                <span class="brand-island__itemSub">Visit the official website</span>
+            </a>
+            <div class="brand-island__featured" role="presentation">
+                <p class="brand-island__featuredKicker">Featured</p>
+                <p class="brand-island__featuredTitle">Coming soon</p>
+                <p class="brand-island__featuredSub">We’ll add spotlight content here.</p>
+            </div>
+        </div>
+    </div>
+
     <!-- Subtle Background -->
     <div class="absolute inset-0 pointer-events-none z-0">
         <div class="absolute -top-28 -right-20 w-[70vw] h-[70vw] rounded-full bg-brand-600/15 blur-[120px]"></div>
@@ -64,20 +89,15 @@
     <div class="pitch-card max-w-[420px] w-full bg-white rounded-[20px] sm:rounded-[24px] shadow-card overflow-hidden  relative z-10">
 
         <!-- Header -->
-        <div class="card-header bg-gradient-to-br from-ink-900 to-ink-700 p-5 sm:p-6 md:p-8 text-center relative overflow-hidden min-h-[180px] sm:min-h-[200px] md:min-h-[220px]">
-            <div class="absolute inset-0 z-0">
-                <video class="w-full h-full object-cover video-hue" autoplay muted loop playsinline preload="metadata">
+        <div class="card-header bg-gradient-to-br from-ink-900 to-ink-700 p-0 relative overflow-hidden min-h-[180px] sm:min-h-[200px] md:min-h-[220px]">
+            <div class="hero-media absolute inset-0 z-0">
+                <video class="hero-media__video video-hue" autoplay muted loop playsinline preload="metadata">
                     <source src="video.MOV" type="video/quicktime">
                     <source src="video.MOV" type="video/mp4">
                 </video>
-                <div class="absolute inset-0 bg-gradient-to-b from-ink-900/70 via-ink-900/40 to-ink-900/80"></div>
+                <div class="hero-media__overlay absolute inset-0 bg-gradient-to-b from-ink-900/70 via-ink-900/40 to-ink-900/80"></div>
             </div>
-            <a href="https://www.adwumatech.ai" target="_blank" rel="noopener noreferrer" class="absolute top-4 left-4 flex items-center gap-2 text-white/70 hover:text-white transition-colors">
-                <img src="Android.png" alt="AdwumaTech AI" class="w-6 h-6 rounded-md object-cover">
-                <span class="text-[10px] font-semibold tracking-widest hidden sm:inline-block">AdwumaTech AI</span>
-            </a>
-
-            <div class="mt-6 sm:mt-4 relative z-10"></div>
+            <div class="relative z-10 h-full"></div>
         </div>
 
         <!-- Body -->
@@ -423,6 +443,103 @@
         html, body { height: 100%; overflow-x: hidden; }
         body { overflow-y: auto; }
         img, video, canvas { max-width: 100%; }
+
+        /* Hero media: true edge-to-edge cover video (no gaps). */
+        .hero-media { overflow: hidden; }
+        .hero-media__video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            object-position: center;
+            transform: translateZ(0) scale(1.03);
+            will-change: transform;
+        }
+        .hero-media__overlay { pointer-events: none; }
+
+        /* Dynamic Island brand navigation */
+        .brand-island {
+            position: fixed;
+            top: calc(10px + env(safe-area-inset-top));
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 95;
+            width: min(92vw, 380px);
+            pointer-events: auto;
+        }
+        .brand-island__button {
+            width: 100%;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.14);
+            background: rgba(11, 18, 32, 0.58);
+            color: rgba(255,255,255,0.92);
+            backdrop-filter: blur(14px) saturate(155%);
+            -webkit-backdrop-filter: blur(14px) saturate(155%);
+            box-shadow: 0 18px 50px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08);
+            padding: 10px 12px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .brand-island__button:focus-visible {
+            outline: 2px solid rgba(249, 115, 22, 0.9);
+            outline-offset: 2px;
+        }
+        .brand-island__inner { display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .brand-island__mark {
+            width: 28px;
+            height: 28px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.10);
+            border: 1px solid rgba(255,255,255,0.12);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex: 0 0 auto;
+        }
+        .brand-island__logo { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .brand-island__fallback { font-weight: 900; font-size: 12px; letter-spacing: 0.08em; color: rgba(255,255,255,0.92); }
+        .brand-island__name { font-weight: 800; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; white-space: nowrap; }
+        .brand-island__chev { font-size: 14px; opacity: 0.85; transition: transform 180ms ease, opacity 180ms ease; }
+        .brand-island__panel {
+            margin-top: 10px;
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.10);
+            background: rgba(11, 18, 32, 0.70);
+            backdrop-filter: blur(16px) saturate(165%);
+            -webkit-backdrop-filter: blur(16px) saturate(165%);
+            box-shadow: 0 22px 70px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06);
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(-6px) scale(0.98);
+            pointer-events: none;
+            transition: opacity 180ms ease, transform 180ms ease;
+        }
+        .brand-island.is-open .brand-island__panel {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+        .brand-island.is-open .brand-island__chev { transform: rotate(180deg); opacity: 1; }
+        .brand-island__item {
+            display: block;
+            padding: 12px 14px;
+            color: rgba(255,255,255,0.94);
+            text-decoration: none;
+        }
+        .brand-island__item:hover { background: rgba(255,255,255,0.06); }
+        .brand-island__itemTitle { display: block; font-weight: 800; font-size: 13px; }
+        .brand-island__itemSub { display: block; margin-top: 2px; font-size: 11px; color: rgba(255,255,255,0.70); }
+        .brand-island__featured {
+            padding: 12px 14px 14px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            background: linear-gradient(135deg, rgba(249,115,22,0.12), rgba(14,165,233,0.10));
+        }
+        .brand-island__featuredKicker { font-size: 10px; font-weight: 900; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.72); }
+        .brand-island__featuredTitle { margin-top: 4px; font-size: 13px; font-weight: 900; color: rgba(255,255,255,0.95); }
+        .brand-island__featuredSub { margin-top: 2px; font-size: 11px; color: rgba(255,255,255,0.72); }
 
         /* Desktop/tablet: keep the centered card look, scroll inside the card body. */
         .pitch-card {
@@ -2014,6 +2131,41 @@
                 supportMessage.focus();
             });
         });
+
+        // Brand "Dynamic Island" dropdown behavior (click outside + Esc to close).
+        (function setupBrandIsland() {
+            const root = document.getElementById('brand-island');
+            const btn = document.getElementById('brand-island-btn');
+            const panel = document.getElementById('brand-island-panel');
+            if (!root || !btn || !panel) return;
+
+            function setOpen(open) {
+                root.classList.toggle('is-open', open);
+                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            }
+
+            function toggle() {
+                setOpen(!root.classList.contains('is-open'));
+            }
+
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                toggle();
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!root.classList.contains('is-open')) return;
+                if (root.contains(e.target)) return;
+                setOpen(false);
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key !== 'Escape') return;
+                if (!root.classList.contains('is-open')) return;
+                setOpen(false);
+                btn.focus();
+            });
+        })();
 
         // Make scroll feel consistent: scrolling anywhere over the card should scroll the card body.
         // Without this, wheel/trackpad scrolling over the header can appear "stuck" because only the
