@@ -832,60 +832,17 @@
         function getRewardStepHtml() {
             return `
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-ink-700 mb-1">Reward Type <span class="text-red-500">*</span></label>
-                    <div class="grid grid-cols-3 gap-2">
-                        <label class="cursor-pointer">
-                            <input data-field="reward_type" type="radio" name="reward_type" value="momo" required class="peer sr-only"/>
-                            <div class="h-12 rounded-xl border border-ink-200/60 bg-white flex items-center justify-center gap-2 peer-checked:border-ink-900 peer-checked:bg-ink-50">
-                                <i class="ph-bold ph-wallet text-base text-ink-900"></i>
-                                <span class="text-[11px] font-extrabold text-ink-900">MoMo</span>
-                            </div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input data-field="reward_type" type="radio" name="reward_type" value="airtime" required class="peer sr-only"/>
-                            <div class="h-12 rounded-xl border border-ink-200/60 bg-white flex items-center justify-center gap-2 peer-checked:border-ink-900 peer-checked:bg-ink-50">
-                                <i class="ph-bold ph-phone text-base text-ink-900"></i>
-                                <span class="text-[11px] font-extrabold text-ink-900">Airtime</span>
-                            </div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input data-field="reward_type" type="radio" name="reward_type" value="data" required class="peer sr-only"/>
-                            <div class="h-12 rounded-xl border border-ink-200/60 bg-white flex items-center justify-center gap-2 peer-checked:border-ink-900 peer-checked:bg-ink-50">
-                                <i class="ph-bold ph-wifi-high text-base text-ink-900"></i>
-                                <span class="text-[11px] font-extrabold text-ink-900">Data</span>
-                            </div>
-                        </label>
-                    </div>
+                    <label class="block text-xs font-bold text-ink-700 mb-1">Mobile Network <span class="text-red-500">*</span></label>
+                    <select id="reward-network" data-field="reward_network" required class="w-full border border-ink-200/60 rounded-xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <option value="" selected disabled>Select network</option>
+                        <option value="MTN">MTN</option>
+                        <option value="Telecel">Telecel</option>
+                        <option value="AirtelTigo">AirtelTigo</option>
+                    </select>
 
-                    <div id="reward-momo-fields" class="space-y-2 mt-2">
-                        <label class="block text-xs font-bold text-ink-700 mb-1">Mobile Network <span class="text-red-500">*</span></label>
-                        <div class="grid grid-cols-3 gap-2">
-                            <label class="cursor-pointer">
-                                <input data-field="reward_network" type="radio" name="network" value="mtn" class="peer sr-only"/>
-                                <div class="h-12 rounded-xl border border-ink-200/60 bg-ink-50 flex items-center justify-center peer-checked:border-[#ffcc00] peer-checked:bg-[#ffcc00]/10">
-                                    <div class="w-8 h-8 rounded-full bg-[#ffcc00] flex items-center justify-center text-[10px] font-black text-black">MTN</div>
-                                </div>
-                            </label>
-                            <label class="cursor-pointer">
-                                <input data-field="reward_network" type="radio" name="network" value="telecel" class="peer sr-only"/>
-                                <div class="h-12 rounded-xl border border-ink-200/60 bg-ink-50 flex items-center justify-center peer-checked:border-[#e3112c] peer-checked:bg-[#e3112c]/10">
-                                    <div class="w-8 h-8 rounded-full bg-[#e3112c] flex items-center justify-center text-[8px] font-bold text-white">telecel</div>
-                                </div>
-                            </label>
-                            <label class="cursor-pointer">
-                                <input data-field="reward_network" type="radio" name="network" value="airteltigo" class="peer sr-only"/>
-                                <div class="h-12 rounded-xl border border-ink-200/60 bg-ink-50 flex items-center justify-center peer-checked:border-black peer-checked:bg-black/5">
-                                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[11px] font-black">
-                                        <span class="text-black">a</span><span class="text-[#e3112c]">t</span>
-                                    </div>
-                                </div>
-                            </label>
-                        </div>
-                        <p id="network-error" class="hidden text-[11px] text-red-600">Select a network.</p>
-                    </div>
-                    <label class="block text-xs font-bold text-ink-700 mb-1 mt-2">Phone (for reward) <span class="text-red-500">*</span></label>
-                    <input id="reward-phone" data-field="reward_phone" type="tel" inputmode="numeric" pattern="^[0-9]{10}$" maxlength="10" required class="w-full border border-ink-200/60 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="024XXXXXXX"/>
-                    <p id="phone-error" class="hidden text-[11px] text-red-600">Enter a valid 10-digit number (numbers only).</p>
+                    <label class="block text-xs font-bold text-ink-700 mb-1 mt-2">Mobile Money Number <span class="text-red-500">*</span></label>
+                    <input id="reward-momo" data-field="reward_momo" type="tel" inputmode="numeric" autocomplete="tel" required class="w-full border border-ink-200/60 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="e.g. 055 123 4567"/>
+                    <p id="reward-error" class="hidden text-[11px] text-red-600">Please check your reward details.</p>
                 </div>
             `;
         }
@@ -971,7 +928,7 @@
                     },
                     {
                         title: "Claim Reward",
-                        story: "Choose your reward option and share where to send it.",
+                        story: "Enter your Mobile Money details to receive your reward.",
                         html: getRewardStepHtml()
                     }
                 ]
@@ -1049,7 +1006,7 @@
                     },
                     {
                         title: "Claim Reward",
-                        story: "Choose your reward option and share where to send it.",
+                        story: "Enter your Mobile Money details to receive your reward.",
                         html: getRewardStepHtml()
                     }
                 ]
@@ -1116,7 +1073,7 @@
                     },
                     {
                         title: "Claim Reward",
-                        story: "Choose your reward option and share where to send it.",
+                        story: "Enter your Mobile Money details to receive your reward.",
                         html: getRewardStepHtml()
                     }
                 ]
@@ -1257,37 +1214,22 @@
                 btnSubmit.classList.add('hidden');
             }
 
-            const rewardPhone = document.getElementById('reward-phone');
-            const phoneError = document.getElementById('phone-error');
-            const rewardTypeEls = stepFields.querySelectorAll('input[name="reward_type"][data-field="reward_type"]');
-            const momoFields = document.getElementById('reward-momo-fields');
-            const networkError = document.getElementById('network-error');
-
-            function getSelectedRewardType() {
-                return stepFields.querySelector('input[name="reward_type"][data-field="reward_type"]:checked')?.value || '';
-            }
-
-            function syncRewardUi() {
-                const type = getSelectedRewardType();
-                if (!momoFields) return;
-                const showMomo = type === 'momo' || type === '';
-                momoFields.classList.toggle('hidden', !showMomo);
-                networkError?.classList.add('hidden');
-            }
-
-            if (rewardTypeEls.length) {
-                rewardTypeEls.forEach((el) => el.addEventListener('change', syncRewardUi));
-            }
-
-            if (rewardPhone) {
-                rewardPhone.addEventListener('input', () => {
-                    rewardPhone.value = rewardPhone.value.replace(/[^0-9]/g, '').slice(0, 10);
-                    if (rewardPhone.value.length === 10) phoneError?.classList.add('hidden');
+            const rewardNetwork = document.getElementById('reward-network');
+            const rewardMomo = document.getElementById('reward-momo');
+            const rewardError = document.getElementById('reward-error');
+            if (rewardMomo) {
+                rewardMomo.addEventListener('input', () => {
+                    // Keep input forgiving while storing digits only.
+                    const digits = (rewardMomo.value || '').replace(/[^0-9]/g, '').slice(0, 12);
+                    rewardMomo.value = digits;
+                    rewardError?.classList.add('hidden');
                 });
+            }
+            if (rewardNetwork) {
+                rewardNetwork.addEventListener('change', () => rewardError?.classList.add('hidden'));
             }
 
             restoreStepState();
-            syncRewardUi();
             setupFileInputs();
         }
 
@@ -1300,24 +1242,30 @@
                 }
             }
 
-            // Conditional: MoMo reward requires a network choice.
-            const rewardType = stepFields.querySelector('input[name="reward_type"][data-field="reward_type"]:checked')?.value;
-            if (rewardType === 'momo') {
-                const networkChecked = !!stepFields.querySelector('input[name="network"][data-field="reward_network"]:checked');
-                const networkError = document.getElementById('network-error');
-                if (!networkChecked) {
-                    networkError?.classList.remove('hidden');
+            // Reward details validation (Claim Reward step).
+            const rewardNetwork = document.getElementById('reward-network');
+            const rewardMomo = document.getElementById('reward-momo');
+            const rewardError = document.getElementById('reward-error');
+            if (rewardNetwork || rewardMomo) {
+                const network = (rewardNetwork?.value || '').trim();
+                const momoDigits = (rewardMomo?.value || '').replace(/[^0-9]/g, '');
+                if (!network) {
+                    if (rewardError) {
+                        rewardError.textContent = "Please select your mobile network.";
+                        rewardError.classList.remove('hidden');
+                    }
+                    rewardNetwork?.focus();
                     return false;
                 }
-                networkError?.classList.add('hidden');
-            }
-
-            const rewardPhone = document.getElementById('reward-phone');
-            const phoneError = document.getElementById('phone-error');
-            if (rewardPhone && !/^[0-9]{10}$/.test(rewardPhone.value.trim())) {
-                phoneError?.classList.remove('hidden');
-                rewardPhone.focus();
-                return false;
+                if (momoDigits.length < 9) {
+                    if (rewardError) {
+                        rewardError.textContent = "Please enter a valid Mobile Money number.";
+                        rewardError.classList.remove('hidden');
+                    }
+                    rewardMomo?.focus();
+                    return false;
+                }
+                rewardError?.classList.add('hidden');
             }
             return true;
         }
@@ -1629,9 +1577,7 @@
                 ref: safeGetLocalStorage('referrerCode') ? 1 : 0,
                 rb: safeGetLocalStorage('referrerBonus') || ''
             });
-            const mainRewardType =
-                stepFields.querySelector('input[name="reward_type"][data-field="reward_type"]:checked')?.value || 'momo';
-            showCelebration(mainRewardType);
+            showCelebration('momo');
             trackEvent("mission_complete", { mission_id: currentMissionId });
         });
 

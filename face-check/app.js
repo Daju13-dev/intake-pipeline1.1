@@ -12,23 +12,10 @@ const cameraError = document.getElementById("cameraError");
 const startScreen = document.getElementById("startScreen");
 const cameraScreen = document.getElementById("cameraScreen");
 const rewardScreen = document.getElementById("rewardScreen");
-const claimScreen = document.getElementById("claimScreen");
-const thankOverlay = document.getElementById("thankOverlay");
 const rewardCloseBtn = document.getElementById("rewardCloseBtn");
-const nextBtn = document.getElementById("nextBtn");
 const retryBtn = document.getElementById("retryBtn");
 const thankCard = document.getElementById("thankCard");
 const thankCardMsg = document.getElementById("thankCardMsg");
-
-const claimBackBtn = document.getElementById("claimBackBtn");
-const claimCloseBtn = document.getElementById("claimCloseBtn");
-const claimForm = document.getElementById("claimForm");
-const networkSelect = document.getElementById("networkSelect");
-const momoNumber = document.getElementById("momoNumber");
-const claimBtn = document.getElementById("claimBtn");
-const claimError = document.getElementById("claimError");
-const claimSuccess = document.getElementById("claimSuccess");
-const doneBtn = document.getElementById("doneBtn");
 
 const submissionBar = document.getElementById("submissionBar");
 const rewardBar = document.getElementById("rewardBar");
@@ -39,10 +26,8 @@ const rewardLabel = document.getElementById("rewardLabel");
 
 const progressFace = document.getElementById("progressFace");
 const progressReward = document.getElementById("progressReward");
-const progressClaim = document.getElementById("progressClaim");
-const progressDone = document.getElementById("progressDone");
 
-const screens = [startScreen, cameraScreen, rewardScreen, claimScreen];
+const screens = [startScreen, cameraScreen, rewardScreen];
 const API_ENDPOINT = "/api/face-check";
 
 let stream = null;
@@ -54,6 +39,7 @@ let detector = null;
 let fallbackReadyAt = 0;
 let progressTimer = null;
 let activeScreen = startScreen;
+let completionSent = false;
 
 const photos = {
   selfie_front: null,
@@ -84,12 +70,7 @@ startBtn.addEventListener("click", async () => {
 closeBtn.addEventListener("click", () => closeFlow());
 backBtn.addEventListener("click", () => resetFlow());
 rewardCloseBtn.addEventListener("click", () => closeFlow());
-nextBtn.addEventListener("click", () => goToClaim());
 retryBtn.addEventListener("click", () => runProgress());
-claimBackBtn.addEventListener("click", () => goToReward());
-claimCloseBtn.addEventListener("click", () => closeFlow());
-doneBtn.addEventListener("click", () => closeFlow());
-claimForm.addEventListener("submit", (e) => submitClaim(e));
 
 async function startCamera() {
   try {
@@ -163,23 +144,12 @@ function showScreen(screen) {
 function setProgress(stage) {
   progressFace.classList.remove("active", "done");
   progressReward.classList.remove("active", "done");
-  progressClaim.classList.remove("active", "done");
-  progressDone.classList.remove("active", "done");
 
   if (stage === "face") {
     progressFace.classList.add("active");
   } else if (stage === "reward") {
     progressFace.classList.add("done");
     progressReward.classList.add("active");
-  } else if (stage === "claim") {
-    progressFace.classList.add("done");
-    progressReward.classList.add("done");
-    progressClaim.classList.add("active");
-  } else if (stage === "done") {
-    progressFace.classList.add("done");
-    progressReward.classList.add("done");
-    progressClaim.classList.add("done");
-    progressDone.classList.add("active");
   }
 }
 
@@ -318,7 +288,6 @@ function finishCapture() {
 
 async function runProgress() {
   resetProgress();
-  nextBtn.disabled = true;
   retryBtn.classList.add("hidden");
   thankCard.classList.add("hidden");
 
@@ -384,87 +353,27 @@ function updateMeter(submission, reward, complete = false, degraded = false) {
     }
   } else if (complete) {
     submissionLabel.textContent = "Submission queued. You can continue.";
-    rewardLabel.textContent = "You can proceed to claim your reward.";
+    rewardLabel.textContent = "You can continue.";
   }
 
   if (complete) {
     clearInterval(progressTimer);
     progressTimer = null;
-    nextBtn.disabled = false;
     showThankCard();
     if (degraded) {
-      thankCardMsg.textContent = "Submission queued. Continue to claim your reward.";
+      thankCardMsg.textContent = "Submission queued. You can continue.";
       thankCard.classList.remove("hidden");
     }
-  }
-}
-
-function goToReward() {
-  showScreen(rewardScreen);
-  setProgress("reward");
-}
-
-function goToClaim() {
-  if (nextBtn.disabled) return;
-  clearClaimError();
-  showScreen(claimScreen);
-  setProgress("claim");
-}
-
-function clearClaimError() {
-  claimError.textContent = "";
-  claimError.classList.add("hidden");
-}
-
-function setClaimBusy(busy) {
-  claimBtn.disabled = busy;
-  claimBtn.textContent = busy ? "Processing..." : "Claim Reward";
-  networkSelect.disabled = busy;
-  momoNumber.disabled = busy;
-}
-
-async function submitClaim(event) {
-  event.preventDefault();
-  clearClaimError();
-
-  const network = networkSelect.value;
-  const momoRaw = (momoNumber.value || "").trim();
-  const momoDigits = momoRaw.replace(/\\D/g, "");
-
-  if (!network) {
-    claimError.textContent = "Please select your mobile network.";
-    claimError.classList.remove("hidden");
-    return;
-  }
-
-  if (momoDigits.length < 9) {
-    claimError.textContent = "Please enter a valid Mobile Money number.";
-    claimError.classList.remove("hidden");
-    return;
-  }
-
-  setClaimBusy(true);
-  try {
-    await processRewardClaim({ network, momo: momoDigits });
-    claimForm.classList.add("hidden");
-    claimSuccess.classList.remove("hidden");
-    setProgress("done");
-    triggerThankYou();
-    if (window.parent && window.parent !== window) {
-      window.parent.postMessage({ type: "facecheck:complete" }, "*");
+    if (!completionSent) {
+      completionSent = true;
+      // Short pause so the user sees 100% before the parent moves on.
+      setTimeout(() => {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: "facecheck:complete" }, "*");
+        }
+      }, 450);
     }
-  } catch (e) {
-    claimError.textContent = "We couldn't process your reward right now. Please try again.";
-    claimError.classList.remove("hidden");
-    setClaimBusy(false);
   }
-}
-
-function processRewardClaim(payload) {
-  // Placeholder: wire to your real payout backend when ready.
-  return new Promise((resolve) => {
-    window.setTimeout(() => resolve(payload), 1200);
-  });
 }
 
 function resetProgress() {
@@ -478,13 +387,6 @@ function resetProgress() {
     clearInterval(progressTimer);
     progressTimer = null;
   }
-}
-
-function triggerThankYou() {
-  thankOverlay.classList.remove("hidden");
-  setTimeout(() => {
-    thankOverlay.classList.add("hidden");
-  }, 2000);
 }
 
 function showThankCard() {
@@ -507,14 +409,7 @@ function resetFlow() {
   }
   thankCard.classList.add("hidden");
   retryBtn.classList.add("hidden");
-  nextBtn.disabled = true;
-
-  claimForm.classList.remove("hidden");
-  claimSuccess.classList.add("hidden");
-  networkSelect.value = "";
-  momoNumber.value = "";
-  setClaimBusy(false);
-  clearClaimError();
+  completionSent = false;
 
   photos.selfie_front = null;
   photos.selfie_turn = null;
