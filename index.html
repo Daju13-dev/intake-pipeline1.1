@@ -420,8 +420,9 @@
 
 <style>
         body.modal-open { overflow: hidden !important; }
-        html, body { height: 100%; }
+        html, body { height: 100%; overflow-x: hidden; }
         body { overflow-y: auto; }
+        img, video, canvas { max-width: 100%; }
 
         /* Desktop/tablet: keep the centered card look, scroll inside the card body. */
         .pitch-card {
@@ -453,12 +454,30 @@
             padding-right: 0;
         }
         .card-actions { flex: 0 0 auto; }
+
+        /* Mobile/tablet: prevent compressed header media and stack actions cleanly. */
+        @media (max-width: 768px) {
+            .pitch-card { max-width: 100%; }
+            .card-header {
+                aspect-ratio: 16 / 9;
+                height: auto;
+                min-height: 200px;
+            }
+            .card-body { padding: 14px !important; }
+            .secondary-actions { grid-template-columns: 1fr; gap: 10px; }
+            .secondary-actions button { width: 100%; }
+            .icon-dot { flex: 0 0 auto; width: 32px; height: 32px; }
+            .icon-dot i { line-height: 1; }
+        }
+
         @media (max-width: 640px) {
             /* Mobile: fullscreen card, scroll inside card */
             body { padding: 0 !important; }
             .pitch-card { height: 100svh; max-width: none; border-radius: 0 !important; }
             .card-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding-right: 2px; }
             .card-header {
+                aspect-ratio: 16 / 9;
+                height: auto;
                 min-height: 190px;
                 border-radius: 0 !important;
                 padding-top: calc(18px + env(safe-area-inset-top)) !important;
@@ -593,7 +612,7 @@
         @media (max-width: 640px) {
             body { padding: 8px; align-items: center; }
             .pitch-card { max-width: 100%; height: calc(100svh - 16px); display: flex; flex-direction: column; }
-            .card-header { min-height: 120px; padding: 12px 14px; }
+            .card-header { padding: 12px 14px; }
             .card-body { padding: 12px; flex: 1 1 auto; overflow: hidden; }
             .card-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding-right: 2px; }
             .hero-title { font-size: 1.5rem; line-height: 1.15; margin-bottom: 8px; }
