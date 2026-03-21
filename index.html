@@ -66,6 +66,12 @@
             </span>
         </button>
         <div id="brand-island-panel" class="brand-island__panel" role="menu" aria-label="Brand menu">
+            <div class="brand-island__panelTop" role="presentation">
+                <span class="brand-island__panelTitle">Navigation</span>
+                <button id="brand-island-close" class="brand-island__panelClose" type="button" aria-label="Close menu">
+                    <i class="ph-bold ph-x" aria-hidden="true"></i>
+                </button>
+            </div>
             <a role="menuitem" class="brand-island__item" href="https://www.adwumatech.ai" target="_blank" rel="noopener noreferrer">
                 <span class="brand-island__itemTitle">Open AdwumaTech</span>
                 <span class="brand-island__itemSub">Visit the official website</span>
@@ -517,12 +523,45 @@
             pointer-events: none;
             transition: opacity 180ms ease, transform 180ms ease;
         }
+        body.modal-open .brand-island {
+            pointer-events: none;
+            opacity: 0;
+            transform: translateX(-50%) translateY(-8px) scale(0.98);
+            transition: opacity 160ms ease, transform 160ms ease;
+        }
         .brand-island.is-open .brand-island__panel {
             opacity: 1;
             transform: translateY(0) scale(1);
             pointer-events: auto;
         }
         .brand-island.is-open .brand-island__chev { transform: rotate(180deg); opacity: 1; }
+        .brand-island__panelTop {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.03);
+        }
+        .brand-island__panelTitle {
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.70);
+        }
+        .brand-island__panelClose {
+            width: 32px;
+            height: 32px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.10);
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.92);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .brand-island__panelClose:hover { background: rgba(255,255,255,0.10); }
         .brand-island__item {
             display: block;
             padding: 12px 14px;
@@ -2137,12 +2176,16 @@
             const root = document.getElementById('brand-island');
             const btn = document.getElementById('brand-island-btn');
             const panel = document.getElementById('brand-island-panel');
+            const closeBtn = document.getElementById('brand-island-close');
             if (!root || !btn || !panel) return;
 
             function setOpen(open) {
                 root.classList.toggle('is-open', open);
                 btn.setAttribute('aria-expanded', open ? 'true' : 'false');
             }
+
+            // Expose a close helper for other UI layers (modals).
+            window.__closeBrandIsland = () => setOpen(false);
 
             function toggle() {
                 setOpen(!root.classList.contains('is-open'));
@@ -2151,6 +2194,13 @@
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 toggle();
+            });
+
+            closeBtn?.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setOpen(false);
+                btn.focus();
             });
 
             document.addEventListener('click', (e) => {
@@ -2165,6 +2215,81 @@
                 setOpen(false);
                 btn.focus();
             });
+        })();
+
+        // Unified dismissal handling for overlays (Escape + outside click).
+        (function setupDismissals() {
+            const missionModal = document.getElementById('mission-modal');
+            const qrModal = document.getElementById('qr-modal');
+            const facecheckModal = document.getElementById('facecheck-modal');
+            const chatbotModal = document.getElementById('chatbot-modal');
+
+            const isOpen = (el) => !!el && !el.classList.contains('hidden');
+
+            function closeBrand() {
+                try { window.__closeBrandIsland?.(); } catch (_) {}
+            }
+
+            function syncModalOpenClass() {
+                const any =
+                    isOpen(missionModal) ||
+                    isOpen(qrModal) ||
+                    isOpen(facecheckModal) ||
+                    isOpen(chatbotModal);
+                document.body.classList.toggle('modal-open', any);
+                if (any) closeBrand();
+            }
+
+            // Patch existing open/close functions to avoid stale `modal-open` state and to prevent the island
+            // from blocking clicks on modal close buttons.
+            const wrap = (fnName) => {
+                const original = window[fnName];
+                if (typeof original !== 'function') return;
+                window[fnName] = function (...args) {
+                    const result = original.apply(this, args);
+                    // Allow class toggles to apply first.
+                    setTimeout(syncModalOpenClass, 0);
+                    return result;
+                };
+            };
+            ['openMissionPicker', 'closeMissionModal', 'openQRScanner', 'closeQRScanner', 'openFaceCheck', 'closeFaceCheck', 'toggleChatbot'].forEach(wrap);
+
+            // Outside click closes (backdrop only).
+            missionModal?.addEventListener('click', (e) => {
+                if (e.target !== missionModal) return;
+                window.closeMissionModal?.();
+            });
+            qrModal?.addEventListener('click', (e) => {
+                if (e.target !== qrModal) return;
+                window.closeQRScanner?.();
+            });
+            chatbotModal?.addEventListener('click', (e) => {
+                if (e.target !== chatbotModal) return;
+                window.toggleChatbot?.(false);
+            });
+            facecheckModal?.addEventListener('click', (e) => {
+                if (e.target !== facecheckModal) return;
+                window.closeFaceCheck?.();
+            });
+
+            // Escape closes the topmost open surface.
+            document.addEventListener('keydown', (e) => {
+                if (e.key !== 'Escape') return;
+
+                // Brand menu first (when no modal overlay is open).
+                if (!document.body.classList.contains('modal-open')) {
+                    try { window.__closeBrandIsland?.(); } catch (_) {}
+                    return;
+                }
+
+                if (isOpen(facecheckModal)) { window.closeFaceCheck?.(); return; }
+                if (isOpen(chatbotModal)) { window.toggleChatbot?.(false); return; }
+                if (isOpen(qrModal)) { window.closeQRScanner?.(); return; }
+                if (isOpen(missionModal)) { window.closeMissionModal?.(); return; }
+            });
+
+            // Initial sync (covers cases where markup starts with a modal open).
+            syncModalOpenClass();
         })();
 
         // Make scroll feel consistent: scrolling anywhere over the card should scroll the card body.
