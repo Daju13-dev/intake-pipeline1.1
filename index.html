@@ -491,28 +491,6 @@
             width: min(92vw, 380px);
             pointer-events: auto;
         }
-        /* Desktop/tablet refinement: center using left/right + auto margins so it aligns perfectly
-           with the viewport (avoids subtle scrollbar-induced offset on Windows). Mobile stays untouched. */
-        @media (min-width: 768px) {
-            .brand-island {
-                top: 16px;
-                left: 0;
-                right: 0;
-                transform: none;
-                margin-left: auto;
-                margin-right: auto;
-                width: min(520px, calc(100vw - 64px));
-            }
-            body.modal-open .brand-island {
-                transform: translateY(-8px) scale(0.98);
-            }
-        }
-        @media (min-width: 1024px) {
-            .brand-island {
-                top: 18px;
-                width: min(560px, calc(100vw - 96px));
-            }
-        }
         .brand-island__button {
             width: 100%;
             border-radius: 999px;
