@@ -6,6 +6,11 @@
   --accent: #f97316;
   --accent-2: #0ea5e9;
   --ring: rgba(15, 23, 42, 0.08);
+  --glass-blur: blur(12px) saturate(155%);
+  --glass-blur-strong: blur(16px) saturate(165%);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-shadow: 0 18px 50px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 * {
@@ -39,6 +44,9 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 999px;
   color: #e2e8f0;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
 }
 
 .progress__step {
@@ -171,13 +179,15 @@ body {
 
 .btn {
   width: 100%;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.10);
   border-radius: 12px;
   padding: 12px 14px;
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease), filter 0.15s var(--ease);
 }
 
 .btn:active {
@@ -192,19 +202,38 @@ body {
 .btn--primary {
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
   color: #fff;
-  box-shadow: 0 12px 30px rgba(14, 165, 233, 0.25);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 18px 45px rgba(2, 6, 23, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.btn--primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14), transparent);
+  transform: translateX(-120%);
+  transition: transform 0.55s var(--ease);
+  pointer-events: none;
+}
+@media (hover:hover) {
+  .btn--primary:hover::before { transform: translateX(120%); }
+  .btn--primary:hover { filter: brightness(1.03); }
 }
 
 .btn--ghost {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.06);
   color: #e2e8f0;
-  border: 1px solid rgba(226, 232, 240, 0.2);
+  border: 1px solid rgba(226, 232, 240, 0.18);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
 }
 
 .panel--camera {
-  background: #0f172a;
+  background: rgba(15, 23, 42, 0.86);
   color: #e2e8f0;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
 }
 
 .topbar {
@@ -218,13 +247,18 @@ body {
 }
 
 .icon-btn {
-  border: 1px solid rgba(226, 232, 240, 0.18);
+  border: 1px solid rgba(226, 232, 240, 0.16);
   background: rgba(255, 255, 255, 0.08);
   color: #e2e8f0;
   border-radius: 10px;
   padding: 6px 12px;
   font-weight: 600;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: 0 14px 34px rgba(2, 6, 23, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  transition: transform 0.15s var(--ease), background 0.15s var(--ease);
 }
+.icon-btn:active { transform: translateY(1px) scale(0.99); }
 
 .camera {
   position: relative;
@@ -317,9 +351,11 @@ video {
 }
 
 .panel--reward {
-  background: #0f172a;
+  background: rgba(15, 23, 42, 0.86);
   color: #e2e8f0;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
 }
 
 .tracking {
@@ -333,6 +369,9 @@ video {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.10);
   margin: 0 0 12px;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: 0 14px 34px rgba(2, 6, 23, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .tracking__dot {
@@ -349,6 +388,9 @@ video {
   border-radius: 14px;
   padding: 12px;
   margin-bottom: 12px;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: 0 16px 40px rgba(2, 6, 23, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .meter__header {
@@ -394,6 +436,9 @@ video {
   padding: 12px;
   margin-bottom: 12px;
   text-align: left;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: 0 16px 40px rgba(2, 6, 23, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .thank-card__icon {
@@ -459,6 +504,9 @@ video {
   background: rgba(255, 255, 255, 0.06);
   color: #e2e8f0;
   outline: none;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10);
 }
 
 .control::placeholder {
