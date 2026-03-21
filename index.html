@@ -1938,6 +1938,9 @@
                         const j = await err.json();
                         if (j && j.detail) msg = String(j.detail);
                     } catch (_) {}
+                    if (/firebase/i.test(msg)) {
+                        msg = "Verification is temporarily unavailable. Please try again later.";
+                    }
                     qrStatus.textContent = "Not verified.";
                     qrResult.textContent = msg;
                     trackEvent("verify_code_error");
@@ -2084,7 +2087,9 @@
 
             } catch (e) {
                 const msg = (e && e.message) ? String(e.message) : 'Could not connect right now.';
-                showNotice(msg);
+                showNotice(/firebase/i.test(msg)
+                    ? 'Support is temporarily unavailable. Please try again later.'
+                    : msg);
                 setSupportStatus('Temporarily offline');
                 if (supportOpenLink) supportOpenLink.classList.add('hidden');
                 trackEvent?.('support_whatsapp_error');

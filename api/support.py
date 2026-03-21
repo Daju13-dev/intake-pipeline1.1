@@ -71,51 +71,60 @@ def rep_to_public(doc_id: str, data: Dict[str, Any]) -> dict:
 
 @app.post("/api/support/assign")
 async def assign(payload: SupportAssignPayload):
+    firebase_ok = True
     try:
         init_firebase()
     except Exception:
-        raise HTTPException(status_code=500, detail="Firebase is not configured")
+        firebase_ok = False
 
     prefer = normalize_code(payload.prefer_code or "")
 
     rep = None
     rep_code = None
 
-    if prefer and len(prefer) >= 4:
-        try:
-            snap = _db.collection("reps").document(prefer).get()
-            if snap.exists:
-                data = snap.to_dict() or {}
-                if bool(data.get("active", True)):
-                    rep = rep_to_public(prefer, data)
-                    rep_code = prefer
-        except Exception as e:
-            print("[support] firestore error (prefer rep):", repr(e))
-            raise HTTPException(
-                status_code=500,
-                detail="Firestore is not set up yet. In Firebase Console, create Firestore Database and try again.",
-            )
+    if firebase_ok:
+        if prefer and len(prefer) >= 4:
+            try:
+                snap = _db.collection("reps").document(prefer).get()
+                if snap.exists:
+                    data = snap.to_dict() or {}
+                    if bool(data.get("active", True)):
+                        rep = rep_to_public(prefer, data)
+                        rep_code = prefer
+            except Exception as e:
+                print("[support] firestore error (prefer rep):", repr(e))
+                raise HTTPException(
+                    status_code=500,
+                    detail="Support is temporarily unavailable. Please try again shortly.",
+                )
 
-    if not rep:
-        try:
-            docs = list(
-                _db.collection("reps").where("active", "==", True).limit(50).stream()
-            )
-            if docs:
-                chosen = random.choice(docs)
-                rep_code = chosen.id
-                rep = rep_to_public(rep_code, chosen.to_dict() or {})
-        except Exception as e:
-            print("[support] firestore error (pick rep):", repr(e))
-            raise HTTPException(
-                status_code=500,
-                detail="Firestore is not set up yet. In Firebase Console, create Firestore Database and try again.",
-            )
+        if not rep:
+            try:
+                docs = list(
+                    _db.collection("reps").where("active", "==", True).limit(50).stream()
+                )
+                if docs:
+                    chosen = random.choice(docs)
+                    rep_code = chosen.id
+                    rep = rep_to_public(rep_code, chosen.to_dict() or {})
+            except Exception as e:
+                print("[support] firestore error (pick rep):", repr(e))
+                raise HTTPException(
+                    status_code=500,
+                    detail="Support is temporarily unavailable. Please try again shortly.",
+                )
 
     default_wa = re.sub(r"\D", "", os.environ.get("DEFAULT_SUPPORT_WHATSAPP", ""))
     if not rep:
+        # If Firebase is not configured, we still allow WhatsApp launch (ticket creation is skipped).
+        # Use DEFAULT_SUPPORT_WHATSAPP when available; otherwise fall back to a safe default.
         if not default_wa:
-            raise HTTPException(status_code=503, detail="No representatives available")
+            default_wa = "233557750104"
+        if not default_wa:
+            raise HTTPException(
+                status_code=503,
+                detail="Support chat is temporarily unavailable. Please try again later.",
+            )
         rep = {
             "code": "DEFAULT",
             "name": "Support",
@@ -138,14 +147,13 @@ async def assign(payload: SupportAssignPayload):
         "status": "open",
     }
 
-    try:
-        _db.collection("support_tickets").document(ticket_id).set(ticket)
-    except Exception as e:
-        print("[support] firestore error (create ticket):", repr(e))
-        raise HTTPException(
-            status_code=500,
-            detail="Could not create a support ticket. Please confirm Firestore Database is enabled in Firebase.",
-        )
+    if firebase_ok:
+        try:
+            _db.collection("support_tickets").document(ticket_id).set(ticket)
+        except Exception as e:
+            print("[support] firestore error (create ticket):", repr(e))
+            # Still allow WhatsApp launch even if ticket storage fails.
+            firebase_ok = False
 
     message_text = (
         "AdwumaTech AI Support\n"
@@ -154,4 +162,10 @@ async def assign(payload: SupportAssignPayload):
     )
 
     url = wa_link(rep.get("whatsapp_number") or "", message_text)
-    return {"ok": True, "ticket_id": ticket_id, "rep": rep, "wa_url": url}
+    return {
+        "ok": True,
+        "degraded": (not firebase_ok),
+        "ticket_id": ticket_id,
+        "rep": rep,
+        "wa_url": url,
+    }

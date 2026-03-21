@@ -114,7 +114,10 @@ async def get_rep(code: str):
     try:
         init_firebase()
     except Exception:
-        raise HTTPException(status_code=500, detail="Firebase is not configured")
+        raise HTTPException(
+            status_code=503,
+            detail="Representative verification is temporarily unavailable. Please try again later.",
+        )
 
     code = normalize_code(code)
     # Codes are generated/accepted as 6-12 chars (letters/numbers).
@@ -141,7 +144,10 @@ async def list_reps(active: Optional[bool] = True):
     try:
         init_firebase()
     except Exception:
-        raise HTTPException(status_code=500, detail="Firebase is not configured")
+        raise HTTPException(
+            status_code=503,
+            detail="Representative verification is temporarily unavailable. Please try again later.",
+        )
 
     try:
         q = _db.collection("reps")
