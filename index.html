@@ -478,11 +478,11 @@
         .brand-island__button {
             width: 100%;
             border-radius: 999px;
-            border: 1px solid rgba(255,255,255,0.14);
-            background: rgba(11, 18, 32, 0.58);
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(0, 0, 0, 0.42);
             color: rgba(255,255,255,0.92);
-            backdrop-filter: blur(14px) saturate(155%);
-            -webkit-backdrop-filter: blur(14px) saturate(155%);
+            backdrop-filter: blur(12px) saturate(155%);
+            -webkit-backdrop-filter: blur(12px) saturate(155%);
             box-shadow: 0 18px 50px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08);
             padding: 10px 12px;
             cursor: pointer;
@@ -513,7 +513,7 @@
             margin-top: 10px;
             border-radius: 18px;
             border: 1px solid rgba(255,255,255,0.10);
-            background: rgba(11, 18, 32, 0.70);
+            background: rgba(0, 0, 0, 0.52);
             backdrop-filter: blur(16px) saturate(165%);
             -webkit-backdrop-filter: blur(16px) saturate(165%);
             box-shadow: 0 22px 70px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06);
@@ -522,6 +522,10 @@
             transform: translateY(-6px) scale(0.98);
             pointer-events: none;
             transition: opacity 180ms ease, transform 180ms ease;
+        }
+        .brand-island.is-open .brand-island__panel {
+            backdrop-filter: blur(18px) saturate(170%);
+            -webkit-backdrop-filter: blur(18px) saturate(170%);
         }
         body.modal-open .brand-island {
             pointer-events: none;
