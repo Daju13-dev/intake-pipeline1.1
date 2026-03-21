@@ -1942,8 +1942,10 @@
                         const j = await err.json();
                         if (j && j.detail) msg = String(j.detail);
                     } catch (_) {}
-                    if (/firebase/i.test(msg)) {
-                        msg = "Verification is temporarily unavailable. Please try again later.";
+                    // Keep verification errors specific (missing Firebase config vs not found),
+                    // instead of collapsing into a vague "unavailable" message.
+                    if (/firebase is not configured/i.test(msg)) {
+                        msg = "Verification is not configured on this deployment. Please contact the program team.";
                     }
                     qrStatus.textContent = "Not verified.";
                     qrResult.textContent = msg;

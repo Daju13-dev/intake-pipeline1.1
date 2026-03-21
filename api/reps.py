@@ -28,12 +28,29 @@ def init_firebase():
 
     service_json = os.environ.get("FIREBASE_SERVICE_ACCOUNT")
     bucket_name = os.environ.get("FIREBASE_STORAGE_BUCKET")
-    if not service_json or not bucket_name:
-        raise RuntimeError("Missing Firebase configuration")
+    missing = []
+    if not service_json:
+        missing.append("FIREBASE_SERVICE_ACCOUNT")
+    if not bucket_name:
+        missing.append("FIREBASE_STORAGE_BUCKET")
+    if missing:
+        # Keep error explicit but non-sensitive. This is used to surface a precise user-facing
+        # message instead of a generic "unavailable".
+        raise RuntimeError("Missing Firebase configuration: " + ", ".join(missing))
 
-    cred_info = json.loads(service_json)
-    cred = credentials.Certificate(cred_info)
-    _firebase_app = firebase_admin.initialize_app(cred, {"storageBucket": bucket_name})
+    try:
+        cred_info = json.loads(service_json)
+    except Exception as e:
+        print("[reps] invalid FIREBASE_SERVICE_ACCOUNT JSON:", repr(e))
+        raise RuntimeError("Invalid Firebase service account JSON") from e
+
+    try:
+        cred = credentials.Certificate(cred_info)
+        _firebase_app = firebase_admin.initialize_app(cred, {"storageBucket": bucket_name})
+    except Exception as e:
+        print("[reps] firebase_admin initialize_app failed:", repr(e))
+        raise RuntimeError("Failed to initialize Firebase Admin SDK") from e
+
     _db = firestore.client()
     _bucket = storage.bucket()
 
@@ -113,10 +130,22 @@ def rep_to_public(doc_id: str, data: dict) -> dict:
 async def get_rep(code: str):
     try:
         init_firebase()
-    except Exception:
+    except Exception as e:
+        msg = str(e) or "Verification backend is not configured"
+        # Be explicit about the dependency without leaking secrets.
+        if msg.startswith("Missing Firebase configuration:"):
+            msg = msg.replace(
+                "Missing Firebase configuration:",
+                "Verification is not configured on this deployment. Missing:",
+                1,
+            )
+        elif msg == "Invalid Firebase service account JSON":
+            msg = "Verification is not configured on this deployment (invalid Firebase credentials JSON)."
+        elif msg == "Failed to initialize Firebase Admin SDK":
+            msg = "Verification is temporarily unavailable due to a server configuration issue. Please try again later."
         raise HTTPException(
             status_code=503,
-            detail="Representative verification is temporarily unavailable. Please try again later.",
+            detail=msg,
         )
 
     code = normalize_code(code)
@@ -143,10 +172,21 @@ async def get_rep(code: str):
 async def list_reps(active: Optional[bool] = True):
     try:
         init_firebase()
-    except Exception:
+    except Exception as e:
+        msg = str(e) or "Verification backend is not configured"
+        if msg.startswith("Missing Firebase configuration:"):
+            msg = msg.replace(
+                "Missing Firebase configuration:",
+                "Verification is not configured on this deployment. Missing:",
+                1,
+            )
+        elif msg == "Invalid Firebase service account JSON":
+            msg = "Verification is not configured on this deployment (invalid Firebase credentials JSON)."
+        elif msg == "Failed to initialize Firebase Admin SDK":
+            msg = "Verification is temporarily unavailable due to a server configuration issue. Please try again later."
         raise HTTPException(
             status_code=503,
-            detail="Representative verification is temporarily unavailable. Please try again later.",
+            detail=msg,
         )
 
     try:
