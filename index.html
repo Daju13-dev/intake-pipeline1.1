@@ -225,10 +225,10 @@
                 </button>
                 <button class="ui-card w-full text-left p-4 rounded-xl  hover:border-brand-500 hover:bg-brand-50 transition-all shadow-[0_8px_20px_rgba(2,6,23,0.08)]" onclick="openMissionForm('mission2')">
                     <div class="flex items-start gap-3">
-                        <div class="icon-badge icon-accent shrink-0"><i class="ph-fill ph-article text-lg"></i></div>
+                        <div class="icon-badge icon-accent shrink-0"><i class="ph-fill ph-microphone text-lg"></i></div>
                         <div>
-                            <p class="font-bold text-ink-900">The Veracity Project</p>
-                            <p class="text-xs text-ink-400 mt-0.5">Share rumors or misleading posts spreading online.</p>
+                            <p class="font-bold text-ink-900">Citizen Voice</p>
+                            <p class="text-xs text-ink-400 mt-0.5">Record or upload what people are saying about issues affecting them.</p>
                         </div>
                     </div>
                 </button>
@@ -1178,6 +1178,7 @@
         let lastMainRewardType = 'momo';
         const stepState = {};
         const fileState = {};
+        const fileObjState = {};
 
         const missionData = {
             mission1: {
@@ -1185,8 +1186,8 @@
                 desc: "Report fake alerts, prize texts, suspicious links, or job scams."
             },
             mission2: {
-                title: "The Veracity Project",
-                desc: "Share rumors, misinformation, or misleading posts spreading online."
+                title: "Citizen Voice",
+                desc: "Record or upload what people are saying about issues affecting them."
             },
             mission3: {
                 title: "The Identity Guard",
@@ -1291,8 +1292,6 @@
                                     <i class="ph-fill ph-camera"></i> Start Face Check
                                 </button>
                             </div>
-                            
-                            
                         `
                     },
                     {
@@ -1303,80 +1302,178 @@
                 ]
             },
             mission2: {
-                title: "The Veracity Project",
-                desc: "Share rumors, misinformation, or misleading posts spreading online.",
+                title: "Citizen Voice",
+                desc: "Record or upload what people are saying about issues affecting them.",
+                submitStepIndex: 5,
+                successStepIndex: 6,
                 steps: [
                     {
-                        title: "Set the Scene",
-                        story: "Tell us where this misinformation is spreading.",
+                        title: "Citizen Voice",
+                        story: "Capture real voices from communities and field interviews.",
+                        nextLabel: "Continue",
+                        icon: "ph-microphone",
                         html: `
-                            <div>
-                                <label class="block text-xs font-bold text-ink-700 mb-1">Where is this spreading? <span class="text-red-500">*</span></label>
-                                <select data-field="m2_platform" required class="w-full border border-ink-200/60 rounded-xl p-3 text-sm">
-                                    <option value="">Select Platform...</option>
-                                    <option>WhatsApp Group</option><option>Facebook</option><option>TikTok</option><option>X (Twitter)</option><option>Other</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-ink-700 mb-1">Subject Matter</label>
-                                <select data-field="m2_topic" class="w-full border border-ink-200/60 rounded-xl p-3 text-sm">
-                                    <option value="">Select Topic...</option>
-                                    <option>Health/Medicine/Cures</option><option>Politics/Elections</option><option>Finance/Economy/Banks</option><option>Local Community Incident</option>
-                                </select>
-                            </div>
-                            <div>
-                                <div class="flex items-center justify-between mb-1">
-                                    <label class="block text-xs font-bold text-ink-700">Exact Text or Link</label>
-                                    <button type="button" class="text-[10px] font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1" onclick="startDictation('mission2-text')">
-                                        <i class="ph-fill ph-microphone"></i> Speak
-                                    </button>
+                            <div class="ui-card rounded-2xl p-4">
+                                <p class="text-sm font-bold text-ink-900">Citizen Voice</p>
+                                <p class="text-xs text-ink-500 mt-2 leading-relaxed">
+                                    Capture real voices from communities and field interviews.
+                                </p>
+                                <div class="ui-chip mt-3">
+                                    <i class="ph-fill ph-lock-key"></i>
+                                    <span>Secure intake</span>
                                 </div>
-                                <textarea id="mission2-text" data-field="m2_text" rows="3" class="w-full border border-ink-200/60 rounded-xl p-3 text-sm" placeholder="Paste the rumor or link..."></textarea>
                             </div>
                         `
                     },
                     {
-                        title: "Capture Evidence",
-                        story: "Upload the post or screenshot as proof.",
+                        title: "Location",
+                        story: "Where was this recorded?",
+                        icon: "ph-map-pin",
                         html: `
-                            <div>
-                                <label class="block text-xs font-bold text-ink-700 mb-1">Upload Evidence <span class="text-red-500">*</span></label>
-                                <input data-file="m2_screenshot" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200/60 rounded-xl p-2 bg-ink-50"/>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-ink-700 mb-1">Upload Voice Recording (optional)</label>
-                                <p class="text-[10px] text-ink-400 mb-1">Upload any recorded call or voice note you suspect is fraudulent.</p>
-                                <input data-file="m2_voice" type="file" accept="audio/*" class="w-full text-sm border border-ink-200/60 rounded-xl p-2 bg-ink-50"/>
-                            </div>
-                        `
-                    },
-                    {
-                        title: "Verify Identity",
-                        story: "A quick verification keeps this trustworthy.",
-                        html: `
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div class="space-y-3">
                                 <div>
-                                    <label class="block text-xs font-bold text-ink-700 mb-1">ID Front <span class="text-red-500">*</span></label>
-                                    <input data-file="m2_id_front" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200/60 rounded-xl p-2 bg-ink-50"/>
+                                    <label class="block text-xs font-bold text-ink-700 mb-1">Region <span class="text-red-500">*</span></label>
+                                    <select data-field="cv_region" required class="w-full border border-ink-200/60 rounded-xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                        <option value="">Select region...</option>
+                                        <option>Ahafo</option>
+                                        <option>Ashanti</option>
+                                        <option>Bono</option>
+                                        <option>Bono East</option>
+                                        <option>Central</option>
+                                        <option>Eastern</option>
+                                        <option>Greater Accra</option>
+                                        <option>North East</option>
+                                        <option>Northern</option>
+                                        <option>Oti</option>
+                                        <option>Savannah</option>
+                                        <option>Upper East</option>
+                                        <option>Upper West</option>
+                                        <option>Volta</option>
+                                        <option>Western</option>
+                                        <option>Western North</option>
+                                    </select>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-ink-700 mb-1">ID Back</label>
-                                    <input data-file="m2_id_back" type="file" accept="image/*" capture="environment" class="w-full text-sm border border-ink-200/60 rounded-xl p-2 bg-ink-50"/>
+                                    <label class="block text-xs font-bold text-ink-700 mb-1">City / Town <span class="text-red-500">*</span></label>
+                                    <input data-field="cv_city" required type="text" class="w-full border border-ink-200/60 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="e.g. Madina" />
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-ink-700 mb-1">Area / Landmark (optional)</label>
+                                    <input data-field="cv_area" type="text" class="w-full border border-ink-200/60 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="e.g. Market circle, Junction" />
                                 </div>
                             </div>
-                            <div class="pt-1">
-                                <button type="button" onclick="openFaceCheck()" class="w-full rounded-xl bg-ink-900 text-white py-2.5 text-sm font-bold hover:bg-black flex items-center justify-center gap-2">
-                                    <i class="ph-fill ph-camera"></i> Start Face Check
-                                </button>
-                            </div>
-
-                            
                         `
                     },
                     {
-                        title: "Claim Reward",
-                        story: "Enter your Mobile Money details to receive your reward.",
-                        html: getRewardStepHtml()
+                        title: "Audio",
+                        story: "Attach a voice recording.",
+                        icon: "ph-waveform",
+                        html: `
+                            <div class="space-y-3">
+                                <div class="ui-card rounded-2xl p-4">
+                                    <p class="text-sm font-bold text-ink-900">Audio</p>
+                                    <p class="text-xs text-ink-500 mt-1 leading-relaxed">
+                                        Keep recordings clear and focused. Accepted formats: mp3, m4a, wav.
+                                    </p>
+                                    <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                        <button type="button" class="ui-btn ui-btn--secondary w-full py-3 font-bold flex items-center justify-center gap-2" disabled title="Recording will be added soon">
+                                            <i class="ph-fill ph-microphone"></i>
+                                            Record (coming soon)
+                                        </button>
+                                        <div>
+                                            <label class="block text-[11px] font-bold text-ink-700 mb-1">Upload audio <span class="text-red-500">*</span></label>
+                                            <input data-file="cv_audio" type="file" accept="audio/*,.mp3,.m4a,.wav" class="w-full text-sm border border-ink-200/60 rounded-xl p-2 bg-ink-50"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-ink-700 mb-1">Short summary (optional)</label>
+                                    <textarea data-field="cv_summary" rows="3" class="w-full border border-ink-200/60 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="1-2 lines on what the participant said..."></textarea>
+                                </div>
+                                <p id="cv-audio-error" class="hidden text-[11px] text-red-600">Please attach an audio recording.</p>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "Participant Details",
+                        story: "Optional context for analysis.",
+                        icon: "ph-identification-card",
+                        html: `
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-xs font-bold text-ink-700 mb-1">Age range (optional)</label>
+                                    <select data-field="cv_age_range" class="w-full border border-ink-200/60 rounded-xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                        <option value="">Select age range...</option>
+                                        <option>Under 18</option>
+                                        <option>18-24</option>
+                                        <option>25-34</option>
+                                        <option>35-44</option>
+                                        <option>45-54</option>
+                                        <option>55+</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-ink-700 mb-1">Gender (optional)</label>
+                                    <select data-field="cv_gender" class="w-full border border-ink-200/60 rounded-xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                        <option value="">Select gender...</option>
+                                        <option>Female</option>
+                                        <option>Male</option>
+                                        <option>Non-binary</option>
+                                        <option>Prefer not to say</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-ink-700 mb-1">Occupation (optional)</label>
+                                    <input data-field="cv_occupation" type="text" class="w-full border border-ink-200/60 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="e.g. Trader, Student, Driver" />
+                                </div>
+                            </div>
+                        `
+                    }
+                    ,
+                    {
+                        title: "Consent",
+                        story: "Confirm participant consent.",
+                        icon: "ph-check-circle",
+                        html: `
+                            <div class="ui-card rounded-2xl p-4">
+                                <label class="flex items-start gap-3">
+                                    <input data-field="cv_consent" type="checkbox" required class="mt-1 w-4 h-4 accent-brand-600" />
+                                    <span class="text-sm text-ink-900 font-semibold leading-relaxed">
+                                        The participant agreed to share this recording for research and analysis.
+                                    </span>
+                                </label>
+                                <p class="text-xs text-ink-500 mt-2">Avoid including unnecessary personal details.</p>
+                            </div>
+                            <p id="cv-submit-error" class="hidden text-[11px] text-red-600 mt-2"></p>
+                        `
+                    },
+                    {
+                        title: "Review",
+                        story: "Confirm everything looks correct before submitting.",
+                        icon: "ph-clipboard-text",
+                        submitLabel: "Submit Voice",
+                        html: `
+                            <div id="cv-review" class="space-y-3"></div>
+                            <p id="cv-submit-error" class="hidden text-[11px] text-red-600 mt-2"></p>
+                        `
+                    },
+                    {
+                        title: "Voice Captured",
+                        story: "",
+                        icon: "ph-check-circle",
+                        hideActions: true,
+                        html: `
+                            <div class="text-center">
+                                <div class="w-14 h-14 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto mb-3 shadow-sm">
+                                    <i class="ph-bold ph-check text-2xl"></i>
+                                </div>
+                                <p class="text-[11px] font-bold uppercase tracking-widest text-ink-400">Success</p>
+                                <h3 class="text-xl font-extrabold text-ink-900 mt-1">Voice Captured</h3>
+                                <p class="text-sm text-ink-600 mt-2">This submission has been received securely.</p>
+                                <p class="text-xs text-ink-400 mt-1">It will be processed for transcript, topic, and sentiment.</p>
+                                <button type="button" class="ui-btn ui-btn--primary w-full mt-5 py-3 font-bold" onclick="closeMissionModal()">Done</button>
+                            </div>
+                        `
                     }
                 ]
             },
@@ -1568,19 +1665,36 @@
                 2: "ph-identification-card",
                 3: currentMissionId === "mission4" ? "ph-siren" : "ph-gift"
             };
-            const iconClass = iconMap[currentStepIndex] || "ph-star";
+            const iconClass = step.icon || iconMap[currentStepIndex] || "ph-star";
             stepIcon.innerHTML = `<i class="ph-fill ${iconClass}"></i>`;
             stepStory.textContent = step.story;
             stepLabel.textContent = "Step";
             stepCount.textContent = `${currentStepIndex + 1}/${mission.steps.length}`;
             progressBar.style.width = `${((currentStepIndex + 1) / mission.steps.length) * 100}%`;
-            btnBack.classList.toggle('hidden', currentStepIndex === 0);
-            btnNext.classList.toggle('hidden', currentStepIndex === mission.steps.length - 1);
-            btnSubmit.classList.toggle('hidden', currentStepIndex !== mission.steps.length - 1);
+
+            // Some missions (Citizen Voice) submit before the final "success" step.
+            const submitIndex = (typeof mission.submitStepIndex === 'number') ? mission.submitStepIndex : (mission.steps.length - 1);
+            const isSubmitStep = currentStepIndex === submitIndex;
+
+            btnBack.classList.toggle('hidden', currentStepIndex === 0 && currentMissionId !== 'mission2');
+            btnNext.classList.toggle('hidden', currentStepIndex >= submitIndex);
+            btnSubmit.classList.toggle('hidden', !isSubmitStep);
+
+            // Button labels (keep defaults for other missions).
+            btnNext.textContent = step.nextLabel || 'Next';
+            btnSubmit.textContent = step.submitLabel || 'Submit';
 
             if (step.title === "Verify Identity") {
                 btnNext.classList.add('hidden');
                 btnSubmit.classList.add('hidden');
+            }
+            if (step.hideActions) {
+                btnBack.classList.add('hidden');
+                btnNext.classList.add('hidden');
+                btnReset.classList.add('hidden');
+                btnSubmit.classList.add('hidden');
+            } else {
+                btnReset.classList.remove('hidden');
             }
 
             const rewardNetwork = document.getElementById('reward-network');
@@ -1600,6 +1714,10 @@
 
             restoreStepState();
             setupFileInputs();
+
+            if (currentMissionId === 'mission2' && step.title === 'Review') {
+                renderCitizenVoiceReview();
+            }
         }
 
         function validateStep() {
@@ -1608,6 +1726,49 @@
                 if (!field.checkValidity()) {
                     field.reportValidity();
                     return false;
+                }
+            }
+
+            // Citizen Voice: audio is required (recording UI is placeholder for now).
+            if (currentMissionId === 'mission2') {
+                const audioInput = stepFields.querySelector('input[type="file"][data-file="cv_audio"]');
+                if (audioInput) {
+                    const metaId = `${getStepKey()}:cv_audio`;
+                    const f = (audioInput.files && audioInput.files[0]) || fileObjState[metaId];
+                    const err = document.getElementById('cv-audio-error');
+                    if (!f) {
+                        if (err) err.classList.remove('hidden');
+                        audioInput.focus();
+                        return false;
+                    }
+                    if (err) err.classList.add('hidden');
+                }
+
+                // On Review submit, re-validate required fields across steps.
+                const mission = missionFlowData[currentMissionId];
+                const submitIndex = (typeof mission.submitStepIndex === 'number') ? mission.submitStepIndex : (mission.steps.length - 1);
+                if (currentStepIndex === submitIndex) {
+                    const flat = getMissionFlatState(currentMissionId);
+                    const reviewErr = document.getElementById('cv-submit-error');
+                    const audioFile = getMissionFile(currentMissionId, 'cv_audio');
+
+                    if (!flat.cv_region || !String(flat.cv_region).trim()) {
+                        if (reviewErr) { reviewErr.textContent = "Missing region. Please go back and select a region."; reviewErr.classList.remove('hidden'); }
+                        return false;
+                    }
+                    if (!flat.cv_city || !String(flat.cv_city).trim()) {
+                        if (reviewErr) { reviewErr.textContent = "Missing city/town. Please go back and enter a city/town."; reviewErr.classList.remove('hidden'); }
+                        return false;
+                    }
+                    if (!audioFile) {
+                        if (reviewErr) { reviewErr.textContent = "Missing audio file. Please go back and attach an audio recording."; reviewErr.classList.remove('hidden'); }
+                        return false;
+                    }
+                    if (!flat.cv_consent) {
+                        if (reviewErr) { reviewErr.textContent = "Consent is required to submit. Please go back and confirm consent."; reviewErr.classList.remove('hidden'); }
+                        return false;
+                    }
+                    if (reviewErr) reviewErr.classList.add('hidden');
                 }
             }
 
@@ -1639,6 +1800,45 @@
             return true;
         }
 
+        function getMissionFlatState(missionId) {
+            const out = {};
+            const prefix = `${missionId}:`;
+            Object.keys(stepState).forEach((k) => {
+                if (!k.startsWith(prefix)) return;
+                Object.assign(out, stepState[k] || {});
+            });
+            // Also include the current step's live fields (not yet saved)
+            stepFields.querySelectorAll('[data-field]').forEach((el) => {
+                const name = el.getAttribute('data-field');
+                if (!name) return;
+                if (el.type === 'radio') {
+                    if (el.checked) out[name] = el.value;
+                } else if (el.type === 'checkbox') {
+                    out[name] = el.checked ? '1' : '';
+                } else {
+                    out[name] = el.value;
+                }
+            });
+            return out;
+        }
+
+        function getMissionFile(missionId, fieldName) {
+            const prefix = `${missionId}:`;
+            const suffix = `:${fieldName}`;
+            let bestKey = null;
+            let bestStep = -1;
+            Object.keys(fileObjState).forEach((k) => {
+                if (!k.startsWith(prefix) || !k.endsWith(suffix)) return;
+                const parts = k.split(':');
+                const stepIdx = parseInt(parts[1] || '-1', 10);
+                if (Number.isFinite(stepIdx) && stepIdx >= bestStep) {
+                    bestStep = stepIdx;
+                    bestKey = k;
+                }
+            });
+            return bestKey ? fileObjState[bestKey] : null;
+        }
+
         function getStepKey() {
             return `${currentMissionId}:${currentStepIndex}`;
         }
@@ -1651,6 +1851,8 @@
                 const name = el.getAttribute('data-field');
                 if (el.type === 'radio') {
                     if (el.checked) stepState[key][name] = el.value;
+                } else if (el.type === 'checkbox') {
+                    stepState[key][name] = el.checked ? '1' : '';
                 } else {
                     stepState[key][name] = el.value;
                 }
@@ -1667,6 +1869,8 @@
                 if (saved[name] !== undefined) {
                     if (el.type === 'radio') {
                         el.checked = el.value === saved[name];
+                    } else if (el.type === 'checkbox') {
+                        el.checked = Boolean(saved[name]) && saved[name] !== '0';
                     } else {
                         el.value = saved[name];
                     }
@@ -1892,6 +2096,7 @@
                     meta.querySelector('button').addEventListener('click', () => {
                         input.value = '';
                         delete fileState[metaId];
+                        delete fileObjState[metaId];
                         meta.querySelector('.file-name').textContent = '';
                     });
                 }
@@ -1900,9 +2105,67 @@
                 input.addEventListener('change', () => {
                     const f = input.files && input.files[0];
                     fileState[metaId] = f ? f.name : '';
+                    fileObjState[metaId] = f || null;
                     meta.querySelector('.file-name').textContent = f ? `Selected: ${f.name}` : '';
                 });
             });
+        }
+
+        function escapeHtml(s) {
+            return String(s ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function renderCitizenVoiceReview() {
+            const root = document.getElementById('cv-review');
+            if (!root) return;
+
+            const data = getMissionFlatState('mission2');
+            const audio = getMissionFile('mission2', 'cv_audio');
+            const audioLabel = audio ? (audio.name || 'Attached') : 'Not attached';
+
+            const rows = [
+                ["Mission", "Citizen Voice"],
+                ["Source type", "Ground"],
+                ["Region", data.cv_region || ""],
+                ["City / Town", data.cv_city || ""],
+                ["Area / Landmark", data.cv_area || ""],
+                ["Audio", audioLabel],
+                ["Summary", data.cv_summary || ""],
+                ["Age range", data.cv_age_range || ""],
+                ["Gender", data.cv_gender || ""],
+                ["Occupation", data.cv_occupation || ""],
+                ["Consent", data.cv_consent ? "Confirmed" : "Missing"],
+            ];
+
+            const chips = data.cv_consent
+                ? `<span class="ui-chip"><i class="ph-fill ph-check-circle"></i><span>Consent confirmed</span></span>`
+                : `<span class="ui-chip"><i class="ph-fill ph-warning-circle"></i><span>Consent missing</span></span>`;
+
+            const body = rows
+                .filter((r) => String(r[1] || "").trim() !== "")
+                .map(([k, v]) => `
+                    <div class="flex items-start justify-between gap-3">
+                        <span class="text-[11px] font-bold text-ink-500">${escapeHtml(k)}</span>
+                        <span class="text-[11px] font-semibold text-ink-900 text-right max-w-[70%] break-words">${escapeHtml(v)}</span>
+                    </div>
+                `)
+                .join("");
+
+            root.innerHTML = `
+                <div class="ui-card rounded-2xl p-4">
+                    <div class="flex items-center justify-between gap-3">
+                        <p class="font-extrabold text-ink-900">Review</p>
+                        ${chips}
+                    </div>
+                    <div class="mt-3 space-y-2">${body}</div>
+                </div>
+                <p class="text-[11px] text-ink-500">If something looks off, go back and correct it before submitting.</p>
+            `;
         }
 
         btnNext.addEventListener('click', () => {
@@ -1922,6 +2185,11 @@
                 mission_id: currentMissionId,
                 step_index: currentStepIndex + 1
             });
+            if (currentMissionId === 'mission2' && currentStepIndex === 0) {
+                // Citizen Voice intro: "Back" returns to mission picker.
+                backToPicker();
+                return;
+            }
             currentStepIndex = Math.max(0, currentStepIndex - 1);
             renderStep();
         });
@@ -1932,12 +2200,19 @@
             stepFields.querySelectorAll('input, select, textarea').forEach((el) => {
                 el.value = '';
             });
+            stepFields.querySelectorAll('input[type="file"][data-file]').forEach((input) => {
+                const field = input.getAttribute('data-file');
+                const metaId = `${key}:${field}`;
+                delete fileState[metaId];
+                delete fileObjState[metaId];
+                input.value = '';
+            });
             stepFields.querySelectorAll('.file-meta .file-name').forEach((el) => {
                 el.textContent = '';
             });
         });
 
-        missionFormEl.addEventListener('submit', (e) => {
+        missionFormEl.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!validateStep()) return;
             saveStepState();
@@ -1946,15 +2221,87 @@
                 ref: safeGetLocalStorage('referrerCode') ? 1 : 0,
                 rb: safeGetLocalStorage('referrerBonus') || ''
             });
+
+            if (currentMissionId === 'mission2') {
+                await submitCitizenVoice();
+                return;
+            }
+
             showCelebration('momo');
             trackEvent("mission_complete", { mission_id: currentMissionId });
         });
+
+        async function submitCitizenVoice() {
+            const errEl = document.getElementById('cv-submit-error');
+            if (errEl) { errEl.textContent = ''; errEl.classList.add('hidden'); }
+
+            const mission = missionFlowData[currentMissionId];
+            const submitIndex = (typeof mission.submitStepIndex === 'number') ? mission.submitStepIndex : (mission.steps.length - 1);
+            if (currentStepIndex !== submitIndex) return;
+
+            const flat = getMissionFlatState(currentMissionId);
+            const audio = getMissionFile(currentMissionId, 'cv_audio');
+            if (!audio) {
+                if (errEl) { errEl.textContent = 'Missing audio file. Please go back and attach an audio recording.'; errEl.classList.remove('hidden'); }
+                return;
+            }
+
+            const fd = new FormData();
+            fd.append('mission', 'citizen_voice');
+            fd.append('source_type', 'ground');
+            fd.append('region', String(flat.cv_region || '').trim());
+            fd.append('city', String(flat.cv_city || '').trim());
+            fd.append('area', String(flat.cv_area || '').trim());
+            fd.append('summary', String(flat.cv_summary || '').trim());
+            fd.append('age_range', String(flat.cv_age_range || '').trim());
+            fd.append('gender', String(flat.cv_gender || '').trim());
+            fd.append('occupation', String(flat.cv_occupation || '').trim());
+            fd.append('consent', flat.cv_consent ? '1' : '0');
+            fd.append('audio', audio, audio.name || 'voice.m4a');
+
+            const origText = btnSubmit.textContent;
+            btnSubmit.disabled = true;
+            btnSubmit.textContent = 'Submitting...';
+
+            try {
+                const resp = await fetch('/api/citizen-voice', { method: 'POST', body: fd });
+                if (!resp.ok) {
+                    let msg = 'Submission failed. Please try again.';
+                    try {
+                        const j = await resp.json();
+                        if (j && j.detail) msg = String(j.detail);
+                    } catch (_) {}
+                    if (errEl) { errEl.textContent = msg; errEl.classList.remove('hidden'); }
+                    trackEvent?.('citizen_voice_submit_error', { status: resp.status });
+                    return;
+                }
+                const data = await resp.json();
+                trackEvent?.('citizen_voice_submit_success', { record_id: data?.record_id || '' });
+
+                const successIndex = (typeof mission.successStepIndex === 'number') ? mission.successStepIndex : (mission.steps.length - 1);
+
+                // Clear draft state after a successful submission so the next run starts fresh.
+                Object.keys(stepState).forEach((k) => { if (k.startsWith(`${currentMissionId}:`)) delete stepState[k]; });
+                Object.keys(fileState).forEach((k) => { if (k.startsWith(`${currentMissionId}:`)) delete fileState[k]; });
+                Object.keys(fileObjState).forEach((k) => { if (k.startsWith(`${currentMissionId}:`)) delete fileObjState[k]; });
+
+                currentStepIndex = successIndex;
+                renderStep();
+            } catch (e) {
+                if (errEl) { errEl.textContent = 'Network error. Please check your connection and try again.'; errEl.classList.remove('hidden'); }
+                trackEvent?.('citizen_voice_submit_error', { status: 0 });
+            } finally {
+                btnSubmit.disabled = false;
+                btnSubmit.textContent = origText;
+            }
+        }
 
         celebrateHomeBtn?.addEventListener('click', () => {
             // Reset the mission state after completion.
             try { missionFormEl.reset(); } catch (_) {}
             Object.keys(stepState).forEach((k) => { if (currentMissionId && k.startsWith(`${currentMissionId}:`)) delete stepState[k]; });
             Object.keys(fileState).forEach((k) => { if (currentMissionId && k.startsWith(`${currentMissionId}:`)) delete fileState[k]; });
+            Object.keys(fileObjState).forEach((k) => { if (currentMissionId && k.startsWith(`${currentMissionId}:`)) delete fileObjState[k]; });
             trackEvent?.('celebration_home', { mission_id: currentMissionId || '' });
             currentMissionId = null;
             currentStepIndex = 0;

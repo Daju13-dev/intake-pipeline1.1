@@ -2,6 +2,7 @@
   "version": 2,
   "builds": [
     { "src": "api/face_check.py", "use": "@vercel/python" },
+    { "src": "api/citizen_voice.py", "use": "@vercel/python" },
     { "src": "api/chat.py", "use": "@vercel/python" },
     { "src": "api/reps.py", "use": "@vercel/python" },
     { "src": "api/support.py", "use": "@vercel/python" },
@@ -15,6 +16,8 @@
     { "src": "^/$", "dest": "/index.html" },
     { "src": "^/pitchcardex\\.html$", "status": 308, "headers": { "Location": "/index.html" } },
     { "src": "/api/face-check", "dest": "/api/face_check.py" },
+    { "src": "/api/citizen-voice", "dest": "/api/citizen_voice.py" },
+    { "src": "/api/citizen-voice/(.*)", "dest": "/api/citizen_voice.py" },
     { "src": "/api/chat", "dest": "/api/chat.py" },
     { "src": "/api/reps/(.*)", "dest": "/api/reps.py" },
     { "src": "/api/reps", "dest": "/api/reps.py" },
